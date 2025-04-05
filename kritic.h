@@ -1,0 +1,4 @@
+#ifndef __KRITIC_HEADER_GUARD
+#define __KRITIC_HEADER_GUARD
+
+#endif // __KRITIC_HEADER_GUARD
