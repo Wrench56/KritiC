@@ -118,40 +118,33 @@ void _kritic_default_assert_printer(
     const char* expected_expr,
     kritic_assert_type_t assert_type
 ) {
+    if (passed) return;
     const char* label = "[ \033[1;31mFAIL\033[0m ]";
 
     switch (assert_type) {
         case KRITIC_ASSERT_EQ:
-            if (!passed) {
-                fprintf(stderr, "%s  %s.%s: %s == %s failed at %s:%d\n",
-                        label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-                fprintf(stderr, "          -> %s = %lld, %s = %lld\n",
-                        actual_expr, actual, expected_expr, expected);
-            }
+            fprintf(stderr, "%s  %s.%s: %s == %s failed at %s:%d\n",
+                    label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
+            fprintf(stderr, "          -> %s = %lld, %s = %lld\n",
+                    actual_expr, actual, expected_expr, expected);
             break;
 
         case KRITIC_ASSERT_NE:
-            if (!passed) {
-                fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
-                        label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-                fprintf(stderr, "          -> both = %lld\n", actual);
-            }
+            fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
+                    label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
+            fprintf(stderr, "          -> both = %lld\n", actual);
             break;
 
         case KRITIC_ASSERT:
-            if (!passed) {
-                fprintf(stderr, "%s  %s.%s: assertion failed: %s at %s:%d\n",
-                        label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
-                fprintf(stderr, "          -> value = %lld\n", actual);
-            }
+            fprintf(stderr, "%s  %s.%s: assertion failed: %s at %s:%d\n",
+                    label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
+            fprintf(stderr, "          -> value = %lld\n", actual);
             break;
         
         case KRITIC_ASSERT_NOT:
-            if (!passed) {
-                fprintf(stderr, "%s  %s.%s: assertion expected to fail: %s at %s:%d\n",
-                        label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
-                fprintf(stderr, "          -> value = %lld (was truthy)\n", actual);
-            }
+            fprintf(stderr, "%s  %s.%s: assertion expected to fail: %s at %s:%d\n",
+                    label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
+            fprintf(stderr, "          -> value = %lld (was truthy)\n", actual);
             break;
             
         case KRITIC_ASSERT_FAIL:
