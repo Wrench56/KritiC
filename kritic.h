@@ -97,6 +97,13 @@ void kritic_enable_ansi(void);
         kritic_assert_eq(&ctx, (expr), 0, #expr, NULL, KRITIC_ASSERT);                          \
     } while (0)
 
+/* Asserts that the given expression is false */
+#define KRITIC_ASSERT_NOT(expr)                                                                 \
+do {                                                                                        \
+    kritic_context_t ctx = {__FILE__, kritic_current_suite, kritic_current_test, __LINE__}; \
+    kritic_assert_eq(&ctx, (expr), 0, #expr, NULL, KRITIC_ASSERT_NOT);                      \
+} while (0)
+
 /* Forces a test failure unconditionally */
 #define KRITIC_FAIL()                                                                           \
     do {                                                                                        \
