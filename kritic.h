@@ -1,6 +1,10 @@
 #ifndef __KRITIC_HEADER_GUARD
 #define __KRITIC_HEADER_GUARD
 
+#define KRITIC_VERSION_MAJOR 0
+#define KRITIC_VERSION_MINOR 1
+#define KRITIC_VERSION_PATCH 0
+
 #ifdef __cplusplus
 extern "C" {
 #endif
