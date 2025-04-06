@@ -5,8 +5,7 @@
 #include "../kritic.h"
 
 kritic_runtime_t* kritic_state = &(kritic_runtime_t) {
-    .current_suite  = NULL,
-    .current_test   = NULL,
+    .test_state     = NULL,
     .fail_count     = 0,
     .test_count     = 0,
     .assert_printer = &_kritic_default_assert_printer
@@ -56,10 +55,13 @@ int kritic_run_all(void) {
     for (int i = 0; i < kritic_state->test_count; ++i) {
         const kritic_test_t* t = &kritic_state->tests[i];
 
-        kritic_state->current_suite = t->suite;
-        kritic_state->current_test  = t->name;
+        kritic_state->test_state = &(kritic_test_state_t){
+            .test           = t,
+            .assert_count   = 0,
+            .asserts_failed = 0,
+        };
 
-        printf("-> %s.%s\n", kritic_state->current_suite, kritic_state->current_test);
+        printf("-> %s.%s\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST());
         t->fn();
     }
 
