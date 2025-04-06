@@ -9,16 +9,18 @@ static kritic_test_t kritic_tests[KRITIC_MAX_TESTS];
 static int kritic_test_count = 0;
 
 /* Register a test function to a specific suite with a specific name */
-void kritic_register(const char *suite, const char *name, kritic_test_fn fn) {
+void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
     if (kritic_test_count >= KRITIC_MAX_TESTS) {
-        fprintf(stderr, "[kritic] Too many registered tests!\n");
+        fprintf(stderr, "[kritic] Too many registered tests.\n");
         exit(1);
     }
 
-    kritic_tests[kritic_test_count++] = (kritic_test_t) {
-        .suite = suite,
-        .name = name,
-        .fn = fn
+    kritic_tests[kritic_test_count++] = (kritic_test_t){
+        .file  = ctx->file,
+        .suite = ctx->suite,
+        .name  = ctx->test,
+        .line  = ctx->line,
+        .fn    = fn
     };
 }
 
