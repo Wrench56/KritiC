@@ -13,6 +13,22 @@ const char* kritic_current_suite = NULL;
 const char* kritic_current_test  = NULL;
 static kritik_assert_printer_fn kritik_assert_printer_impl = &_kritic_default_assert_printer;
 
+
+#ifdef _WIN32
+#include <windows.h>
+
+/* Enable ANSI support on Windows terminal */
+void kritic_enable_ansi(void) {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD dwMode = 0;
+
+    if (hOut != INVALID_HANDLE_VALUE &&
+        GetConsoleMode(hOut, &dwMode)) {
+        SetConsoleMode(hOut, dwMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    }
+}
+#endif
+
 /* Register a test function to a specific suite with a specific name */
 void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
     if (kritic_test_count >= KRITIC_MAX_TESTS) {
@@ -147,6 +163,7 @@ void _kritic_default_assert_printer(
 
 /* Default KritiC main(void) code used to initialize the framework */
 int main(void) {
+    kritic_enable_ansi();
     printf("Hello World!\n");
     return kritic_run_all();
 }

@@ -72,6 +72,10 @@ void _kritic_default_assert_printer(
     kritic_assert_type_t assert_type
 );
 
+#ifdef _WIN32
+void kritic_enable_ansi(void);
+#endif
+
 /* Macros */
 #define _KRITIC_TEST_NAME(suite, name) kritic_test_##suite##_##name
 #define _KRITIC_REGISTER_NAME(suite, name) kritic_register_##suite##_##name
