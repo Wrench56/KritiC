@@ -44,8 +44,6 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
 
 /* Run all of the test suites and tests */
 int kritic_run_all(void) {
-    int failed = 0;
-
     if (kritic_state->test_count == 0) {
         printf("[kritic] No registered test found\n");
     } else {
@@ -63,11 +61,14 @@ int kritic_run_all(void) {
 
         printf("-> %s.%s\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST());
         t->fn();
+        if (kritic_state->test_state->asserts_failed > 0) {
+            ++kritic_state->fail_count;
+        }
     }
 
     printf("[kritic] Finished running %d tests\n", kritic_state->test_count);
 
-    return failed > 0 ? 1 : 0;
+    return kritic_state->fail_count > 0 ? 1 : 0;
 }
 
 void kritic_assert_eq(
