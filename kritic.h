@@ -66,7 +66,7 @@ typedef struct {
     // Number of failed tests
     int fail_count;
     // Current test state
-    const kritic_test_state_t* test_state;
+    kritic_test_state_t* test_state;
     // Array of registered tests
     kritic_test_t tests[KRITIC_MAX_TESTS];
 } kritic_runtime_t;
@@ -123,7 +123,7 @@ void kritic_enable_ansi(void);
 
 /* Asserts that the given expression is false */
 #define KRITIC_ASSERT_NOT(expr)                                                                               \
-    do {                                                                                                          \
+    do {                                                                                                      \
     kritic_context_t ctx = {__FILE__, _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST(), __LINE__};     \
     kritic_assert_eq(&ctx, (expr), 0, #expr, NULL, KRITIC_ASSERT_NOT);                                        \
     } while (0);

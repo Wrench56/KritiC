@@ -98,7 +98,9 @@ void kritic_assert_eq(
         default:
             break;
     }
-    if (!passed) kritic_state->fail_count++;
+
+    ++kritic_state->test_state->assert_count;
+    if (!passed) ++kritic_state->test_state->asserts_failed;
     kritic_state->assert_printer(ctx, passed, actual, expected, actual_expr, expected_expr, assert_type);
 }
 
