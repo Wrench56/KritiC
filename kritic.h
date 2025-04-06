@@ -28,7 +28,7 @@ typedef struct {
 } kritic_context_t;
 
 /* API */
-void kritic_register(const kritic_context_t* ctx, void (*fn)(void));
+void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn);
 int kritic_run_all(void);
 
 /* Macros */
