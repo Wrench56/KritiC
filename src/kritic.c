@@ -91,6 +91,9 @@ void kritic_assert_eq(
         case KRITIC_ASSERT_NE:
             passed = !(actual == expected);
             break;
+        case KRITIC_ASSERT_NOT:
+            passed = !actual;
+            break;
         case KRITIC_ASSERT_UNKNOWN:
         default:
             break;
@@ -148,6 +151,17 @@ void _kritic_default_assert_printer(
                 fprintf(stderr, "          -> value = %lld\n", actual);
             }
             break;
+        
+        case KRITIC_ASSERT_NOT:
+            if (passed) {
+                printf("%s  %s.%s\n", label, ctx->suite, ctx->test);
+            } else {
+                fprintf(stderr, "%s  %s.%s: assertion expected to fail: %s at %s:%d\n",
+                        label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
+                fprintf(stderr, "          -> value = %lld (was truthy)\n", actual);
+            }
+            break;
+            
 
         case KRITIC_ASSERT_FAIL:
             fprintf(stderr, "%s  %s.%s: forced failure at %s:%d\n",

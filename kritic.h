@@ -19,6 +19,7 @@ extern const char* kritic_current_test;
 typedef enum {
     KRITIC_ASSERT_UNKNOWN = 0,
     KRITIC_ASSERT,
+    KRITIC_ASSERT_NOT,
     KRITIC_ASSERT_EQ,
     KRITIC_ASSERT_NE,
     KRITIC_ASSERT_FAIL
