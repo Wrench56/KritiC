@@ -15,6 +15,8 @@ extern "C" {
 #endif
 
 /* Structs, types, and enums */
+typedef struct kritic_runtime_t kritic_runtime_t;
+
 typedef enum {
     KRITIC_ASSERT_UNKNOWN = 0,
     KRITIC_ASSERT,
@@ -32,7 +34,6 @@ typedef struct {
 } kritic_context_t;
 
 typedef void (*kritic_test_fn)(void);
-
 typedef void (*kritic_assert_printer_fn)(
     const kritic_context_t* ctx,
     bool passed,
@@ -42,6 +43,12 @@ typedef void (*kritic_assert_printer_fn)(
     const char* expected_expr,
     kritic_assert_type_t assert_type
 );
+
+typedef void (*kritic_init_printer_fn)(kritic_runtime_t* state);
+typedef void (*kritic_summary_printer_fn)(kritic_runtime_t* state);
+typedef void (*kritic_pre_test_printer_fn)(kritic_runtime_t* state);
+typedef void (*kritic_post_test_printer_fn)(kritic_runtime_t* state);
+
 
 typedef struct {
     const char* file;
@@ -57,10 +64,18 @@ typedef struct {
     int assert_count;
 } kritic_test_state_t;
 
-// Globals struct
 typedef struct {
-    // Pointer to a printer function for asserts
     kritic_assert_printer_fn assert_printer;
+    kritic_pre_test_printer_fn pre_test_printer;
+    kritic_post_test_printer_fn post_test_printer;
+    kritic_summary_printer_fn summary_printer;
+    kritic_init_printer_fn init_printer;
+} kritic_printers_t;
+
+// Globals struct
+typedef struct kritic_runtime_t {
+    // Pointer to a struct of printer functions
+    kritic_printers_t* printers;
     // Number of registered tests
     int test_count;
     // Number of failed tests
@@ -93,6 +108,10 @@ void _kritic_default_assert_printer(
     const char* expected_expr,
     kritic_assert_type_t assert_type
 );
+void _kritic_default_pre_test_printer(kritic_runtime_t* state);
+void _kritic_default_post_test_printer(kritic_runtime_t* state);
+void _kritic_default_summary_printer(kritic_runtime_t* state);
+void _kritic_default_init_printer(kritic_runtime_t* state);
 
 #ifdef _WIN32
 void kritic_enable_ansi(void);

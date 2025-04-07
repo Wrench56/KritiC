@@ -8,7 +8,13 @@ kritic_runtime_t* kritic_state = &(kritic_runtime_t) {
     .test_state     = NULL,
     .fail_count     = 0,
     .test_count     = 0,
-    .assert_printer = &_kritic_default_assert_printer
+    .printers       = &(kritic_printers_t) {
+        .assert_printer    = &_kritic_default_assert_printer,
+        .pre_test_printer  = &_kritic_default_pre_test_printer,
+        .post_test_printer = &_kritic_default_post_test_printer,
+        .summary_printer   = &_kritic_default_summary_printer,
+        .init_printer      = &_kritic_default_init_printer
+    }
 };
 
 #ifdef _WIN32
@@ -44,11 +50,7 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
 
 /* Run all of the test suites and tests */
 int kritic_run_all(void) {
-    if (kritic_state->test_count == 0) {
-        printf("[kritic] No registered test found\n");
-    } else {
-        printf("[kritic] Running %d tests:\n", kritic_state->test_count);
-    }
+    kritic_state->printers->init_printer(kritic_state);
 
     for (int i = 0; i < kritic_state->test_count; ++i) {
         const kritic_test_t* t = &kritic_state->tests[i];
@@ -59,14 +61,15 @@ int kritic_run_all(void) {
             .asserts_failed = 0,
         };
 
-        printf("-> %s.%s\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST());
+        kritic_state->printers->pre_test_printer(kritic_state);
         t->fn();
         if (kritic_state->test_state->asserts_failed > 0) {
             ++kritic_state->fail_count;
         }
+        kritic_state->printers->post_test_printer(kritic_state);
     }
 
-    printf("[kritic] Finished running %d tests\n", kritic_state->test_count);
+    kritic_state->printers->summary_printer(kritic_state);
 
     return kritic_state->fail_count > 0 ? 1 : 0;
 }
@@ -102,7 +105,7 @@ void kritic_assert_eq(
 
     ++kritic_state->test_state->assert_count;
     if (!passed) ++kritic_state->test_state->asserts_failed;
-    kritic_state->assert_printer(ctx, passed, actual, expected, actual_expr, expected_expr, assert_type);
+    kritic_state->printers->assert_printer(ctx, passed, actual, expected, actual_expr, expected_expr, assert_type);
 }
 
 /* =-=-=-=-=-=-=-=-=-=-=-= */
@@ -160,9 +163,33 @@ void _kritic_default_assert_printer(
     }
 }
 
+void _kritic_default_pre_test_printer(kritic_runtime_t* state) {
+    printf("[ \033[1;36mEXEC\033[0m ] %s.%s at %s:%i\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST(),
+            state->test_state->test->file, state->test_state->test->line);
+}
+
+void _kritic_default_post_test_printer(kritic_runtime_t* state) {
+    if (state->test_state->asserts_failed > 0) {
+        fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST());
+    } else {
+        printf("[ \033[1;32mPASS\033[0m ] %s.%s\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST());
+    }
+}
+
+void _kritic_default_summary_printer(kritic_runtime_t* state) {
+    printf("[kritic] Finished running %d tests\n", state->test_count);
+}
+
+void _kritic_default_init_printer(kritic_runtime_t* state) {
+    if (state->test_count == 0) {
+        printf("[kritic] No registered test found\n");
+    } else {
+        printf("[kritic] Running %d tests:\n", state->test_count);
+    }
+}
+
 /* Default KritiC main(void) code used to initialize the framework */
 int main(void) {
     kritic_enable_ansi();
-    printf("Hello World!\n");
     return kritic_run_all();
 }
