@@ -4,7 +4,7 @@
 
 #include "../kritic.h"
 
-kritic_runtime_t* kritic_state = &(kritic_runtime_t) {
+static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .test_state     = NULL,
     .fail_count     = 0,
     .test_count     = 0,
@@ -17,6 +17,11 @@ kritic_runtime_t* kritic_state = &(kritic_runtime_t) {
         .stdout_printer    = &_kritic_default_stdout_printer
     }
 };
+
+/* Getter for kritic_runtime_state() */
+kritic_runtime_t* kritic_get_runtime_state(void) {
+    return kritic_runtime_state;
+}
 
 #ifdef _WIN32
 #include <windows.h>
@@ -35,6 +40,7 @@ void kritic_enable_ansi(void) {
 
 /* Register a test function to a specific suite with a specific name */
 void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
+    kritic_runtime_t* kritic_state = kritic_get_runtime_state();
     if (kritic_state->test_count >= KRITIC_MAX_TESTS) {
         fprintf(stderr, "[kritic] Too many registered tests.\n");
         exit(1);
@@ -51,6 +57,8 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
 
 /* Run all of the test suites and tests */
 int kritic_run_all(void) {
+    kritic_runtime_t* kritic_state = kritic_get_runtime_state();
+
     kritic_state->printers->init_printer(kritic_state);
     kritic_redirect_t redir = kritic_redirect_init(kritic_state);
 
@@ -108,6 +116,7 @@ void kritic_assert_eq(
             break;
     }
 
+    kritic_runtime_t* kritic_state = kritic_get_runtime_state();
     ++kritic_state->test_state->assert_count;
     if (!passed) ++kritic_state->test_state->asserts_failed;
     kritic_state->printers->assert_printer(ctx, passed, actual, expected, actual_expr, expected_expr, assert_type);

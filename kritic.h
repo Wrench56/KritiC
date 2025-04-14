@@ -90,8 +90,6 @@ typedef struct kritic_runtime_t {
     kritic_test_t tests[KRITIC_MAX_TESTS];
 } kritic_runtime_t;
 
-extern kritic_runtime_t* kritic_state;
-
 /* API */
 void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn);
 int kritic_run_all(void);
@@ -103,6 +101,7 @@ void kritic_assert_eq(
     const char* expected_expr,
     const kritic_assert_type_t assert_type
 );
+kritic_runtime_t* kritic_get_runtime_state(void);
 void _kritic_default_assert_printer(
     const kritic_context_t* ctx,
     bool passed,
@@ -126,8 +125,8 @@ void kritic_enable_ansi(void);
 #define _KRITIC_TEST_NAME(suite, name) kritic_test_##suite##_##name
 #define _KRITIC_REGISTER_NAME(suite, name) kritic_register_##suite##_##name
 
-#define _KRITIC_GET_CURRENT_SUITE() kritic_state->test_state->test->suite
-#define _KRITIC_GET_CURRENT_TEST() kritic_state->test_state->test->name
+#define _KRITIC_GET_CURRENT_SUITE() kritic_get_runtime_state()->test_state->test->suite
+#define _KRITIC_GET_CURRENT_TEST() kritic_get_runtime_state()->test_state->test->name
 
 /* Defines and registers a test case function in the given suite */
 #define KRITIC_TEST(suite, name)                                                                              \
