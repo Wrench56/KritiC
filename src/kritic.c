@@ -9,12 +9,12 @@ static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .fail_count     = 0,
     .test_count     = 0,
     .printers       = &(kritic_printers_t) {
-        .assert_printer    = &_kritic_default_assert_printer,
-        .pre_test_printer  = &_kritic_default_pre_test_printer,
-        .post_test_printer = &_kritic_default_post_test_printer,
-        .summary_printer   = &_kritic_default_summary_printer,
-        .init_printer      = &_kritic_default_init_printer,
-        .stdout_printer    = &_kritic_default_stdout_printer
+        .assert_printer    = &kritic_default_assert_printer,
+        .pre_test_printer  = &kritic_default_pre_test_printer,
+        .post_test_printer = &kritic_default_post_test_printer,
+        .summary_printer   = &kritic_default_summary_printer,
+        .init_printer      = &kritic_default_init_printer,
+        .stdout_printer    = &kritic_default_stdout_printer
     }
 };
 
@@ -127,7 +127,7 @@ void kritic_assert_eq(
 /* =-=-=-=-=-=-=-=-=-=-=-= */
 
 /* Default assert print implementation */
-void _kritic_default_assert_printer(
+void kritic_default_assert_printer(
     const kritic_context_t* ctx,
     bool passed,
     long long actual,
@@ -177,24 +177,24 @@ void _kritic_default_assert_printer(
     }
 }
 
-void _kritic_default_pre_test_printer(kritic_runtime_t* state) {
-    printf("[ \033[1;36mEXEC\033[0m ] %s.%s at %s:%i\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST(),
+void kritic_default_pre_test_printer(kritic_runtime_t* state) {
+    printf("[ \033[1;36mEXEC\033[0m ] %s.%s at %s:%i\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(),
             state->test_state->test->file, state->test_state->test->line);
 }
 
-void _kritic_default_post_test_printer(kritic_runtime_t* state) {
+void kritic_default_post_test_printer(kritic_runtime_t* state) {
     if (state->test_state->asserts_failed > 0) {
-        fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST());
+        fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST());
     } else {
-        printf("[ \033[1;32mPASS\033[0m ] %s.%s\n", _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST());
+        printf("[ \033[1;32mPASS\033[0m ] %s.%s\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST());
     }
 }
 
-void _kritic_default_summary_printer(kritic_runtime_t* state) {
+void kritic_default_summary_printer(kritic_runtime_t* state) {
     printf("[kritic] Finished running %d tests\n", state->test_count);
 }
 
-void _kritic_default_init_printer(kritic_runtime_t* state) {
+void kritic_default_init_printer(kritic_runtime_t* state) {
     if (state->test_count == 0) {
         printf("[kritic] No registered test found\n");
     } else {
@@ -202,7 +202,7 @@ void _kritic_default_init_printer(kritic_runtime_t* state) {
     }
 }
 
-void _kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx) {
+void kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx) {
     if (!redir_ctx->is_part_of_split) {
         _write(redir_ctx->stdout_copy, "[ \033[34mINFO\033[0m ] ", 18);
     }

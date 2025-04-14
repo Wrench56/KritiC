@@ -1,8 +1,8 @@
-#ifndef __KRITIC_REDIRECT_HEADER_GUARD
-#define __KRITIC_REDIRECT_HEADER_GUARD
+#ifndef KRITIC_REDIRECT_H
+#define KRITIC_REDIRECT_H
 
-#define _KRITIC_REDIRECT_TIMEOUT_MS 1000
-#define _KRITIC_REDIRECT_BUFFER_SIZE 4096
+#define KRITIC_REDIRECT_TIMEOUT_MS 1000
+#define KRITIC_REDIRECT_BUFFER_SIZE 4096
 
 #include <stdbool.h>
 
@@ -45,4 +45,4 @@ void kritic_redirect_stop(kritic_redirect_t* state);
 } // extern "C"
 #endif
 
-#endif // __KRITIC_REDIRECT_HEADER_GUARD
+#endif // KRITIC_REDIRECT_H

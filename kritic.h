@@ -1,5 +1,5 @@
-#ifndef __KRITIC_HEADER_GUARD
-#define __KRITIC_HEADER_GUARD
+#ifndef KRITIC_CORE_H
+#define KRITIC_CORE_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -102,7 +102,7 @@ void kritic_assert_eq(
     const kritic_assert_type_t assert_type
 );
 kritic_runtime_t* kritic_get_runtime_state(void);
-void _kritic_default_assert_printer(
+void kritic_default_assert_printer(
     const kritic_context_t* ctx,
     bool passed,
     long long actual,
@@ -111,64 +111,64 @@ void _kritic_default_assert_printer(
     const char* expected_expr,
     kritic_assert_type_t assert_type
 );
-void _kritic_default_pre_test_printer(kritic_runtime_t* state);
-void _kritic_default_post_test_printer(kritic_runtime_t* state);
-void _kritic_default_summary_printer(kritic_runtime_t* state);
-void _kritic_default_init_printer(kritic_runtime_t* state);
-void _kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
+void kritic_default_pre_test_printer(kritic_runtime_t* state);
+void kritic_default_post_test_printer(kritic_runtime_t* state);
+void kritic_default_summary_printer(kritic_runtime_t* state);
+void kritic_default_init_printer(kritic_runtime_t* state);
+void kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
 
 #ifdef _WIN32
 void kritic_enable_ansi(void);
 #endif
 
 /* Macros */
-#define _KRITIC_TEST_NAME(suite, name) kritic_test_##suite##_##name
-#define _KRITIC_REGISTER_NAME(suite, name) kritic_register_##suite##_##name
+#define KRITIC_TEST_NAME(suite, name) kritic_test_##suite##_##name
+#define KRITIC_REGISTER_NAME(suite, name) kritic_register_##suite##_##name
 
-#define _KRITIC_GET_CURRENT_SUITE() kritic_get_runtime_state()->test_state->test->suite
-#define _KRITIC_GET_CURRENT_TEST() kritic_get_runtime_state()->test_state->test->name
+#define KRITIC_GET_CURRENT_SUITE() kritic_get_runtime_state()->test_state->test->suite
+#define KRITIC_GET_CURRENT_TEST() kritic_get_runtime_state()->test_state->test->name
 
 /* Defines and registers a test case function in the given suite */
 #define KRITIC_TEST(suite, name)                                                                              \
-    static void _KRITIC_TEST_NAME(suite, name)(void);                                                         \
-    __attribute__((constructor)) static void _KRITIC_REGISTER_NAME(suite, name)(void) {                       \
+    static void KRITIC_TEST_NAME(suite, name)(void);                                                         \
+    __attribute__((constructor)) static void KRITIC_REGISTER_NAME(suite, name)(void) {                       \
         static const kritic_context_t ctx = {__FILE__, #suite, #name, __LINE__};                              \
-        kritic_register(&ctx, _KRITIC_TEST_NAME(suite, name));                                                \
+        kritic_register(&ctx, KRITIC_TEST_NAME(suite, name));                                                \
     }                                                                                                         \
-    static void _KRITIC_TEST_NAME(suite, name)(void)
+    static void KRITIC_TEST_NAME(suite, name)(void)
 
 /* Asserts that the given expression is true */
 #define KRITIC_ASSERT(expr)                                                                                   \
     do {                                                                                                      \
-        kritic_context_t ctx = {__FILE__, _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST(), __LINE__}; \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__}; \
         kritic_assert_eq(&ctx, (expr), 0, #expr, NULL, KRITIC_ASSERT);                                        \
     } while (0);
 
 /* Asserts that the given expression is false */
 #define KRITIC_ASSERT_NOT(expr)                                                                               \
     do {                                                                                                      \
-    kritic_context_t ctx = {__FILE__, _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST(), __LINE__};     \
+    kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};     \
     kritic_assert_eq(&ctx, (expr), 0, #expr, NULL, KRITIC_ASSERT_NOT);                                        \
     } while (0);
 
 /* Forces a test failure unconditionally */
 #define KRITIC_FAIL()                                                                                         \
     do {                                                                                                      \
-        kritic_context_t ctx = {__FILE__, _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST(), __LINE__}; \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__}; \
         kritic_assert_eq(&ctx, 0, 1, "forced failure", NULL, KRITIC_ASSERT_FAIL);                             \
     } while (0);
 
 /* Asserts that two values are equal */
 #define KRITIC_ASSERT_EQ(x, y)                                                                                \
     do {                                                                                                      \
-        kritic_context_t ctx = {__FILE__, _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST(), __LINE__}; \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__}; \
         kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_EQ);                                           \
     } while (0);
 
 /* Asserts that two values are not equal */
 #define KRITIC_ASSERT_NE(x, y)                                                                                \
     do {                                                                                                      \
-        kritic_context_t ctx = {__FILE__, _KRITIC_GET_CURRENT_SUITE(), _KRITIC_GET_CURRENT_TEST(), __LINE__}; \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__}; \
         kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_NE);                                           \
     } while (0);
 
@@ -176,4 +176,4 @@ void kritic_enable_ansi(void);
 } // extern "C"
 #endif
 
-#endif // __KRITIC_HEADER_GUARD
+#endif // KRITIC_CORE_H
