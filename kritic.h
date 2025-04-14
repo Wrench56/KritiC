@@ -130,45 +130,45 @@ void kritic_enable_ansi(void);
 
 /* Defines and registers a test case function in the given suite */
 #define KRITIC_TEST(suite, name)                                                                              \
-    static void KRITIC_TEST_NAME(suite, name)(void);                                                         \
-    __attribute__((constructor)) static void KRITIC_REGISTER_NAME(suite, name)(void) {                       \
+    static void KRITIC_TEST_NAME(suite, name)(void);                                                          \
+    __attribute__((constructor)) static void KRITIC_REGISTER_NAME(suite, name)(void) {                        \
         static const kritic_context_t ctx = {__FILE__, #suite, #name, __LINE__};                              \
-        kritic_register(&ctx, KRITIC_TEST_NAME(suite, name));                                                \
+        kritic_register(&ctx, KRITIC_TEST_NAME(suite, name));                                                 \
     }                                                                                                         \
     static void KRITIC_TEST_NAME(suite, name)(void)
 
 /* Asserts that the given expression is true */
 #define KRITIC_ASSERT(expr)                                                                                   \
     do {                                                                                                      \
-        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__}; \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
         kritic_assert_eq(&ctx, (expr), 0, #expr, NULL, KRITIC_ASSERT);                                        \
     } while (0);
 
 /* Asserts that the given expression is false */
 #define KRITIC_ASSERT_NOT(expr)                                                                               \
     do {                                                                                                      \
-    kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};     \
+    kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};       \
     kritic_assert_eq(&ctx, (expr), 0, #expr, NULL, KRITIC_ASSERT_NOT);                                        \
     } while (0);
 
 /* Forces a test failure unconditionally */
 #define KRITIC_FAIL()                                                                                         \
     do {                                                                                                      \
-        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__}; \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
         kritic_assert_eq(&ctx, 0, 1, "forced failure", NULL, KRITIC_ASSERT_FAIL);                             \
     } while (0);
 
 /* Asserts that two values are equal */
 #define KRITIC_ASSERT_EQ(x, y)                                                                                \
     do {                                                                                                      \
-        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__}; \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
         kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_EQ);                                           \
     } while (0);
 
 /* Asserts that two values are not equal */
 #define KRITIC_ASSERT_NE(x, y)                                                                                \
     do {                                                                                                      \
-        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__}; \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
         kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_NE);                                           \
     } while (0);
 
