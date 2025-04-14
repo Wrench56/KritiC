@@ -13,7 +13,8 @@ kritic_runtime_t* kritic_state = &(kritic_runtime_t) {
         .pre_test_printer  = &_kritic_default_pre_test_printer,
         .post_test_printer = &_kritic_default_post_test_printer,
         .summary_printer   = &_kritic_default_summary_printer,
-        .init_printer      = &_kritic_default_init_printer
+        .init_printer      = &_kritic_default_init_printer,
+        .stdout_printer    = &_kritic_default_stdout_printer
     }
 };
 
@@ -51,6 +52,7 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
 /* Run all of the test suites and tests */
 int kritic_run_all(void) {
     kritic_state->printers->init_printer(kritic_state);
+    kritic_redirect_t redir = kritic_redirect_init(kritic_state);
 
     for (int i = 0; i < kritic_state->test_count; ++i) {
         const kritic_test_t* t = &kritic_state->tests[i];
@@ -62,7 +64,9 @@ int kritic_run_all(void) {
         };
 
         kritic_state->printers->pre_test_printer(kritic_state);
+        kritic_redirect_start(&redir);
         t->fn();
+        kritic_redirect_stop(&redir);
         if (kritic_state->test_state->asserts_failed > 0) {
             ++kritic_state->fail_count;
         }
@@ -70,6 +74,7 @@ int kritic_run_all(void) {
     }
 
     kritic_state->printers->summary_printer(kritic_state);
+    kritic_redirect_teardown(&redir);
 
     return kritic_state->fail_count > 0 ? 1 : 0;
 }
@@ -186,6 +191,13 @@ void _kritic_default_init_printer(kritic_runtime_t* state) {
     } else {
         printf("[kritic] Running %d tests:\n", state->test_count);
     }
+}
+
+void _kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx) {
+    if (!redir_ctx->is_part_of_split) {
+        _write(redir_ctx->stdout_copy, "[ \033[34mINFO\033[0m ] ", 18);
+    }
+    _write(redir_ctx->stdout_copy, redir_ctx->string, redir_ctx->length);
 }
 
 /* Default KritiC main(void) code used to initialize the framework */

@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "src/redirect.h"
+
 #define KRITIC_VERSION_MAJOR 0
 #define KRITIC_VERSION_MINOR 1
 #define KRITIC_VERSION_PATCH 0
@@ -48,6 +50,7 @@ typedef void (*kritic_init_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_summary_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_pre_test_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_post_test_printer_fn)(kritic_runtime_t* state);
+typedef void (*kritic_stdout_printer_fn)(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
 
 
 typedef struct {
@@ -70,6 +73,7 @@ typedef struct {
     kritic_post_test_printer_fn post_test_printer;
     kritic_summary_printer_fn summary_printer;
     kritic_init_printer_fn init_printer;
+    kritic_stdout_printer_fn stdout_printer;
 } kritic_printers_t;
 
 // Globals struct
@@ -112,6 +116,7 @@ void _kritic_default_pre_test_printer(kritic_runtime_t* state);
 void _kritic_default_post_test_printer(kritic_runtime_t* state);
 void _kritic_default_summary_printer(kritic_runtime_t* state);
 void _kritic_default_init_printer(kritic_runtime_t* state);
+void _kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
 
 #ifdef _WIN32
 void kritic_enable_ansi(void);

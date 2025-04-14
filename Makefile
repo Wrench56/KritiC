@@ -8,8 +8,8 @@ CFLAGS     := $(DIAG_FLAGS) $(OPT_FLAGS)
 LDFLAGS    := -lc
 
 # === Paths ===
-KRITIC        := src/kritic.c
-KRITIC_OBJ    := build/kritic.o
+KRITIC        := src/kritic.c src/redirect.c
+KRITIC_OBJ    := $(patsubst src/%.c, build/%.o, $(KRITIC))
 ifeq ($(OS),Windows_NT)
 	SELFTEST_EXE  := build/selftest.exe
 else
@@ -29,12 +29,12 @@ TEST_OBJS := $(patsubst tests/%.c, build/tests/%.o, $(TEST_SRCS))
 all: $(KRITIC_OBJ)
 
 # Build KritiC itself
-$(KRITIC_OBJ): $(KRITIC)
+build/%.o: src/%.c
 	@if [ ! -e "build" ]; then \
 		mkdir build; \
 	fi
 	@printf " $(GREEN)$(BOLD)Compiling$(RESET) $<\n"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -I. -c $< -o $@
 
 # Compile self-tests
 build/tests/%.o: tests/%.c
