@@ -82,6 +82,7 @@ int kritic_run_all(void) {
         kritic_state->printers->post_test_printer(kritic_state);
     }
 
+    fflush(stdout);
     kritic_state->printers->summary_printer(kritic_state);
     kritic_redirect_teardown(&redir);
 
