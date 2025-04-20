@@ -27,7 +27,7 @@ kritic_runtime_t* kritic_get_runtime_state(void) {
 #include <windows.h>
 
 /* Enable ANSI support on Windows terminal */
-void kritic_enable_ansi(void) {
+void kritic_enable_ansi_(void) {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD dwMode = 0;
 

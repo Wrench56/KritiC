@@ -118,8 +118,20 @@ void kritic_default_init_printer(kritic_runtime_t* state);
 void kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
 
 #ifdef _WIN32
-void kritic_enable_ansi(void);
-#endif
+    void kritic_enable_ansi_(void);
+
+    /* Wrapper for Windows-specific kritic_enable_ansi_() */
+    #define kritic_enable_ansi() kritic_enable_ansi_()
+#else // POSIX
+    #include <unistd.h>
+
+    /* Aliases */
+    #define _write  write
+
+    /* Wrapper for Windows-specific kritic_enable_ansi_() */
+    #define kritic_enable_ansi()
+
+#endif // POSIX
 
 /* Macros */
 #define KRITIC_TEST_NAME(suite, name) kritic_test_##suite##_##name
