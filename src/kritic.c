@@ -60,7 +60,8 @@ int kritic_run_all(void) {
     kritic_runtime_t* kritic_state = kritic_get_runtime_state();
 
     kritic_state->printers->init_printer(kritic_state);
-    kritic_redirect_t redir = kritic_redirect_init(kritic_state);
+    kritic_redirect_t redir = { 0 };
+    kritic_redirect_init(&redir, kritic_state);
 
     for (int i = 0; i < kritic_state->test_count; ++i) {
         const kritic_test_t* t = &kritic_state->tests[i];

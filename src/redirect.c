@@ -83,19 +83,16 @@ static DWORD WINAPI kritic_pipe_reader_thread(LPVOID arg) {
 }
 
 
-kritic_redirect_t kritic_redirect_init(kritic_runtime_t* runtime) {
-    kritic_redirect_t state = { 0 };
-    state.runtime = runtime;
+void kritic_redirect_init(kritic_redirect_t* state, kritic_runtime_t* runtime) {
+    state->runtime = runtime;
 
-    state.event_start = CreateEvent(NULL, FALSE, FALSE, NULL);
-    state.event_done = CreateEvent(NULL, FALSE, FALSE, NULL);
-    state.thread = CreateThread(NULL, 0, kritic_pipe_reader_thread, &state, 0, NULL);
-    if (!state.thread) {
+    state->event_start = CreateEvent(NULL, FALSE, FALSE, NULL);
+    state->event_done = CreateEvent(NULL, FALSE, FALSE, NULL);
+    state->thread = CreateThread(NULL, 0, kritic_pipe_reader_thread, state, 0, NULL);
+    if (!state->thread) {
         perror("CreateThread() failed");
         exit(1);
     }
-
-    return state;
 }
 
 void kritic_redirect_teardown(kritic_redirect_t* state) {

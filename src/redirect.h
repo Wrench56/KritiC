@@ -36,7 +36,7 @@ typedef struct {
 
 #endif // _WIN32
 
-kritic_redirect_t kritic_redirect_init(kritic_runtime_t* runtime);
+void kritic_redirect_init(kritic_redirect_t* state, kritic_runtime_t* runtime);
 void kritic_redirect_teardown(kritic_redirect_t* state);
 void kritic_redirect_start(kritic_redirect_t* state);
 void kritic_redirect_stop(kritic_redirect_t* state);
