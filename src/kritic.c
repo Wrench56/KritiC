@@ -192,7 +192,39 @@ void kritic_default_post_test_printer(kritic_runtime_t* state) {
 }
 
 void kritic_default_summary_printer(kritic_runtime_t* state) {
-    printf("[kritic] Finished running %d tests\n", state->test_count);
+    const char* RESET  = "\033[0m";
+    const char* GREEN  = "\033[32m";
+    const char* RED    = "\033[31m";
+    const char* CYAN   = "\033[36m";
+
+    int passed = state->test_count - state->fail_count;
+    float pass_rate = state->test_count > 0
+        ? 100.0f * passed / state->test_count
+        : 0.0f;
+    char buffer[512];
+    int len = snprintf(buffer, sizeof(buffer),
+        "[      ] Finished running %d tests!\n"
+        "[      ]\n"
+        "[      ] Statistics:\n"
+        "[      ]   Total  : %d\n"
+        "[      ]   Passed : %s%d%s\n"
+        "[      ]   Failed : %s%d%s\n"
+        "[      ]   Rate   : %s%.1f%%%s\n"
+        "[      ]\n"
+        "%s\n",
+        state->test_count,
+        state->test_count,
+        GREEN, passed, RESET,
+        RED, state->fail_count, RESET,
+        CYAN, pass_rate, RESET,
+        state->fail_count > 0
+            ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
+            : "[ \033[1;32m****\033[0m ] All tests passed!"
+    );
+
+    if (len > 0 && len < (int)sizeof(buffer)) {
+        _write(1, buffer, (size_t)len);
+    }
 }
 
 void kritic_default_init_printer(kritic_runtime_t* state) {
