@@ -82,7 +82,6 @@ static DWORD WINAPI kritic_pipe_reader_thread(LPVOID arg) {
     return 0;
 }
 
-
 void kritic_redirect_init(kritic_redirect_t* state, kritic_runtime_t* runtime) {
     state->runtime = runtime;
 
@@ -115,12 +114,82 @@ static void kritic_redirect_wait_reader_thread(kritic_redirect_t* state) {
     WaitForSingleObject(state->event_done, KRITIC_REDIRECT_TIMEOUT_MS);
 }
 
-#endif // _WIN32
+#else // POSIX
+
+static void* kritic_pipe_reader_thread(void* arg) {
+    kritic_redirect_t* state = (kritic_redirect_t*)arg;
+    char buffer[KRITIC_REDIRECT_BUFFER_SIZE];
+    char line_buffer[KRITIC_REDIRECT_BUFFER_SIZE];
+
+    for (;;) {
+        pthread_mutex_lock(&state->lock);
+        while (!state->running && !state->shutting_down)
+            pthread_cond_wait(&state->cond_start, &state->lock);
+
+        if (state->shutting_down) {
+            pthread_mutex_unlock(&state->lock);
+            break;
+        }
+
+        pthread_mutex_unlock(&state->lock);
+
+        kritic_read_pipe_lines(state, buffer, line_buffer);
+
+        close(state->read_fd);
+        state->read_fd = -1;
+
+        pthread_mutex_lock(&state->lock);
+        state->running = false;
+        pthread_cond_signal(&state->cond_done);
+        pthread_mutex_unlock(&state->lock);
+    }
+
+    return NULL;
+}
+
+void kritic_redirect_init(kritic_redirect_t* state, kritic_runtime_t* runtime) {
+    state->runtime = runtime;
+
+    pthread_mutex_init(&state->lock, NULL);
+    pthread_cond_init(&state->cond_start, NULL);
+    pthread_cond_init(&state->cond_done, NULL);
+
+    pthread_create(&state->thread, NULL, kritic_pipe_reader_thread, state);
+}
+
+void kritic_redirect_teardown(kritic_redirect_t* state) {
+    pthread_mutex_lock(&state->lock);
+    state->shutting_down = true;
+    pthread_cond_signal(&state->cond_start);
+    pthread_mutex_unlock(&state->lock);
+
+    pthread_join(state->thread, NULL);
+
+    pthread_mutex_destroy(&state->lock);
+    pthread_cond_destroy(&state->cond_start);
+    pthread_cond_destroy(&state->cond_done);
+}
+
+static void kritic_redirect_start_reader_thread(kritic_redirect_t* state) {
+    pthread_mutex_lock(&state->lock);
+    state->running = true;
+    pthread_cond_signal(&state->cond_start);
+    pthread_mutex_unlock(&state->lock);
+}
+
+static void kritic_redirect_wait_reader_thread(kritic_redirect_t* state) {
+    pthread_mutex_lock(&state->lock);
+    while (state->running)
+        pthread_cond_wait(&state->cond_done, &state->lock);
+    pthread_mutex_unlock(&state->lock);
+}
+
+#endif // POSIX
 
 void kritic_redirect_start(kritic_redirect_t* state) {
     fflush(stdout);
     int pipefd[2];
-    if (_pipe(pipefd, KRITIC_REDIRECT_BUFFER_SIZE, O_BINARY) == -1) {
+    if (kritic_open_pipe(pipefd) == -1) {
         perror("pipe failed");
         exit(1);
     }
@@ -131,15 +200,15 @@ void kritic_redirect_start(kritic_redirect_t* state) {
         exit(1);
     }
 
-    state->read_fd = pipefd[0];
+    state->read_fd        = pipefd[0];
     state->pipe_write_end = pipefd[1];
-    state->stdout_copy = stdout_copy;
-    state->running = 1;
+    state->stdout_copy    = stdout_copy;
+    state->running        = 1;
 
     _dup2(pipefd[1], _fileno(stdout));
     setvbuf(stdout, NULL, _IONBF, 0);
 
-    kritic_redirect_start_reader_thread(state);    
+    kritic_redirect_start_reader_thread(state);
 }
 
 void kritic_redirect_stop(kritic_redirect_t* state) {

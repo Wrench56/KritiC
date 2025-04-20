@@ -23,6 +23,8 @@ typedef struct {
 #include <io.h>
 #include <windows.h>
 
+#define kritic_open_pipe(pipefd) _pipe(pipefd, KRITIC_REDIRECT_BUFFER_SIZE, O_BINARY)
+
 typedef struct {
     HANDLE thread;
     HANDLE event_start;
@@ -34,7 +36,33 @@ typedef struct {
     int pipe_write_end;
 } kritic_redirect_t;
 
-#endif // _WIN32
+#else // POSIX
+#include <pthread.h>
+#include <unistd.h>
+
+#define kritic_open_pipe(pipefd) pipe(pipefd)
+
+/* Aliases */
+#define _close  close
+#define _dup2   dup2
+#define _dup    dup
+#define _fileno fileno
+#define _read   read
+
+typedef struct {
+    pthread_t thread;
+    pthread_mutex_t lock;
+    pthread_cond_t cond_start;
+    pthread_cond_t cond_done;
+    kritic_runtime_t* runtime;
+    int read_fd;
+    int pipe_write_end;
+    int stdout_copy;
+    bool running;
+    bool shutting_down;
+} kritic_redirect_t;
+
+#endif // POSIX
 
 void kritic_redirect_init(kritic_redirect_t* state, kritic_runtime_t* runtime);
 void kritic_redirect_teardown(kritic_redirect_t* state);
