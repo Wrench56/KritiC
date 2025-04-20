@@ -25,6 +25,7 @@ rules:
       - cli
       - macro
       - core
+      - defaults
   subject-empty:
     level: error
   type:
