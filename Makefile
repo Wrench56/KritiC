@@ -2,7 +2,7 @@
 CC := clang
 
 # === Compiler flags ===
-DIAG_FLAGS := -Wall -Wextra -Wpedantic -Werror
+DIAG_FLAGS := -std=c99 -Wall -Wextra -Wpedantic -Werror
 OPT_FLAGS  := -O2 -fomit-frame-pointer -march=native
 CFLAGS     := $(DIAG_FLAGS) $(OPT_FLAGS)
 LDFLAGS    := -lc
