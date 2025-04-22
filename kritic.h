@@ -189,6 +189,14 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
         kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_NE);                                           \
     } while (0);
 
+/* Skip a unit test with an optional reason string */
+#define KRITIC_SKIP(reason)                                                                                   \
+    do {                                                                                                      \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
+        kritic_skip_test(&ctx, reason);                                                                       \
+        return;                                                                                               \
+    } while (0);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
