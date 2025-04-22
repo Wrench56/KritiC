@@ -15,7 +15,8 @@ static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
         .post_test_printer = &kritic_default_post_test_printer,
         .summary_printer   = &kritic_default_summary_printer,
         .init_printer      = &kritic_default_init_printer,
-        .stdout_printer    = &kritic_default_stdout_printer
+        .stdout_printer    = &kritic_default_stdout_printer,
+        .skip_printer      = &kritic_default_skip_printer
     }
 };
 
@@ -72,6 +73,8 @@ int kritic_run_all(void) {
             .test           = t,
             .assert_count   = 0,
             .asserts_failed = 0,
+            .skipped        = false,
+            .skip_reason    = "",
         };
 
         kritic_state->printers->pre_test_printer(kritic_state);
@@ -126,6 +129,15 @@ void kritic_assert_eq(
     ++kritic_state->test_state->assert_count;
     if (!passed) ++kritic_state->test_state->asserts_failed;
     kritic_state->printers->assert_printer(ctx, passed, actual, expected, actual_expr, expected_expr, assert_type);
+}
+
+void kritic_skip_test(const kritic_context_t* ctx, const char* reason) {
+    kritic_runtime_t* kritic_state = kritic_get_runtime_state();
+
+    kritic_state->test_state->skipped = true;
+    kritic_state->test_state->skip_reason = reason;
+
+    kritic_state->printers->skip_printer(kritic_state, ctx);
 }
 
 /* =-=-=-=-=-=-=-=-=-=-=-= */
@@ -245,6 +257,11 @@ void kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* r
         _write(redir_ctx->stdout_copy, "[ \033[34mINFO\033[0m ] ", 18);
     }
     _write(redir_ctx->stdout_copy, redir_ctx->string, redir_ctx->length);
+}
+
+void kritic_default_skip_printer(kritic_runtime_t* runtime, const kritic_context_t* ctx) {
+    (void) runtime;
+    (void) ctx;
 }
 
 /* Default KritiC main(void) code used to initialize the framework */
