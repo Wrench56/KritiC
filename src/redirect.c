@@ -1,3 +1,6 @@
+/* fileno() is not ISO C */
+#define _POSIX_C_SOURCE 200112L
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
