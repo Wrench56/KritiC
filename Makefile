@@ -1,11 +1,21 @@
 # === Tools ===
 CC := clang
 
+# === Build Mode ===
+MODE ?= release
+
 # === Compiler flags ===
-DIAG_FLAGS := -std=c99 -Wall -Wextra -Wpedantic -Werror
-OPT_FLAGS  := -O2 -fomit-frame-pointer -march=native
-CFLAGS     := $(DIAG_FLAGS) $(OPT_FLAGS)
-LDFLAGS    := -lc
+DIAG_FLAGS    := -std=c99 -Wall -Wextra -Wpedantic -Werror
+OPT_FLAGS     := -O2 -fomit-frame-pointer -march=native
+DEBUG_FLAGS   := -g -fsanitize=address,undefined -fno-omit-frame-pointer -O0
+
+ifeq ($(MODE),debug)
+  CFLAGS      := $(DIAG_FLAGS) $(DEBUG_FLAGS)
+  LDFLAGS     := -fsanitize=address,undefined -lc
+else
+  CFLAGS      := $(DIAG_FLAGS) $(OPT_FLAGS)
+  LDFLAGS     := -lc
+endif
 
 # === Paths ===
 KRITIC_SRC    := src/kritic.c src/redirect.c
@@ -15,10 +25,11 @@ RELEASE_LIB   := $(RELEASE_DIR)/libkritic.a
 RELEASE_HDR   := $(RELEASE_DIR)/kritic.h
 RELEASE_TAR   := build/kritic-$(shell git describe --tags --always).tar.gz
 RELEASE_ZIP   := build/kritic-$(shell git describe --tags --always).zip
+
 ifeq ($(OS),Windows_NT)
-	SELFTEST_EXE  := build/selftest.exe
+	SELFTEST_EXE := build/selftest.exe
 else
-	SELFTEST_EXE  := build/selftest
+	SELFTEST_EXE := build/selftest
 endif
 
 # === ANSI Colors ===
@@ -32,6 +43,11 @@ TEST_SRCS := $(wildcard tests/*.c) $(wildcard tests/**/*.c)
 TEST_OBJS := $(patsubst tests/%.c, build/tests/%.o, $(TEST_SRCS))
 
 all: $(KRITIC_OBJ)
+$(KRITIC_OBJ): | announce_build_mode
+
+# Prints the mode before building starts
+announce_build_mode:
+	@printf " $(CYAN)$(BOLD)Building$(RESET)  in %s mode...\n" "$(MODE)"
 
 # Build KritiC itself
 build/%.o: src/%.c
@@ -53,7 +69,6 @@ build/tests/%.o: tests/%.c
 		$(CC) $(CFLAGS) -I. -c "$<" -o "$@" || exit $$?; \
 	fi
 
-
 # Build self-test executable
 $(SELFTEST_EXE): $(KRITIC_OBJ) $(TEST_OBJS)
 	@printf " $(GREEN)$(BOLD)Linking$(RESET)   self-test executable\n"
@@ -63,7 +78,11 @@ $(SELFTEST_EXE): $(KRITIC_OBJ) $(TEST_OBJS)
 # Run self-test suite
 selftest: $(SELFTEST_EXE)
 	@printf " $(CYAN)$(BOLD)Testing$(RESET)   KritiC...\n"
-	@$(SELFTEST_EXE)
+ifeq ($(OS),Windows_NT)
+	@UBSAN_OPTIONS=print_stacktrace=1 $(SELFTEST_EXE)
+else
+	@ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=print_stacktrace=1 $(SELFTEST_EXE)
+endif
 
 # Create static library
 $(RELEASE_LIB): $(KRITIC_OBJ)
@@ -89,11 +108,10 @@ release: $(RELEASE_LIB) $(RELEASE_HDR)
 	@tar -czf $(RELEASE_TAR) -C $(RELEASE_DIR) .
 	@printf " $(CYAN)$(BOLD)Archive$(RESET)   ready: $(RELEASE_TAR)\n"
 
-
 # Clean artifacts
 clean:
 	@if [ -d "build" ]; then \
 		rm -rf build; \
 	fi
 
-.PHONY: all clean selftest release 
+.PHONY: all clean announce_build_mode selftest release
