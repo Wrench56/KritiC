@@ -17,8 +17,6 @@ extern "C" {
 #endif
 
 /* Structs, types, and enums */
-typedef struct kritic_runtime_t kritic_runtime_t;
-
 typedef enum {
     KRITIC_ASSERT_UNKNOWN = 0,
     KRITIC_ASSERT,
@@ -52,7 +50,6 @@ typedef void (*kritic_pre_test_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_post_test_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_stdout_printer_fn)(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
 
-
 typedef struct {
     const char* file;
     const char* suite;
@@ -77,7 +74,7 @@ typedef struct {
 } kritic_printers_t;
 
 // Globals struct
-typedef struct kritic_runtime_t {
+struct kritic_runtime_t {
     // Pointer to a struct of printer functions
     kritic_printers_t* printers;
     // Number of registered tests
@@ -88,7 +85,9 @@ typedef struct kritic_runtime_t {
     kritic_test_state_t* test_state;
     // Array of registered tests
     kritic_test_t tests[KRITIC_MAX_TESTS];
-} kritic_runtime_t;
+    // Current redirection struct
+    kritic_redirect_t* redirect;
+};
 
 /* API */
 void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn);

@@ -29,7 +29,6 @@ typedef struct {
     HANDLE thread;
     HANDLE event_start;
     HANDLE event_done;
-    kritic_runtime_t* runtime;
     int running;
     int read_fd;
     int stdout_copy;
@@ -54,7 +53,6 @@ typedef struct {
     pthread_mutex_t lock;
     pthread_cond_t cond_start;
     pthread_cond_t cond_done;
-    kritic_runtime_t* runtime;
     int read_fd;
     int pipe_write_end;
     int stdout_copy;
@@ -64,10 +62,10 @@ typedef struct {
 
 #endif // POSIX
 
-void kritic_redirect_init(kritic_redirect_t* state, kritic_runtime_t* runtime);
-void kritic_redirect_teardown(kritic_redirect_t* state);
-void kritic_redirect_start(kritic_redirect_t* state);
-void kritic_redirect_stop(kritic_redirect_t* state);
+void kritic_redirect_init(kritic_runtime_t* runtime);
+void kritic_redirect_teardown(kritic_runtime_t* runtime);
+void kritic_redirect_start(kritic_runtime_t* runtime);
+void kritic_redirect_stop(kritic_runtime_t* runtime);
 
 #ifdef __cplusplus
 } // extern "C"

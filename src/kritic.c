@@ -6,6 +6,7 @@
 
 static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .test_state     = NULL,
+    .redirect       = NULL,
     .fail_count     = 0,
     .test_count     = 0,
     .printers       = &(kritic_printers_t) {
@@ -46,7 +47,7 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
         exit(1);
     }
 
-    kritic_state->tests[kritic_state->test_count++] = (kritic_test_t){
+    kritic_state->tests[kritic_state->test_count++] = (kritic_test_t) {
         .file  = ctx->file,
         .suite = ctx->suite,
         .name  = ctx->test,
@@ -58,24 +59,25 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
 /* Run all of the test suites and tests */
 int kritic_run_all(void) {
     kritic_runtime_t* kritic_state = kritic_get_runtime_state();
+    kritic_redirect_t* redir = &(kritic_redirect_t) { 0 };
+    kritic_state->redirect = redir;
 
     kritic_state->printers->init_printer(kritic_state);
-    kritic_redirect_t redir = { 0 };
-    kritic_redirect_init(&redir, kritic_state);
+    kritic_redirect_init(kritic_state);
 
     for (int i = 0; i < kritic_state->test_count; ++i) {
         const kritic_test_t* t = &kritic_state->tests[i];
 
-        kritic_state->test_state = &(kritic_test_state_t){
+        kritic_state->test_state = &(kritic_test_state_t) {
             .test           = t,
             .assert_count   = 0,
             .asserts_failed = 0,
         };
 
         kritic_state->printers->pre_test_printer(kritic_state);
-        kritic_redirect_start(&redir);
+        kritic_redirect_start(kritic_state);
         t->fn();
-        kritic_redirect_stop(&redir);
+        kritic_redirect_stop(kritic_state);
         if (kritic_state->test_state->asserts_failed > 0) {
             ++kritic_state->fail_count;
         }
@@ -84,7 +86,9 @@ int kritic_run_all(void) {
 
     fflush(stdout);
     kritic_state->printers->summary_printer(kritic_state);
-    kritic_redirect_teardown(&redir);
+
+    kritic_redirect_teardown(kritic_state);
+    kritic_state->redirect = NULL;
 
     return kritic_state->fail_count > 0 ? 1 : 0;
 }
