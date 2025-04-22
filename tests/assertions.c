@@ -80,3 +80,29 @@ KRITIC_TEST(assertions, assert_ne_expr_fail) {
 KRITIC_TEST(assertions, assert_fail_fail) {
     KRITIC_FAIL();
 }
+
+/* KRITIC_SKIP */
+KRITIC_TEST(assertions, simple_skip) {
+    KRITIC_SKIP("Skip from assertions.skip test");
+}
+
+KRITIC_TEST(assertions, dual_skip) {
+    KRITIC_SKIP("This should be shown on stdout");
+    KRITIC_SKIP("This should NOT be shown on stdout");
+}
+
+KRITIC_TEST(assertions, pass_then_skip) {
+    KRITIC_ASSERT(1);
+    KRITIC_SKIP("Skipping after pass...");
+}
+
+KRITIC_TEST(assertions, fail_then_skip) {
+    KRITIC_ASSERT(0);
+    KRITIC_SKIP("Skipping after fail...");
+}
+
+KRITIC_TEST(assertions, pass_and_skip_fail) {
+    KRITIC_ASSERT(1);
+    KRITIC_SKIP("This test should never show fail");
+    KRITIC_ASSERT(0);
+}
