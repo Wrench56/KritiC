@@ -204,6 +204,7 @@ void kritic_default_pre_test_printer(kritic_runtime_t* state) {
 }
 
 void kritic_default_post_test_printer(kritic_runtime_t* state) {
+    if (state->test_state->skipped) return;
     if (state->test_state->asserts_failed > 0) {
         fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST());
     } else {
