@@ -259,9 +259,19 @@ void kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* r
     _write(redir_ctx->stdout_copy, redir_ctx->string, redir_ctx->length);
 }
 
-void kritic_default_skip_printer(kritic_runtime_t* runtime, const kritic_context_t* ctx) {
-    (void) runtime;
-    (void) ctx;
+void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t* ctx) {
+    char buffer[4096];
+
+    int len = snprintf(buffer, sizeof(buffer),
+        "[ SKIP ] Reason: %s at %s:%d\n",
+        state->test_state->skip_reason,
+        ctx->file,
+        ctx->line
+    );
+
+    if (len > 0 && len < (int)sizeof(buffer)) {
+        _write(state->redirect->stdout_copy, buffer, (size_t)len);
+    }
 }
 
 /* Default KritiC main(void) code used to initialize the framework */
