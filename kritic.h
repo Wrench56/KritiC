@@ -85,6 +85,8 @@ struct kritic_runtime_t {
     int test_count;
     // Number of failed tests
     int fail_count;
+    // Number of skipped tests
+    int skip_count;
     // Current test state
     kritic_test_state_t* test_state;
     // Array of registered tests

@@ -81,8 +81,11 @@ int kritic_run_all(void) {
         kritic_redirect_start(kritic_state);
         t->fn();
         kritic_redirect_stop(kritic_state);
-        if (kritic_state->test_state->asserts_failed > 0) {
-            ++kritic_state->fail_count;
+        if (kritic_state->test_state->skipped) {
+            ++kritic_state->skip_count;
+        } else {
+            if (kritic_state->test_state->asserts_failed > 0)
+                ++kritic_state->fail_count;
         }
         kritic_state->printers->post_test_printer(kritic_state);
     }
