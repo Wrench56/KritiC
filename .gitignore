@@ -6,3 +6,6 @@ tools/commitlint*
 
 # Ignore CCLS LSP cache
 .ccls-cache/
+
+# Ignore playground
+playground/
