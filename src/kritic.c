@@ -279,7 +279,7 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
 }
 
 /* Default KritiC main(void) code used to initialize the framework */
-int main(void) {
+int __attribute__((weak)) main(void) {
     kritic_enable_ansi();
     return kritic_run_all();
 }
