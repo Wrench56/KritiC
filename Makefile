@@ -108,6 +108,11 @@ release: $(RELEASE_LIB) $(RELEASE_HDR)
 	@tar -czf $(RELEASE_TAR) -C $(RELEASE_DIR) .
 	@printf " $(CYAN)$(BOLD)Archive$(RESET)   ready: $(RELEASE_TAR)\n"
 
+# Build static library
+static: $(KRITIC_OBJ)
+	@printf " $(GREEN)$(BOLD)Archiving$(RESET) build/libkritic.a\n"
+	@ar rcs build/libkritic.a $(KRITIC_OBJ)
+
 # Clean artifacts
 clean:
 	@if [ -d "build" ]; then \
