@@ -96,6 +96,8 @@ struct kritic_runtime_t {
 };
 
 /* API */
+void kritic_override_printers(const kritic_printers_t* overrides);
+void kritic_noop(void* _, ...);
 void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn);
 int kritic_run_all(void);
 void kritic_assert_eq(
@@ -141,6 +143,8 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
 #endif // POSIX
 
 /* Macros */
+#define KRITIC_NOOP(type) ((type)(void*)(kritic_noop))
+
 #define KRITIC_TEST_NAME(suite, name) kritic_test_##suite##_##name
 #define KRITIC_REGISTER_NAME(suite, name) kritic_register_##suite##_##name
 

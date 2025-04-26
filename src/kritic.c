@@ -25,6 +25,22 @@ kritic_runtime_t* kritic_get_runtime_state(void) {
     return kritic_runtime_state;
 }
 
+/* Override the default printers */
+void kritic_override_printers(const kritic_printers_t* overrides) {
+    kritic_runtime_t* state = kritic_get_runtime_state();
+    if (!state || !state->printers || !overrides) return;
+
+    if (overrides->assert_printer)    state->printers->assert_printer    = overrides->assert_printer;
+    if (overrides->pre_test_printer)  state->printers->pre_test_printer  = overrides->pre_test_printer;
+    if (overrides->post_test_printer) state->printers->post_test_printer = overrides->post_test_printer;
+    if (overrides->summary_printer)   state->printers->summary_printer   = overrides->summary_printer;
+    if (overrides->init_printer)      state->printers->init_printer      = overrides->init_printer;
+    if (overrides->stdout_printer)    state->printers->stdout_printer    = overrides->stdout_printer;
+    if (overrides->skip_printer)      state->printers->skip_printer      = overrides->skip_printer;
+}
+
+void kritic_noop(void* _, ...) {}
+
 #ifdef _WIN32
 #include <windows.h>
 
