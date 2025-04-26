@@ -18,7 +18,7 @@ else
 endif
 
 # === Paths ===
-KRITIC_SRC    := src/kritic.c src/redirect.c
+KRITIC_SRC    := src/kritic.c src/redirect.c src/timer.c
 KRITIC_OBJ    := $(patsubst src/%.c, build/%.o, $(KRITIC_SRC))
 RELEASE_DIR   := build/release
 RELEASE_LIB   := $(RELEASE_DIR)/libkritic.a

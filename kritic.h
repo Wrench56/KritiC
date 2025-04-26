@@ -3,8 +3,10 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #include "src/redirect.h"
+#include "src/timer.h"
 
 #define KRITIC_VERSION_MAJOR 0
 #define KRITIC_VERSION_MINOR 1
@@ -65,6 +67,8 @@ typedef struct {
     int assert_count;
     bool skipped;
     const char* skip_reason;
+    uint64_t duration_ns;
+    kritic_timer_t timer;
 } kritic_test_state_t;
 
 typedef struct {

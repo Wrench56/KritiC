@@ -1,8 +1,12 @@
+#include <inttypes.h>
+#include <inttypes.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "../kritic.h"
+#include "timer.h"
 
 static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .test_state     = NULL,
@@ -91,11 +95,15 @@ int kritic_run_all(void) {
             .asserts_failed = 0,
             .skipped        = false,
             .skip_reason    = "",
+            .duration_ns    = 0,
+            .timer          = { 0 },
         };
 
         kritic_state->printers->pre_test_printer(kritic_state);
         kritic_redirect_start(kritic_state);
+        kritic_timer_start(&kritic_state->test_state->timer);
         t->fn();
+        kritic_state->test_state->duration_ns = kritic_timer_elapsed(&kritic_state->test_state->timer);
         kritic_redirect_stop(kritic_state);
         if (kritic_state->test_state->skipped) {
             ++kritic_state->skip_count;
