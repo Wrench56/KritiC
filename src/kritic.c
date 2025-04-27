@@ -233,10 +233,30 @@ void kritic_default_pre_test_printer(kritic_runtime_t* state) {
 
 void kritic_default_post_test_printer(kritic_runtime_t* state) {
     if (state->test_state->skipped) return;
+    double duration_ms = (double)state->test_state->duration_ns / 1000000.0;
+
     if (state->test_state->asserts_failed > 0) {
-        fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST());
+        if (duration_ms < 0.001) {
+            fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s in less than 0.001ms\n",
+                KRITIC_GET_CURRENT_SUITE(),
+                KRITIC_GET_CURRENT_TEST());
+        } else {
+            fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s in %.3fms\n",
+                KRITIC_GET_CURRENT_SUITE(),
+                KRITIC_GET_CURRENT_TEST(),
+                duration_ms);
+        }
     } else {
-        printf("[ \033[1;32mPASS\033[0m ] %s.%s\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST());
+        if (duration_ms < 0.001) {
+            printf("[ \033[1;32mPASS\033[0m ] %s.%s in less than 0.001ms\n",
+                KRITIC_GET_CURRENT_SUITE(),
+                KRITIC_GET_CURRENT_TEST());
+        } else {
+            printf("[ \033[1;32mPASS\033[0m ] %s.%s in %.3fms\n",
+                KRITIC_GET_CURRENT_SUITE(),
+                KRITIC_GET_CURRENT_TEST(),
+                duration_ms);
+        }
     }
 }
 
@@ -250,6 +270,9 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
     float pass_rate = state->test_count > 0
         ? 100.0f * passed / state->test_count
         : 0.0f;
+
+    double duration_ms = (double) state->duration_ns / 1000000.0;
+
     char buffer[512];
     int len = snprintf(buffer, sizeof(buffer),
         "[      ] Finished running %d tests!\n"
@@ -259,6 +282,7 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
         "[      ]   Passed : %s%d%s\n"
         "[      ]   Failed : %s%d%s\n"
         "[      ]   Rate   : %s%.1f%%%s\n"
+        "[      ]   Time   : %.3fms\n"
         "[      ]\n"
         "%s\n",
         state->test_count,
@@ -266,13 +290,14 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
         GREEN, passed, RESET,
         RED, state->fail_count, RESET,
         CYAN, pass_rate, RESET,
+        duration_ms,
         state->fail_count > 0
             ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
             : "[ \033[1;32m****\033[0m ] All tests passed!"
     );
 
-    if (len > 0 && len < (int)sizeof(buffer)) {
-        _write(1, buffer, (size_t)len);
+    if (len > 0 && len < (int) sizeof(buffer)) {
+        _write(1, buffer, (size_t) len);
     }
 }
 
@@ -293,16 +318,28 @@ void kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* r
 
 void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t* ctx) {
     char buffer[4096];
+    int len;
+    double duration_ms = (double) state->test_state->duration_ns / 1000000.0;
 
-    int len = snprintf(buffer, sizeof(buffer),
-        "[ SKIP ] Reason: %s at %s:%d\n",
-        state->test_state->skip_reason,
-        ctx->file,
-        ctx->line
-    );
+    if (duration_ms < 0.001) {
+        len = snprintf(buffer, sizeof(buffer),
+            "[ SKIP ] Reason: %s at %s:%d after less than 0.001ms\n",
+            state->test_state->skip_reason,
+            ctx->file,
+            ctx->line
+        );
+    } else {
+        len = snprintf(buffer, sizeof(buffer),
+            "[ SKIP ] Reason: %s at %s:%d after %.3fms\n",
+            state->test_state->skip_reason,
+            ctx->file,
+            ctx->line,
+            duration_ms
+        );
+    }
 
-    if (len > 0 && len < (int)sizeof(buffer)) {
-        _write(state->redirect->stdout_copy, buffer, (size_t)len);
+    if (len > 0 && len < (int) sizeof(buffer)) {
+        _write(state->redirect->stdout_copy, buffer, (size_t) len);
     }
 }
 
