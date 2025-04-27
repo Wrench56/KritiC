@@ -44,7 +44,9 @@ void kritic_override_printers(const kritic_printers_t* overrides) {
     if (overrides->skip_printer)      state->printers->skip_printer      = overrides->skip_printer;
 }
 
-void kritic_noop(void* _, ...) {}
+void kritic_noop(void* dummy, ...) {
+    (void) dummy;
+}
 
 #ifdef _WIN32
 #include <windows.h>
@@ -313,7 +315,8 @@ void kritic_default_init_printer(kritic_runtime_t* state) {
     }
 }
 
-void kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx) {
+void kritic_default_stdout_printer(kritic_runtime_t* state, kritic_redirect_ctx_t* redir_ctx) {
+    (void) state;
     if (!redir_ctx->is_part_of_split) {
         _write(redir_ctx->stdout_copy, "[ \033[34mINFO\033[0m ] ", 18);
     }

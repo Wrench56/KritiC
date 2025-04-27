@@ -18,7 +18,7 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
         char* nl;
         for (size_t i = 0; i < bytes_read;) {
             nl = memchr(buffer + i, '\n', bytes_read - i);
-            size_t chunk_len = nl ? (nl - (buffer + i) + 1) : (bytes_read - i);
+            size_t chunk_len = nl ? (size_t) (nl - (buffer + i) + 1) : (bytes_read - i);
 
             if (line_len + chunk_len > KRITIC_REDIRECT_BUFFER_SIZE) {
                 line_buffer[line_len] = '\0';
