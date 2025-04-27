@@ -233,30 +233,34 @@ void kritic_default_pre_test_printer(kritic_runtime_t* state) {
 
 void kritic_default_post_test_printer(kritic_runtime_t* state) {
     if (state->test_state->skipped) return;
-    double duration_ms = (double)state->test_state->duration_ns / 1000000.0;
+    double duration_ms = (double) state->test_state->duration_ns / 1000000.0;
+    int total_asserts = state->test_state->assert_count;
+    int failed_asserts = state->test_state->asserts_failed;
+    int passed_asserts = total_asserts - failed_asserts;
+    const char* color = (failed_asserts > 0) ? "\033[1;31m" : "\033[1;32m";
+    const char* label = (failed_asserts > 0) ? "FAIL" : "PASS";
 
-    if (state->test_state->asserts_failed > 0) {
-        if (duration_ms < 0.001) {
-            fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s in less than 0.001ms\n",
-                KRITIC_GET_CURRENT_SUITE(),
-                KRITIC_GET_CURRENT_TEST());
-        } else {
-            fprintf(stderr, "[ \033[1;31mFAIL\033[0m ] %s.%s in %.3fms\n",
-                KRITIC_GET_CURRENT_SUITE(),
-                KRITIC_GET_CURRENT_TEST(),
-                duration_ms);
-        }
+    if (duration_ms < 0.001) {
+        printf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in less than 0.001ms\n",
+            color,
+            label,
+            KRITIC_GET_CURRENT_SUITE(),
+            KRITIC_GET_CURRENT_TEST(),
+            color,
+            passed_asserts,
+            total_asserts
+        );
     } else {
-        if (duration_ms < 0.001) {
-            printf("[ \033[1;32mPASS\033[0m ] %s.%s in less than 0.001ms\n",
-                KRITIC_GET_CURRENT_SUITE(),
-                KRITIC_GET_CURRENT_TEST());
-        } else {
-            printf("[ \033[1;32mPASS\033[0m ] %s.%s in %.3fms\n",
-                KRITIC_GET_CURRENT_SUITE(),
-                KRITIC_GET_CURRENT_TEST(),
-                duration_ms);
-        }
+        printf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %.3fms\n",
+            color,
+            label,
+            KRITIC_GET_CURRENT_SUITE(),
+            KRITIC_GET_CURRENT_TEST(),
+            color,
+            passed_asserts,
+            total_asserts,
+            duration_ms
+        );
     }
 }
 
