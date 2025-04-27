@@ -97,6 +97,10 @@ struct kritic_runtime_t {
     kritic_test_t tests[KRITIC_MAX_TESTS];
     // Current redirection struct
     kritic_redirect_t* redirect;
+    // Global runtime timer
+    kritic_timer_t timer;
+    // Duration of KritiC run
+    uint64_t duration_ns;
 };
 
 /* API */

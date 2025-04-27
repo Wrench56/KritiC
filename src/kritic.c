@@ -11,6 +11,7 @@
 static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .test_state     = NULL,
     .redirect       = NULL,
+    .timer          = { 0 },
     .fail_count     = 0,
     .test_count     = 0,
     .printers       = &(kritic_printers_t) {
@@ -80,6 +81,8 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
 /* Run all of the test suites and tests */
 int kritic_run_all(void) {
     kritic_runtime_t* kritic_state = kritic_get_runtime_state();
+    kritic_timer_start(&kritic_state->timer);
+
     kritic_redirect_t* redir = &(kritic_redirect_t) { 0 };
     kritic_state->redirect = redir;
 
@@ -115,6 +118,7 @@ int kritic_run_all(void) {
     }
 
     fflush(stdout);
+    kritic_state->duration_ns = kritic_timer_elapsed(&kritic_state->timer);
     kritic_state->printers->summary_printer(kritic_state);
 
     kritic_redirect_teardown(kritic_state);
