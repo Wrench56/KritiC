@@ -38,6 +38,7 @@ KRITIC_TEST(math, subtraction) {
 - Tests are discovered automatically without manual registration
 - All printers (assertions, summaries, pre/post test messages) can be overridden
 - Standard output can be automatically formatted/redirected during test execution
+- Measure the precise runtime (nanosecond precision) of individual tests
 
 ## Compilation and Usage
 
