@@ -3,6 +3,7 @@ CC := clang
 
 # === Build Mode ===
 MODE ?= release
+PLATFORM ?= linux
 
 # === Compiler flags ===
 DIAG_FLAGS    := -std=c99 -Wall -Wextra -Wpedantic -Werror
@@ -23,8 +24,13 @@ KRITIC_OBJ    := $(patsubst src/%.c, build/%.o, $(KRITIC_SRC))
 RELEASE_DIR   := build/release
 RELEASE_LIB   := $(RELEASE_DIR)/libkritic.a
 RELEASE_HDR   := $(RELEASE_DIR)/kritic.h
-RELEASE_TAR   := build/kritic-$(shell git describe --tags --always).tar.gz
-RELEASE_ZIP   := build/kritic-$(shell git describe --tags --always).zip
+RELEASE_TAR   := build/kritic-$(shell git describe --tags --always)-linux.tar.gz
+RELEASE_ZIP   := build/kritic-$(shell git describe --tags --always)-windows.zip
+
+# === Platform-specific settings ===
+ifeq ($(PLATFORM),windows)
+  CC := x86_64-w64-mingw32-gcc
+endif
 
 ifeq ($(OS),Windows_NT)
 	SELFTEST_EXE := build/selftest.exe
@@ -103,10 +109,21 @@ $(RELEASE_HDR): kritic.h
 	fi
 
 # Bundle release directory
-release: $(RELEASE_LIB) $(RELEASE_HDR)
+release: clean all $(RELEASE_LIB) $(RELEASE_HDR)
+ifeq ($(PLATFORM),windows)
+	@printf " $(GREEN)$(BOLD)Packing$(RESET)   $(RELEASE_ZIP)\n"
+	@if [ ! -e "build" ]; then \
+		mkdir build; \
+	fi
+	@if [ -d "build" ]; then \
+		cd build && zip -r $(notdir $(RELEASE_ZIP)) release; \
+	fi
+	@printf " $(CYAN)$(BOLD)Archive$(RESET)   ready: $(RELEASE_ZIP)\n"
+else
 	@printf " $(GREEN)$(BOLD)Packing$(RESET)   $(RELEASE_TAR)\n"
 	@tar -czf $(RELEASE_TAR) -C $(RELEASE_DIR) .
 	@printf " $(CYAN)$(BOLD)Archive$(RESET)   ready: $(RELEASE_TAR)\n"
+endif
 
 # Build static library
 static: $(KRITIC_OBJ)
