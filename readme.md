@@ -1,5 +1,8 @@
 # KritiC
 
+[![Build](https://github.com/Wrench56/KritiC/actions/workflows/release.yml/badge.svg)](https://github.com/Wrench56/KritiC/actions)
+[![Version](https://img.shields.io/github/v/tag/Wrench56/KritiC?label=version)](https://github.com/Wrench56/KritiC/releases)
+
 A unit testing framework written in C.
 
 KritiC is a lightweight, fast, and portable unit testing framework for C, C++, and Assembly projects. It aims to provide clean syntax and minimal setup.
