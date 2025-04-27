@@ -13,14 +13,18 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Install Clang
-      run: sudo apt update && sudo apt install -y clang mingw-w64
-    - name: Create compressed tarball
-      run: make release       
+      run: sudo apt update && sudo apt install -y clang mingw-w64 zip
+    - name: Create compressed tarball for Linux
+      run: make release PLATFORM=linux
+    - name: Create zip for Windows
+      run: make release PLATFORM=windows
     - name: Upload to GitHub Releases
       uses: softprops/action-gh-release@v2
       with:
         name: KritiC ${{ github.ref_name }}
         tag_name: ${{ github.ref_name }}
-        files: build/*.tar.gz
+        files: |
+          build/*.tar.gz
+          build/*.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
