@@ -13,6 +13,7 @@
 #define KRITIC_VERSION_PATCH 0
 
 #define KRITIC_MAX_TESTS 1024
+#define KRITIC_FLOAT_DELTA_VALUE 1e-6
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,7 +25,9 @@ typedef enum {
     KRITIC_ASSERT,
     KRITIC_ASSERT_NOT,
     KRITIC_ASSERT_EQ,
+    KRITIC_ASSERT_EQ_FLOAT,
     KRITIC_ASSERT_NE,
+    KRITIC_ASSERT_NE_FLOAT,
     KRITIC_ASSERT_FAIL
 } kritic_assert_type_t;
 

@@ -1,5 +1,6 @@
 #include <inttypes.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -137,7 +138,8 @@ void kritic_assert_eq(
     const char* expected_expr,
     const kritic_assert_type_t assert_type
 ) {
-    bool passed = 0;
+    bool passed = false;
+    double actual_f, expected_f, delta;
     switch (assert_type) {
         case KRITIC_ASSERT:
             passed = actual;
@@ -147,8 +149,20 @@ void kritic_assert_eq(
         case KRITIC_ASSERT_EQ:
             passed = (actual == expected);
             break;
+        case KRITIC_ASSERT_EQ_FLOAT:
+            actual_f = *(double*)&actual;
+            expected_f = *(double*)&expected;
+            delta = fabs(actual_f - expected_f);
+            passed = (delta <= KRITIC_FLOAT_DELTA_VALUE);
+            break;
         case KRITIC_ASSERT_NE:
             passed = !(actual == expected);
+            break;
+        case KRITIC_ASSERT_NE_FLOAT:
+            actual_f = *(double*)&actual;
+            expected_f = *(double*)&expected;
+            delta = fabs(actual_f - expected_f);
+            passed = !(delta <= KRITIC_FLOAT_DELTA_VALUE);
             break;
         case KRITIC_ASSERT_NOT:
             passed = !actual;
@@ -189,6 +203,7 @@ void kritic_default_assert_printer(
 ) {
     if (passed) return;
     const char* label = "[ \033[1;31mFAIL\033[0m ]";
+    double actual_f, expected_f, delta;
 
     switch (assert_type) {
         case KRITIC_ASSERT_EQ:
@@ -198,24 +213,48 @@ void kritic_default_assert_printer(
                     actual_expr, actual, expected_expr, expected);
             break;
 
+        case KRITIC_ASSERT_EQ_FLOAT:
+            actual_f = *(double*)&actual;
+            expected_f = *(double*)&expected;
+            delta = fabs(actual_f - expected_f);
+
+            fprintf(stderr, "%s  %s.%s: %s = %s failed at %s:%d\n",
+                    label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
+            fprintf(stderr, "          -> %s = %.10f, %s = %.10f\n",
+                    actual_expr, actual_f, expected_expr, expected_f);
+            fprintf(stderr, "          -> delta = %.10f\n", delta);
+            break;
+
         case KRITIC_ASSERT_NE:
             fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
             fprintf(stderr, "          -> both = %lld\n", actual);
             break;
 
+        case KRITIC_ASSERT_NE_FLOAT:
+                actual_f = *(double*)&actual;
+                expected_f = *(double*)&expected;
+                delta = fabs(actual_f - expected_f);
+    
+                fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
+                        label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
+                fprintf(stderr, "          -> %s = %.10f, %s = %.10f\n",
+                        actual_expr, actual_f, expected_expr, expected_f);
+                fprintf(stderr, "          -> delta = %.10f\n", delta);
+                break;
+
         case KRITIC_ASSERT:
             fprintf(stderr, "%s  %s.%s: assertion failed: %s at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
             fprintf(stderr, "          -> value = %lld\n", actual);
             break;
-        
+
         case KRITIC_ASSERT_NOT:
             fprintf(stderr, "%s  %s.%s: assertion expected to fail: %s at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
             fprintf(stderr, "          -> value = %lld (was truthy)\n", actual);
             break;
-            
+
         case KRITIC_ASSERT_FAIL:
             fprintf(stderr, "%s  %s.%s: forced failure at %s:%d\n",
                     label, ctx->suite, ctx->test, ctx->file, ctx->line);
