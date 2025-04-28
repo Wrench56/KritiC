@@ -201,6 +201,16 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
         kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_EQ);                                           \
     } while (0);
 
+/* Asserts that two floats/doubles are approximately equal */
+#define KRITIC_ASSERT_EQ_FLOAT(actual, expected) \
+    do {                                                                                                      \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
+        double actual_val = (actual);                                                                         \
+        double expected_val = (expected);                                                                     \
+        kritic_assert_eq(&ctx, *(long long*)&actual_val, *(long long*)&expected_val, #actual, #expected,      \
+            KRITIC_ASSERT_EQ_FLOAT);                                                                          \
+    } while (0);
+
 /* Asserts that two strings are equal */
 #define KRITIC_ASSERT_EQ_STR(actual, expected) \
     do {                                                                                                      \
@@ -214,6 +224,16 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
     do {                                                                                                      \
         kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
         kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_NE);                                           \
+    } while (0);
+
+/* Asserts that two floats/doubles are approximately not equal */
+#define KRITIC_ASSERT_NE_FLOAT(actual, expected) \
+    do {                                                                                                      \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
+        double actual_val = (actual);                                                                         \
+        double expected_val = (expected);                                                                     \
+        kritic_assert_eq(&ctx, *(long long*)&actual_val, *(long long*)&expected_val, #actual, #expected,      \
+            KRITIC_ASSERT_NE_FLOAT);                                                                          \
     } while (0);
 
 /* Asserts that two strings are not equal */
