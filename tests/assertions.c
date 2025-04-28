@@ -57,6 +57,55 @@ KRITIC_TEST(assertions, assert_eq_expr_fail) {
     KRITIC_ASSERT_EQ(a, b);
 }
 
+/* KRITIC_ASSERT_EQ_FLOAT */
+KRITIC_TEST(assertions, assert_eq_float_exact_pass) {
+    double a = 3.1415926535;
+    double b = 3.1415926535;
+    KRITIC_ASSERT_EQ_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_float_exact_fail) {
+    double a = 2.7182818284;
+    double b = 3.1415926535;
+    KRITIC_ASSERT_EQ_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_float_pass) {
+    double a = 1.0;
+    double b = 1.0 + (KRITIC_FLOAT_DELTA_VALUE / 2.0);
+    KRITIC_ASSERT_EQ_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_float_fail) {
+    double a = 1.0;
+    double b = 1.0 + (KRITIC_FLOAT_DELTA_VALUE * 2.0);
+    KRITIC_ASSERT_EQ_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_float_exact_expr_pass) {
+    double pi = 3.1415926535;
+    double pi_copy = 3.1415926535;
+    KRITIC_ASSERT_EQ_FLOAT(pi, pi_copy);
+}
+
+KRITIC_TEST(assertions, assert_eq_float_exact_expr_fail) {
+    double e = 2.7182818284;
+    double pi = 3.1415926535;
+    KRITIC_ASSERT_EQ_FLOAT(e, pi);
+}
+
+KRITIC_TEST(assertions, assert_eq_float_expr_pass) {
+    double a = 100.0;
+    double b = 100.0 + (KRITIC_FLOAT_DELTA_VALUE / 2.0);
+    KRITIC_ASSERT_EQ_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_float_expr_fail) {
+    double a = 100.0;
+    double b = 100.0 + (KRITIC_FLOAT_DELTA_VALUE * 2.0);
+    KRITIC_ASSERT_EQ_FLOAT(a, b);
+}
+
 /* KRITIC_ASSERT_EQ_STR */
 KRITIC_TEST(assertions, assert_eq_str_pass) {
     KRITIC_ASSERT_EQ_STR("Hello", "Hello");
@@ -95,6 +144,55 @@ KRITIC_TEST(assertions, assert_ne_expr_pass) {
 KRITIC_TEST(assertions, assert_ne_expr_fail) {
     int a = 7, b = 7;
     KRITIC_ASSERT_NE(a, b);
+}
+
+/* KRITIC_ASSERT_NE_FLOAT */
+KRITIC_TEST(assertions, assert_ne_float_exact_fail) {
+    double a = 3.1415926535;
+    double b = 3.1415926535;
+    KRITIC_ASSERT_NE_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_float_exact_pass) {
+    double a = 2.7182818284;
+    double b = 3.1415926535;
+    KRITIC_ASSERT_NE_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_float_pass) {
+    double a = 1.0;
+    double b = 1.0 + (KRITIC_FLOAT_DELTA_VALUE * 2.0);
+    KRITIC_ASSERT_NE_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_float_fail) {
+    double a = 1.0;
+    double b = 1.0 + (KRITIC_FLOAT_DELTA_VALUE / 2.0);
+    KRITIC_ASSERT_NE_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_float_exact_expr_fail) {
+    double pi = 3.1415926535;
+    double pi_copy = 3.1415926535;
+    KRITIC_ASSERT_NE_FLOAT(pi, pi_copy);
+}
+
+KRITIC_TEST(assertions, assert_ne_float_exact_expr_pass) {
+    double e = 2.7182818284;
+    double pi = 3.1415926535;
+    KRITIC_ASSERT_NE_FLOAT(e, pi);
+}
+
+KRITIC_TEST(assertions, assert_ne_float_expr_pass) {
+    double a = 100.0;
+    double b = 100.0 + (KRITIC_FLOAT_DELTA_VALUE * 2.0);
+    KRITIC_ASSERT_NE_FLOAT(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_float_expr_fail) {
+    double a = 100.0;
+    double b = 100.0 + (KRITIC_FLOAT_DELTA_VALUE / 2.0);
+    KRITIC_ASSERT_NE_FLOAT(a, b);
 }
 
 /* KRITIC_ASSERT_NE_STR */
