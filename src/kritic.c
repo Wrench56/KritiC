@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../kritic.h"
 #include "timer.h"
@@ -140,6 +141,9 @@ void kritic_assert_eq(
 ) {
     bool passed = false;
     double actual_f, expected_f, delta;
+    const char* actual_s;
+    const char* expected_s;
+
     switch (assert_type) {
         case KRITIC_ASSERT:
             passed = actual;
@@ -155,6 +159,11 @@ void kritic_assert_eq(
             delta = fabs(actual_f - expected_f);
             passed = (delta <= KRITIC_FLOAT_DELTA_VALUE);
             break;
+        case KRITIC_ASSERT_EQ_STR:
+            actual_s = (const char*)(uintptr_t)actual;
+            expected_s = (const char*)(uintptr_t)expected;
+            passed = (actual_s && expected_s) ? (strcmp(actual_s, expected_s) == 0) : (actual_s == expected_s);
+            break;
         case KRITIC_ASSERT_NE:
             passed = !(actual == expected);
             break;
@@ -163,6 +172,11 @@ void kritic_assert_eq(
             expected_f = *(double*)&expected;
             delta = fabs(actual_f - expected_f);
             passed = !(delta <= KRITIC_FLOAT_DELTA_VALUE);
+            break;
+        case KRITIC_ASSERT_NE_STR:
+            actual_s = (const char*)(uintptr_t)actual;
+            expected_s = (const char*)(uintptr_t)expected;
+            passed = (actual_s && expected_s) ? (strcmp(actual_s, expected_s) != 0) : (actual_s != expected_s);
             break;
         case KRITIC_ASSERT_NOT:
             passed = !actual;
@@ -242,6 +256,20 @@ void kritic_default_assert_printer(
                         actual_expr, actual_f, expected_expr, expected_f);
                 fprintf(stderr, "          -> delta = %.10f\n", delta);
                 break;
+
+        case KRITIC_ASSERT_EQ_STR:
+        case KRITIC_ASSERT_NE_STR:
+            const char* actual_s = (const char*)(uintptr_t)actual;
+            const char* expected_s = (const char*)(uintptr_t)expected;
+
+            const char* op = (assert_type == KRITIC_ASSERT_EQ_STR) ? "==" : "!=";
+
+            fprintf(stderr, "%s  %s.%s: %s %s %s failed at %s:%d\n",
+                    label, ctx->suite, ctx->test, actual_expr, op, expected_expr, ctx->file, ctx->line);
+            fprintf(stderr, "          -> %s = \"%s\", %s = \"%s\"\n",
+                    actual_expr, actual_s ? actual_s : "(null)",
+                    expected_expr, expected_s ? expected_s : "(null)");
+            break;
 
         case KRITIC_ASSERT:
             fprintf(stderr, "%s  %s.%s: assertion failed: %s at %s:%d\n",
