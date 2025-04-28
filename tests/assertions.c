@@ -57,6 +57,27 @@ KRITIC_TEST(assertions, assert_eq_expr_fail) {
     KRITIC_ASSERT_EQ(a, b);
 }
 
+/* KRITIC_ASSERT_EQ_STR */
+KRITIC_TEST(assertions, assert_eq_str_pass) {
+    KRITIC_ASSERT_EQ_STR("Hello", "Hello");
+}
+
+KRITIC_TEST(assertions, assert_eq_str_fail) {
+    KRITIC_ASSERT_EQ_STR("Hello", "World");
+}
+
+KRITIC_TEST(assertions, assert_eq_str_expr_pass) {
+    const char* hello1 = "Hello";
+    const char* hello2 = "Hello";
+    KRITIC_ASSERT_EQ_STR(hello1, hello2);
+}
+
+KRITIC_TEST(assertions, assert_eq_str_expr_fail) {
+    const char* hello = "Hello";
+    const char* world = "World";
+    KRITIC_ASSERT_EQ_STR(hello, world);
+}
+
 /* KRITIC_ASSERT_NE */
 KRITIC_TEST(assertions, assert_ne_pass) {
     KRITIC_ASSERT_NE(1, 2);
@@ -74,6 +95,27 @@ KRITIC_TEST(assertions, assert_ne_expr_pass) {
 KRITIC_TEST(assertions, assert_ne_expr_fail) {
     int a = 7, b = 7;
     KRITIC_ASSERT_NE(a, b);
+}
+
+/* KRITIC_ASSERT_NE_STR */
+KRITIC_TEST(assertions, assert_ne_str_pass) {
+    KRITIC_ASSERT_NE_STR("Hello", "World");
+}
+
+KRITIC_TEST(assertions, assert_ne_str_fail) {
+    KRITIC_ASSERT_NE_STR("Hello", "Hello");
+}
+
+KRITIC_TEST(assertions, assert_ne_str_expr_pass) {
+    const char* hello = "Hello";
+    const char* world = "World";
+    KRITIC_ASSERT_NE_STR(hello, world);
+}
+
+KRITIC_TEST(assertions, assert_ne_str_expr_fail) {
+    const char* hello1 = "Hello";
+    const char* hello2 = "Hello";
+    KRITIC_ASSERT_NE_STR(hello1, hello2);
 }
 
 /* KRITIC_FAIL */
