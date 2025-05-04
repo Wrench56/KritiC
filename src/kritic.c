@@ -143,6 +143,11 @@ void kritic_assert_eq(
     double actual_f, expected_f, delta;
     const char* actual_s;
     const char* expected_s;
+    union {
+        long long i;
+        double f;
+    } u_actual, u_expected;
+
 
     switch (assert_type) {
         case KRITIC_ASSERT:
@@ -154,8 +159,10 @@ void kritic_assert_eq(
             passed = (actual == expected);
             break;
         case KRITIC_ASSERT_EQ_FLOAT:
-            actual_f = *(double*)&actual;
-            expected_f = *(double*)&expected;
+            u_actual.i = actual;
+            u_expected.i = expected;
+            actual_f = u_actual.f;
+            expected_f = u_expected.f;
             delta = fabs(actual_f - expected_f);
             passed = (delta <= KRITIC_FLOAT_DELTA_VALUE);
             break;
@@ -168,8 +175,10 @@ void kritic_assert_eq(
             passed = !(actual == expected);
             break;
         case KRITIC_ASSERT_NE_FLOAT:
-            actual_f = *(double*)&actual;
-            expected_f = *(double*)&expected;
+            u_actual.i = actual;
+            u_expected.i = expected;
+            actual_f = u_actual.f;
+            expected_f = u_expected.f;
             delta = fabs(actual_f - expected_f);
             passed = !(delta <= KRITIC_FLOAT_DELTA_VALUE);
             break;
@@ -217,7 +226,13 @@ void kritic_default_assert_printer(
 ) {
     if (passed) return;
     const char* label = "[ \033[1;31mFAIL\033[0m ]";
-    double actual_f, expected_f, delta;
+    double actual_f = 0, expected_f = 0, delta = 0;
+    const char* actual_s = NULL;
+    const char* expected_s = NULL;
+    union {
+        long long i;
+        double f;
+    } u_actual, u_expected;
 
     switch (assert_type) {
         case KRITIC_ASSERT_EQ:
@@ -228,8 +243,10 @@ void kritic_default_assert_printer(
             break;
 
         case KRITIC_ASSERT_EQ_FLOAT:
-            actual_f = *(double*)&actual;
-            expected_f = *(double*)&expected;
+            u_actual.i = actual;
+            u_expected.i = expected;
+            actual_f = u_actual.f;
+            expected_f = u_expected.f;
             delta = fabs(actual_f - expected_f);
 
             fprintf(stderr, "%s  %s.%s: %s = %s failed at %s:%d\n",
@@ -246,21 +263,23 @@ void kritic_default_assert_printer(
             break;
 
         case KRITIC_ASSERT_NE_FLOAT:
-                actual_f = *(double*)&actual;
-                expected_f = *(double*)&expected;
-                delta = fabs(actual_f - expected_f);
-    
-                fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
-                        label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-                fprintf(stderr, "          -> %s = %.10f, %s = %.10f\n",
-                        actual_expr, actual_f, expected_expr, expected_f);
-                fprintf(stderr, "          -> delta = %.10f\n", delta);
-                break;
+            u_actual.i = actual;
+            u_expected.i = expected;
+            actual_f = u_actual.f;
+            expected_f = u_expected.f;
+            delta = fabs(actual_f - expected_f);
+
+            fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
+                    label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
+            fprintf(stderr, "          -> %s = %.10f, %s = %.10f\n",
+                    actual_expr, actual_f, expected_expr, expected_f);
+            fprintf(stderr, "          -> delta = %.10f\n", delta);
+            break;
 
         case KRITIC_ASSERT_EQ_STR:
         case KRITIC_ASSERT_NE_STR:
-            const char* actual_s = (const char*)(uintptr_t)actual;
-            const char* expected_s = (const char*)(uintptr_t)expected;
+            actual_s = (const char*)(uintptr_t)actual;
+            expected_s = (const char*)(uintptr_t)expected;
 
             const char* op = (assert_type == KRITIC_ASSERT_EQ_STR) ? "==" : "!=";
 
