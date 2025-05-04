@@ -127,6 +127,55 @@ KRITIC_TEST(assertions, assert_eq_str_expr_fail) {
     KRITIC_ASSERT_EQ_STR(hello, world);
 }
 
+/* KRITIC_ASSERT_EQ (Generic) */
+KRITIC_TEST(assertions, assert_eq_generic_int_pass) {
+    KRITIC_ASSERT_EQ(123, 123);
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_int_fail) {
+    KRITIC_ASSERT_EQ(1, 0);
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_int_expr_pass) {
+    int a = 5, b = 2 + 3;
+    KRITIC_ASSERT_EQ(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_int_expr_fail) {
+    int a = 7, b = 8;
+    KRITIC_ASSERT_EQ(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_float_pass) {
+    double x = 1.0;
+    double y = 1.0 + (KRITIC_FLOAT_DELTA_VALUE / 2.0);
+    KRITIC_ASSERT_EQ(x, y);
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_float_fail) {
+    KRITIC_ASSERT_EQ(3.0, 3.1);
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_str_pass) {
+    KRITIC_ASSERT_EQ("test", "test");
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_str_fail) {
+    KRITIC_ASSERT_EQ("foo", "bar");
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_str_expr_pass) {
+    const char* a = "abc";
+    const char* b = "abc";
+    KRITIC_ASSERT_EQ(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_generic_str_expr_fail) {
+    const char* a = "abc";
+    const char* b = "def";
+    KRITIC_ASSERT_EQ(a, b);
+}
+
 /* KRITIC_ASSERT_NE_INT */
 KRITIC_TEST(assertions, assert_ne_int_pass) {
     KRITIC_ASSERT_NE_INT(1, 2);
@@ -214,6 +263,53 @@ KRITIC_TEST(assertions, assert_ne_str_expr_fail) {
     const char* hello1 = "Hello";
     const char* hello2 = "Hello";
     KRITIC_ASSERT_NE_STR(hello1, hello2);
+}
+
+/* KRITIC_ASSERT_NE (Generic) */
+KRITIC_TEST(assertions, assert_ne_generic_int_pass) {
+    KRITIC_ASSERT_NE(123, 456);
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_int_fail) {
+    KRITIC_ASSERT_NE(1, 1);
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_int_expr_pass) {
+    int a = 5, b = 6;
+    KRITIC_ASSERT_NE(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_int_expr_fail) {
+    int a = 7, b = 7;
+    KRITIC_ASSERT_NE(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_float_pass) {
+    double a = 1.0, b = 1.0 + KRITIC_FLOAT_DELTA_VALUE * 2.0;
+    KRITIC_ASSERT_NE(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_float_fail) {
+    double a = 3.14159, b = 3.14159;
+    KRITIC_ASSERT_NE(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_str_pass) {
+    KRITIC_ASSERT_NE("foo", "bar");
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_str_fail) {
+    KRITIC_ASSERT_NE("same", "same");
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_str_expr_pass) {
+    const char *a = "abc", *b = "def";
+    KRITIC_ASSERT_NE(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_generic_str_expr_fail) {
+    const char *a = "match", *b = "match";
+    KRITIC_ASSERT_NE(a, b);
 }
 
 /* KRITIC_FAIL */
