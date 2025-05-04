@@ -194,6 +194,34 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
         kritic_assert_eq(&ctx, 0, 1, "forced failure", NULL, KRITIC_ASSERT_FAIL);                             \
     } while (0);
 
+/* Asserts that two values are equal (generic macro for ints, floats, and strings) */
+#define KRITIC_ASSERT_EQ(actual, expected)                                                                    \
+    do {                                                                                                      \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
+        __typeof__(actual) _a = (actual);                                                                     \
+        __typeof__(expected) _b = (expected);                                                                 \
+        if (                                                                                                  \
+            __builtin_types_compatible_p(__typeof__(_a), const char *) ||                                     \
+            __builtin_types_compatible_p(__typeof__(_a), char *) ||                                           \
+            __builtin_types_compatible_p(__typeof__(_a), const char[]) ||                                     \
+            __builtin_types_compatible_p(__typeof__(_a), char[])                                              \
+        ) {                                                                                                   \
+            kritic_assert_eq(&ctx, (long long)(uintptr_t) _a, (long long)(uintptr_t) _b,                      \
+                #actual, #expected, KRITIC_ASSERT_EQ_STR);                                                    \
+        } else if (                                                                                           \
+            __builtin_types_compatible_p(__typeof__(_a), float) ||                                            \
+            __builtin_types_compatible_p(__typeof__(_a), double)                                              \
+        ) {                                                                                                   \
+            long long _a_bits, _b_bits;                                                                       \
+            memcpy(&_a_bits, &_a, sizeof(_a));                                                                \
+            memcpy(&_b_bits, &_b, sizeof(_b));                                                                \
+            kritic_assert_eq(&ctx, _a_bits, _b_bits, #actual, #expected, KRITIC_ASSERT_EQ_FLOAT);             \
+        } else {                                                                                              \
+            kritic_assert_eq(&ctx, (long long) _a, (long long) _b, #actual, #expected,                        \
+                KRITIC_ASSERT_EQ_INT);                                                                        \
+        }                                                                                                     \
+    } while (0);
+
 /* Asserts that two integer values are equal */
 #define KRITIC_ASSERT_EQ_INT(x, y)                                                                            \
     do {                                                                                                      \
@@ -219,6 +247,34 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
             #expected, KRITIC_ASSERT_EQ_STR);                                                                 \
     } while (0);
 
+/* Asserts that two values are not equal (generic macro for ints, floats, and strings) */
+#define KRITIC_ASSERT_NE(actual, expected)                                                                    \
+    do {                                                                                                      \
+        kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
+        __typeof__(actual) _a = (actual);                                                                     \
+        __typeof__(expected) _b = (expected);                                                                 \
+        if (                                                                                                  \
+            __builtin_types_compatible_p(__typeof__(_a), const char *) ||                                     \
+            __builtin_types_compatible_p(__typeof__(_a), char *) ||                                           \
+            __builtin_types_compatible_p(__typeof__(_a), const char[]) ||                                     \
+            __builtin_types_compatible_p(__typeof__(_a), char[])                                              \
+        ) {                                                                                                   \
+            kritic_assert_eq(&ctx, (long long)(uintptr_t) _a, (long long)(uintptr_t) _b,                      \
+                #actual, #expected, KRITIC_ASSERT_NE_STR);                                                    \
+        } else if (                                                                                           \
+            __builtin_types_compatible_p(__typeof__(_a), float) ||                                            \
+            __builtin_types_compatible_p(__typeof__(_a), double)                                              \
+        ) {                                                                                                   \
+            long long _a_bits, _b_bits;                                                                       \
+            memcpy(&_a_bits, &_a, sizeof(_a));                                                                \
+            memcpy(&_b_bits, &_b, sizeof(_b));                                                                \
+            kritic_assert_eq(&ctx, _a_bits, _b_bits, #actual, #expected, KRITIC_ASSERT_NE_FLOAT);             \
+        } else {                                                                                              \
+            kritic_assert_eq(&ctx, (long long) _a, (long long) _b, #actual, #expected,                        \
+                KRITIC_ASSERT_NE_INT);                                                                        \
+        }                                                                                                     \
+    } while (0);
+
 /* Asserts that two integer values are not equal */
 #define KRITIC_ASSERT_NE_INT(x, y)                                                                            \
     do {                                                                                                      \
@@ -227,7 +283,7 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
     } while (0);
 
 /* Asserts that two floats/doubles are approximately not equal */
-#define KRITIC_ASSERT_NE_FLOAT(actual, expected) \
+#define KRITIC_ASSERT_NE_FLOAT(actual, expected)                                                              \
     do {                                                                                                      \
         kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
         double actual_val = (actual);                                                                         \
