@@ -155,7 +155,7 @@ void kritic_assert_eq(
             break;
         case KRITIC_ASSERT_FAIL:
             break;
-        case KRITIC_ASSERT_EQ:
+        case KRITIC_ASSERT_EQ_INT:
             passed = (actual == expected);
             break;
         case KRITIC_ASSERT_EQ_FLOAT:
@@ -171,7 +171,7 @@ void kritic_assert_eq(
             expected_s = (const char*)(uintptr_t)expected;
             passed = (actual_s && expected_s) ? (strcmp(actual_s, expected_s) == 0) : (actual_s == expected_s);
             break;
-        case KRITIC_ASSERT_NE:
+        case KRITIC_ASSERT_NE_INT:
             passed = !(actual == expected);
             break;
         case KRITIC_ASSERT_NE_FLOAT:
@@ -235,7 +235,7 @@ void kritic_default_assert_printer(
     } u_actual, u_expected;
 
     switch (assert_type) {
-        case KRITIC_ASSERT_EQ:
+        case KRITIC_ASSERT_EQ_INT:
             fprintf(stderr, "%s  %s.%s: %s == %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
             fprintf(stderr, "          -> %s = %lld, %s = %lld\n",
@@ -256,7 +256,7 @@ void kritic_default_assert_printer(
             fprintf(stderr, "          -> delta = %.10f\n", delta);
             break;
 
-        case KRITIC_ASSERT_NE:
+        case KRITIC_ASSERT_NE_INT:
             fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
             fprintf(stderr, "          -> both = %lld\n", actual);

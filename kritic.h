@@ -24,10 +24,10 @@ typedef enum {
     KRITIC_ASSERT_UNKNOWN = 0,
     KRITIC_ASSERT,
     KRITIC_ASSERT_NOT,
-    KRITIC_ASSERT_EQ,
+    KRITIC_ASSERT_EQ_INT,
     KRITIC_ASSERT_EQ_FLOAT,
     KRITIC_ASSERT_EQ_STR,
-    KRITIC_ASSERT_NE,
+    KRITIC_ASSERT_NE_INT,
     KRITIC_ASSERT_NE_FLOAT,
     KRITIC_ASSERT_NE_STR,
     KRITIC_ASSERT_FAIL
@@ -194,11 +194,11 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
         kritic_assert_eq(&ctx, 0, 1, "forced failure", NULL, KRITIC_ASSERT_FAIL);                             \
     } while (0);
 
-/* Asserts that two values are equal */
-#define KRITIC_ASSERT_EQ(x, y)                                                                                \
+/* Asserts that two integer values are equal */
+#define KRITIC_ASSERT_EQ_INT(x, y)                                                                            \
     do {                                                                                                      \
         kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
-        kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_EQ);                                           \
+        kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_EQ_INT);                                       \
     } while (0);
 
 /* Asserts that two floats/doubles are approximately equal */
@@ -219,11 +219,11 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
             #expected, KRITIC_ASSERT_EQ_STR);                                                                 \
     } while (0);
 
-/* Asserts that two values are not equal */
-#define KRITIC_ASSERT_NE(x, y)                                                                                \
+/* Asserts that two integer values are not equal */
+#define KRITIC_ASSERT_NE_INT(x, y)                                                                            \
     do {                                                                                                      \
         kritic_context_t ctx = {__FILE__, KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(), __LINE__};   \
-        kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_NE);                                           \
+        kritic_assert_eq(&ctx, (x), (y), #x, #y, KRITIC_ASSERT_NE_INT);                                       \
     } while (0);
 
 /* Asserts that two floats/doubles are approximately not equal */
