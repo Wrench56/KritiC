@@ -38,23 +38,23 @@ KRITIC_TEST(assertions, assert_not_expr_fail) {
     KRITIC_ASSERT_NOT(var);
 }
 
-/* KRITIC_ASSERT_EQ */
-KRITIC_TEST(assertions, assert_eq_pass) {
-    KRITIC_ASSERT_EQ(42, 42);
+/* KRITIC_ASSERT_EQ_INT */
+KRITIC_TEST(assertions, assert_eq_int_pass) {
+    KRITIC_ASSERT_EQ_INT(42, 42);
 }
 
-KRITIC_TEST(assertions, assert_eq_fail) {
-    KRITIC_ASSERT_EQ(1, 2);
+KRITIC_TEST(assertions, assert_eq_int_fail) {
+    KRITIC_ASSERT_EQ_INT(1, 2);
 }
 
-KRITIC_TEST(assertions, assert_eq_expr_pass) {
+KRITIC_TEST(assertions, assert_eq_int_expr_pass) {
     int a = 10, b = 10;
-    KRITIC_ASSERT_EQ(a, b);
+    KRITIC_ASSERT_EQ_INT(a, b);
 }
 
-KRITIC_TEST(assertions, assert_eq_expr_fail) {
+KRITIC_TEST(assertions, assert_eq_int_expr_fail) {
     int a = 5, b = 6;
-    KRITIC_ASSERT_EQ(a, b);
+    KRITIC_ASSERT_EQ_INT(a, b);
 }
 
 /* KRITIC_ASSERT_EQ_FLOAT */
@@ -127,23 +127,23 @@ KRITIC_TEST(assertions, assert_eq_str_expr_fail) {
     KRITIC_ASSERT_EQ_STR(hello, world);
 }
 
-/* KRITIC_ASSERT_NE */
-KRITIC_TEST(assertions, assert_ne_pass) {
-    KRITIC_ASSERT_NE(1, 2);
+/* KRITIC_ASSERT_NE_INT */
+KRITIC_TEST(assertions, assert_ne_int_pass) {
+    KRITIC_ASSERT_NE_INT(1, 2);
 }
 
-KRITIC_TEST(assertions, assert_ne_fail) {
-    KRITIC_ASSERT_NE(5, 5);
+KRITIC_TEST(assertions, assert_ne_int_fail) {
+    KRITIC_ASSERT_NE_INT(5, 5);
 }
 
-KRITIC_TEST(assertions, assert_ne_expr_pass) {
+KRITIC_TEST(assertions, assert_ne_int_expr_pass) {
     int a = 10, b = 20;
-    KRITIC_ASSERT_NE(a, b);
+    KRITIC_ASSERT_NE_INT(a, b);
 }
 
-KRITIC_TEST(assertions, assert_ne_expr_fail) {
+KRITIC_TEST(assertions, assert_ne_int_expr_fail) {
     int a = 7, b = 7;
-    KRITIC_ASSERT_NE(a, b);
+    KRITIC_ASSERT_NE_INT(a, b);
 }
 
 /* KRITIC_ASSERT_NE_FLOAT */
