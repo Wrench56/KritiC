@@ -1,3 +1,5 @@
+#include <limits.h>
+
 #include "../kritic.h"
 
 /* KRITIC_ASSERT */
@@ -39,12 +41,24 @@ KRITIC_TEST(assertions, assert_not_expr_fail) {
 }
 
 /* KRITIC_ASSERT_EQ_INT */
+KRITIC_TEST(assertions, assert_eq_int_zero_pass) {
+    KRITIC_ASSERT_EQ_INT(0, 0);
+}
+
 KRITIC_TEST(assertions, assert_eq_int_pass) {
     KRITIC_ASSERT_EQ_INT(42, 42);
 }
 
 KRITIC_TEST(assertions, assert_eq_int_fail) {
     KRITIC_ASSERT_EQ_INT(1, 2);
+}
+
+KRITIC_TEST(assertions, assert_eq_int_negative_pass) {
+    KRITIC_ASSERT_EQ_INT(-42, -42);
+}
+
+KRITIC_TEST(assertions, assert_eq_int_min_max_fail) {
+    KRITIC_ASSERT_EQ_INT(INT_MIN, INT_MAX);
 }
 
 KRITIC_TEST(assertions, assert_eq_int_expr_pass) {
@@ -58,6 +72,10 @@ KRITIC_TEST(assertions, assert_eq_int_expr_fail) {
 }
 
 /* KRITIC_ASSERT_EQ_FLOAT */
+KRITIC_TEST(assertions, assert_eq_float_zero_pass) {
+    KRITIC_ASSERT_EQ_FLOAT(0.0, 0.0);
+}
+
 KRITIC_TEST(assertions, assert_eq_float_exact_pass) {
     double a = 3.1415926535;
     double b = 3.1415926535;
@@ -106,6 +124,14 @@ KRITIC_TEST(assertions, assert_eq_float_expr_fail) {
     KRITIC_ASSERT_EQ_FLOAT(a, b);
 }
 
+KRITIC_TEST(assertions, assert_eq_float_negative_pass) {
+    KRITIC_ASSERT_EQ_FLOAT(-1.5, -1.5);
+}
+
+KRITIC_TEST(assertions, assert_eq_float_negative_zero_pass) {
+    KRITIC_ASSERT_EQ_FLOAT(-0.0, 0.0);
+}
+
 /* KRITIC_ASSERT_EQ_STR */
 KRITIC_TEST(assertions, assert_eq_str_pass) {
     KRITIC_ASSERT_EQ_STR("Hello", "Hello");
@@ -125,6 +151,21 @@ KRITIC_TEST(assertions, assert_eq_str_expr_fail) {
     const char* hello = "Hello";
     const char* world = "World";
     KRITIC_ASSERT_EQ_STR(hello, world);
+}
+
+KRITIC_TEST(assertions, assert_eq_str_empty_pass) {
+    KRITIC_ASSERT_EQ_STR("", "");
+}
+
+KRITIC_TEST(assertions, assert_eq_str_null_literal_fail) {
+    const char *a = "";
+    const char *b = NULL;
+    KRITIC_ASSERT_EQ_STR(a, b);
+}
+
+KRITIC_TEST(assertions, assert_eq_str_nulls_pass) {
+    const char *a = NULL, *b = NULL;
+    KRITIC_ASSERT_EQ_STR(a, b);
 }
 
 /* KRITIC_ASSERT_EQ (Generic) */
@@ -177,12 +218,24 @@ KRITIC_TEST(assertions, assert_eq_generic_str_expr_fail) {
 }
 
 /* KRITIC_ASSERT_NE_INT */
+KRITIC_TEST(assertions, assert_ne_int_zero_fail) {
+    KRITIC_ASSERT_NE_INT(0, 0);
+}
+
 KRITIC_TEST(assertions, assert_ne_int_pass) {
     KRITIC_ASSERT_NE_INT(1, 2);
 }
 
 KRITIC_TEST(assertions, assert_ne_int_fail) {
     KRITIC_ASSERT_NE_INT(5, 5);
+}
+
+KRITIC_TEST(assertions, assert_ne_int_negative_fail) {
+    KRITIC_ASSERT_NE_INT(-42, -42);
+}
+
+KRITIC_TEST(assertions, assert_ne_int_min_max_pass) {
+    KRITIC_ASSERT_NE_INT(INT_MIN, INT_MAX);
 }
 
 KRITIC_TEST(assertions, assert_ne_int_expr_pass) {
@@ -196,6 +249,10 @@ KRITIC_TEST(assertions, assert_ne_int_expr_fail) {
 }
 
 /* KRITIC_ASSERT_NE_FLOAT */
+KRITIC_TEST(assertions, assert_ne_float_zero_fail) {
+    KRITIC_ASSERT_NE_FLOAT(0.0, 0.0);
+}
+
 KRITIC_TEST(assertions, assert_ne_float_exact_fail) {
     double a = 3.1415926535;
     double b = 3.1415926535;
@@ -244,6 +301,14 @@ KRITIC_TEST(assertions, assert_ne_float_expr_fail) {
     KRITIC_ASSERT_NE_FLOAT(a, b);
 }
 
+KRITIC_TEST(assertions, assert_ne_float_negative_fail) {
+    KRITIC_ASSERT_NE_FLOAT(-1.5, -1.5);
+}
+
+KRITIC_TEST(assertions, assert_ne_float_negative_zero_fail) {
+    KRITIC_ASSERT_NE_FLOAT(-0.0, 0.0);
+}
+
 /* KRITIC_ASSERT_NE_STR */
 KRITIC_TEST(assertions, assert_ne_str_pass) {
     KRITIC_ASSERT_NE_STR("Hello", "World");
@@ -263,6 +328,21 @@ KRITIC_TEST(assertions, assert_ne_str_expr_fail) {
     const char* hello1 = "Hello";
     const char* hello2 = "Hello";
     KRITIC_ASSERT_NE_STR(hello1, hello2);
+}
+
+KRITIC_TEST(assertions, assert_ne_str_empty_fail) {
+    KRITIC_ASSERT_NE_STR("", "");
+}
+
+KRITIC_TEST(assertions, assert_ne_str_null_literal_pass) {
+    const char *a = "";
+    const char *b = NULL;
+    KRITIC_ASSERT_NE_STR(a, b);
+}
+
+KRITIC_TEST(assertions, assert_ne_str_nulls_fail) {
+    const char *a = NULL, *b = NULL;
+    KRITIC_ASSERT_NE_STR(a, b);
 }
 
 /* KRITIC_ASSERT_NE (Generic) */
