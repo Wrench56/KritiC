@@ -26,6 +26,7 @@ rules:
       - macro
       - core
       - defaults
+      - tools
   subject-empty:
     level: error
   type:
