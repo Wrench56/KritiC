@@ -1,0 +1,27 @@
+name: Unittest
+
+on:
+  push:
+    tags:
+      - 'v*'
+    paths:
+      - '**/*.c'
+      - '**/*.h'
+      - 'Makefile'
+      - '.github/workflows/unittest.yml'
+  pull_request:
+    paths:
+      - '**/*.c'
+      - '**/*.h'
+      - 'Makefile'
+      - '.github/workflows/unittest.yml'
+
+jobs:
+  compare-selftest-output:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run and verify self-test output
+        run: make selftest-check
