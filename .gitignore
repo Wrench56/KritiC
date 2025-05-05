@@ -9,3 +9,6 @@ tools/commitlint*
 
 # Ignore playground
 playground/
+
+# Ignore temporary self-test output
+actual_output.txt
