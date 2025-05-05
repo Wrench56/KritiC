@@ -1,0 +1,34 @@
+name: Bump Version
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Extract version from tag
+        id: extract_version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "${GITHUB_OUTPUT}"
+      - name: Run version bumper script
+        run: |
+          chmod +x tools/bump_version.sh
+          ./tools/bump_version.sh "${{ steps.extract_version.outputs.version }}"
+      - name: Commit and push updated version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions@github.com"
+          git add kritic.h
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: bump version to v${{ steps.extract_version.outputs.version }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi
