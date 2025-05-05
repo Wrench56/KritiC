@@ -1,0 +1,14 @@
+name: Tag Workflow Chain
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  unittest:
+    uses: ./.github/workflows/unittest.yml
+
+  release:
+    needs: unittest
+    uses: ./.github/workflows/release.yml
