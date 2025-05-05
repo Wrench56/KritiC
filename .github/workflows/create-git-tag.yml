@@ -1,0 +1,39 @@
+name: Create Git Tag
+description: "Reusable workflow to create an annotated git tag."
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      description:
+        required: false
+        type: string
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create annotated tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions@github.com"
+          desc="${{ inputs.description }}"
+          tag="${{ inputs.version }}"
+
+          if git rev-parse "$tag" >/dev/null 2>&1; then
+            echo "Tag $tag already exists. Skipping creation."
+            exit 0
+          fi
+
+          if [ -n "$desc" ]; then
+            git tag -a "$tag" -m "$desc"
+          else
+            git tag -a "$tag" -m "$tag"
+          fi
+          git push origin "$tag"
