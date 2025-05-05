@@ -1,0 +1,366 @@
+ [36m[1mBuilding[0m  in release mode...
+ [32m[1mCompiling[0m src/kritic.c
+ [32m[1mCompiling[0m src/redirect.c
+ [32m[1mCompiling[0m src/timer.c
+ [32m[1mCompiling[0m tests/assertions.c
+ [32m[1mCompiling[0m tests/core.c
+ [32m[1mCompiling[0m tests/indirect.c
+ [32m[1mCompiling[0m tests/io.c
+ [32m[1mLinking[0m   self-test executable
+ [32m[1mBuilt[0m     build/selftest
+ [36m[1mTesting[0m   KritiC...
+Running from custom main()...
+[      ]
+[      ]
+[      ] Running 109 tests:
+[ [1;36mEXEC[0m ] assertions.assert_pass at tests/assertions.c:6
+[ [1;32mPASS[0m ] assertions.assert_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_fail at tests/assertions.c:10
+[ [1;31mFAIL[0m ]  assertions.assert_fail: assertion failed: 0 at tests/assertions.c:11
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] assertions.assert_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_expr_pass at tests/assertions.c:14
+[ [1;32mPASS[0m ] assertions.assert_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_expr_fail at tests/assertions.c:19
+[ [1;31mFAIL[0m ]  assertions.assert_expr_fail: assertion failed: var at tests/assertions.c:21
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] assertions.assert_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_not_pass at tests/assertions.c:25
+[ [1;32mPASS[0m ] assertions.assert_not_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_not_fail at tests/assertions.c:29
+[ [1;31mFAIL[0m ]  assertions.assert_not_fail: assertion expected to fail: 1 at tests/assertions.c:30
+[      ]  -> value = 1 (was truthy)
+[ [1;31mFAIL[0m ] assertions.assert_not_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_not_expr_pass at tests/assertions.c:33
+[ [1;32mPASS[0m ] assertions.assert_not_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_not_expr_fail at tests/assertions.c:38
+[ [1;31mFAIL[0m ]  assertions.assert_not_expr_fail: assertion expected to fail: var at tests/assertions.c:40
+[      ]  -> value = 2 (was truthy)
+[ [1;31mFAIL[0m ] assertions.assert_not_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_int_zero_pass at tests/assertions.c:44
+[ [1;32mPASS[0m ] assertions.assert_eq_int_zero_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_int_pass at tests/assertions.c:48
+[ [1;32mPASS[0m ] assertions.assert_eq_int_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_int_fail at tests/assertions.c:52
+[ [1;31mFAIL[0m ]  assertions.assert_eq_int_fail: 1 == 2 failed at tests/assertions.c:53
+[      ]  -> 1 = 1, 2 = 2
+[ [1;31mFAIL[0m ] assertions.assert_eq_int_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_int_negative_pass at tests/assertions.c:56
+[ [1;32mPASS[0m ] assertions.assert_eq_int_negative_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_int_min_max_fail at tests/assertions.c:60
+[ [1;31mFAIL[0m ]  assertions.assert_eq_int_min_max_fail: INT_MIN == INT_MAX failed at tests/assertions.c:61
+[      ]  -> INT_MIN = -2147483648, INT_MAX = 2147483647
+[ [1;31mFAIL[0m ] assertions.assert_eq_int_min_max_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_int_expr_pass at tests/assertions.c:64
+[ [1;32mPASS[0m ] assertions.assert_eq_int_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_int_expr_fail at tests/assertions.c:69
+[ [1;31mFAIL[0m ]  assertions.assert_eq_int_expr_fail: a == b failed at tests/assertions.c:71
+[      ]  -> a = 5, b = 6
+[ [1;31mFAIL[0m ] assertions.assert_eq_int_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_zero_pass at tests/assertions.c:75
+[ [1;32mPASS[0m ] assertions.assert_eq_float_zero_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_exact_pass at tests/assertions.c:79
+[ [1;32mPASS[0m ] assertions.assert_eq_float_exact_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_exact_fail at tests/assertions.c:85
+[ [1;31mFAIL[0m ]  assertions.assert_eq_float_exact_fail: a = b failed at tests/assertions.c:88
+[      ]  -> a = 2.7182818284, b = 3.1415926535
+[      ]  -> delta = 0.4233108251
+[ [1;31mFAIL[0m ] assertions.assert_eq_float_exact_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_pass at tests/assertions.c:91
+[ [1;32mPASS[0m ] assertions.assert_eq_float_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_fail at tests/assertions.c:97
+[ [1;31mFAIL[0m ]  assertions.assert_eq_float_fail: a = b failed at tests/assertions.c:100
+[      ]  -> a = 1.0000000000, b = 1.0000020000
+[      ]  -> delta = 0.0000020000
+[ [1;31mFAIL[0m ] assertions.assert_eq_float_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_exact_expr_pass at tests/assertions.c:103
+[ [1;32mPASS[0m ] assertions.assert_eq_float_exact_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_exact_expr_fail at tests/assertions.c:109
+[ [1;31mFAIL[0m ]  assertions.assert_eq_float_exact_expr_fail: e = pi failed at tests/assertions.c:112
+[      ]  -> e = 2.7182818284, pi = 3.1415926535
+[      ]  -> delta = 0.4233108251
+[ [1;31mFAIL[0m ] assertions.assert_eq_float_exact_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_expr_pass at tests/assertions.c:115
+[ [1;32mPASS[0m ] assertions.assert_eq_float_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_expr_fail at tests/assertions.c:121
+[ [1;31mFAIL[0m ]  assertions.assert_eq_float_expr_fail: a = b failed at tests/assertions.c:124
+[      ]  -> a = 100.0000000000, b = 100.0000020000
+[      ]  -> delta = 0.0000020000
+[ [1;31mFAIL[0m ] assertions.assert_eq_float_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_negative_pass at tests/assertions.c:127
+[ [1;32mPASS[0m ] assertions.assert_eq_float_negative_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_float_negative_zero_pass at tests/assertions.c:131
+[ [1;32mPASS[0m ] assertions.assert_eq_float_negative_zero_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_str_pass at tests/assertions.c:136
+[ [1;32mPASS[0m ] assertions.assert_eq_str_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_str_fail at tests/assertions.c:140
+[ [1;31mFAIL[0m ]  assertions.assert_eq_str_fail: "Hello" == "World" failed at tests/assertions.c:141
+[      ]  -> "Hello" = "Hello", "World" = "World"
+[ [1;31mFAIL[0m ] assertions.assert_eq_str_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_str_expr_pass at tests/assertions.c:144
+[ [1;32mPASS[0m ] assertions.assert_eq_str_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_str_expr_fail at tests/assertions.c:150
+[ [1;31mFAIL[0m ]  assertions.assert_eq_str_expr_fail: hello == world failed at tests/assertions.c:153
+[      ]  -> hello = "Hello", world = "World"
+[ [1;31mFAIL[0m ] assertions.assert_eq_str_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_str_empty_pass at tests/assertions.c:156
+[ [1;32mPASS[0m ] assertions.assert_eq_str_empty_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_str_null_literal_fail at tests/assertions.c:160
+[ [1;31mFAIL[0m ]  assertions.assert_eq_str_null_literal_fail: a == b failed at tests/assertions.c:163
+[      ]  -> a = "", b = "(null)"
+[ [1;31mFAIL[0m ] assertions.assert_eq_str_null_literal_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_str_nulls_pass at tests/assertions.c:166
+[ [1;32mPASS[0m ] assertions.assert_eq_str_nulls_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_int_pass at tests/assertions.c:172
+[ [1;32mPASS[0m ] assertions.assert_eq_generic_int_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_int_fail at tests/assertions.c:176
+[ [1;31mFAIL[0m ]  assertions.assert_eq_generic_int_fail: 1 == 0 failed at tests/assertions.c:177
+[      ]  -> 1 = 1, 0 = 0
+[ [1;31mFAIL[0m ] assertions.assert_eq_generic_int_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_int_expr_pass at tests/assertions.c:180
+[ [1;32mPASS[0m ] assertions.assert_eq_generic_int_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_int_expr_fail at tests/assertions.c:185
+[ [1;31mFAIL[0m ]  assertions.assert_eq_generic_int_expr_fail: a == b failed at tests/assertions.c:187
+[      ]  -> a = 7, b = 8
+[ [1;31mFAIL[0m ] assertions.assert_eq_generic_int_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_float_pass at tests/assertions.c:190
+[ [1;32mPASS[0m ] assertions.assert_eq_generic_float_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_float_fail at tests/assertions.c:196
+[ [1;31mFAIL[0m ]  assertions.assert_eq_generic_float_fail: 3.0 = 3.1 failed at tests/assertions.c:197
+[      ]  -> 3.0 = 3.0000000000, 3.1 = 3.1000000000
+[      ]  -> delta = 0.1000000000
+[ [1;31mFAIL[0m ] assertions.assert_eq_generic_float_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_str_pass at tests/assertions.c:200
+[ [1;32mPASS[0m ] assertions.assert_eq_generic_str_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_str_fail at tests/assertions.c:204
+[ [1;31mFAIL[0m ]  assertions.assert_eq_generic_str_fail: "foo" == "bar" failed at tests/assertions.c:205
+[      ]  -> "foo" = "foo", "bar" = "bar"
+[ [1;31mFAIL[0m ] assertions.assert_eq_generic_str_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_str_expr_pass at tests/assertions.c:208
+[ [1;32mPASS[0m ] assertions.assert_eq_generic_str_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_eq_generic_str_expr_fail at tests/assertions.c:214
+[ [1;31mFAIL[0m ]  assertions.assert_eq_generic_str_expr_fail: a == b failed at tests/assertions.c:217
+[      ]  -> a = "abc", b = "def"
+[ [1;31mFAIL[0m ] assertions.assert_eq_generic_str_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_int_zero_fail at tests/assertions.c:221
+[ [1;31mFAIL[0m ]  assertions.assert_ne_int_zero_fail: 0 != 0 failed at tests/assertions.c:222
+[      ]  -> both = 0
+[ [1;31mFAIL[0m ] assertions.assert_ne_int_zero_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_int_pass at tests/assertions.c:225
+[ [1;32mPASS[0m ] assertions.assert_ne_int_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_int_fail at tests/assertions.c:229
+[ [1;31mFAIL[0m ]  assertions.assert_ne_int_fail: 5 != 5 failed at tests/assertions.c:230
+[      ]  -> both = 5
+[ [1;31mFAIL[0m ] assertions.assert_ne_int_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_int_negative_fail at tests/assertions.c:233
+[ [1;31mFAIL[0m ]  assertions.assert_ne_int_negative_fail: -42 != -42 failed at tests/assertions.c:234
+[      ]  -> both = -42
+[ [1;31mFAIL[0m ] assertions.assert_ne_int_negative_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_int_min_max_pass at tests/assertions.c:237
+[ [1;32mPASS[0m ] assertions.assert_ne_int_min_max_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_int_expr_pass at tests/assertions.c:241
+[ [1;32mPASS[0m ] assertions.assert_ne_int_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_int_expr_fail at tests/assertions.c:246
+[ [1;31mFAIL[0m ]  assertions.assert_ne_int_expr_fail: a != b failed at tests/assertions.c:248
+[      ]  -> both = 7
+[ [1;31mFAIL[0m ] assertions.assert_ne_int_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_zero_fail at tests/assertions.c:252
+[ [1;31mFAIL[0m ]  assertions.assert_ne_float_zero_fail: 0.0 != 0.0 failed at tests/assertions.c:253
+[      ]  -> 0.0 = 0.0000000000, 0.0 = 0.0000000000
+[      ]  -> delta = 0.0000000000
+[ [1;31mFAIL[0m ] assertions.assert_ne_float_zero_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_exact_fail at tests/assertions.c:256
+[ [1;31mFAIL[0m ]  assertions.assert_ne_float_exact_fail: a != b failed at tests/assertions.c:259
+[      ]  -> a = 3.1415926535, b = 3.1415926535
+[      ]  -> delta = 0.0000000000
+[ [1;31mFAIL[0m ] assertions.assert_ne_float_exact_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_exact_pass at tests/assertions.c:262
+[ [1;32mPASS[0m ] assertions.assert_ne_float_exact_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_pass at tests/assertions.c:268
+[ [1;32mPASS[0m ] assertions.assert_ne_float_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_fail at tests/assertions.c:274
+[ [1;31mFAIL[0m ]  assertions.assert_ne_float_fail: a != b failed at tests/assertions.c:277
+[      ]  -> a = 1.0000000000, b = 1.0000005000
+[      ]  -> delta = 0.0000005000
+[ [1;31mFAIL[0m ] assertions.assert_ne_float_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_exact_expr_fail at tests/assertions.c:280
+[ [1;31mFAIL[0m ]  assertions.assert_ne_float_exact_expr_fail: pi != pi_copy failed at tests/assertions.c:283
+[      ]  -> pi = 3.1415926535, pi_copy = 3.1415926535
+[      ]  -> delta = 0.0000000000
+[ [1;31mFAIL[0m ] assertions.assert_ne_float_exact_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_exact_expr_pass at tests/assertions.c:286
+[ [1;32mPASS[0m ] assertions.assert_ne_float_exact_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_expr_pass at tests/assertions.c:292
+[ [1;32mPASS[0m ] assertions.assert_ne_float_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_expr_fail at tests/assertions.c:298
+[ [1;31mFAIL[0m ]  assertions.assert_ne_float_expr_fail: a != b failed at tests/assertions.c:301
+[      ]  -> a = 100.0000000000, b = 100.0000005000
+[      ]  -> delta = 0.0000005000
+[ [1;31mFAIL[0m ] assertions.assert_ne_float_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_negative_fail at tests/assertions.c:304
+[ [1;31mFAIL[0m ]  assertions.assert_ne_float_negative_fail: -1.5 != -1.5 failed at tests/assertions.c:305
+[      ]  -> -1.5 = -1.5000000000, -1.5 = -1.5000000000
+[      ]  -> delta = 0.0000000000
+[ [1;31mFAIL[0m ] assertions.assert_ne_float_negative_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_float_negative_zero_fail at tests/assertions.c:308
+[ [1;31mFAIL[0m ]  assertions.assert_ne_float_negative_zero_fail: -0.0 != 0.0 failed at tests/assertions.c:309
+[      ]  -> -0.0 = -0.0000000000, 0.0 = 0.0000000000
+[      ]  -> delta = 0.0000000000
+[ [1;31mFAIL[0m ] assertions.assert_ne_float_negative_zero_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_str_pass at tests/assertions.c:313
+[ [1;32mPASS[0m ] assertions.assert_ne_str_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_str_fail at tests/assertions.c:317
+[ [1;31mFAIL[0m ]  assertions.assert_ne_str_fail: "Hello" != "Hello" failed at tests/assertions.c:318
+[      ]  -> "Hello" = "Hello", "Hello" = "Hello"
+[ [1;31mFAIL[0m ] assertions.assert_ne_str_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_str_expr_pass at tests/assertions.c:321
+[ [1;32mPASS[0m ] assertions.assert_ne_str_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_str_expr_fail at tests/assertions.c:327
+[ [1;31mFAIL[0m ]  assertions.assert_ne_str_expr_fail: hello1 != hello2 failed at tests/assertions.c:330
+[      ]  -> hello1 = "Hello", hello2 = "Hello"
+[ [1;31mFAIL[0m ] assertions.assert_ne_str_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_str_empty_fail at tests/assertions.c:333
+[ [1;31mFAIL[0m ]  assertions.assert_ne_str_empty_fail: "" != "" failed at tests/assertions.c:334
+[      ]  -> "" = "", "" = ""
+[ [1;31mFAIL[0m ] assertions.assert_ne_str_empty_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_str_null_literal_pass at tests/assertions.c:337
+[ [1;32mPASS[0m ] assertions.assert_ne_str_null_literal_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_str_nulls_fail at tests/assertions.c:343
+[ [1;31mFAIL[0m ]  assertions.assert_ne_str_nulls_fail: a != b failed at tests/assertions.c:345
+[      ]  -> a = "(null)", b = "(null)"
+[ [1;31mFAIL[0m ] assertions.assert_ne_str_nulls_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_int_pass at tests/assertions.c:349
+[ [1;32mPASS[0m ] assertions.assert_ne_generic_int_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_int_fail at tests/assertions.c:353
+[ [1;31mFAIL[0m ]  assertions.assert_ne_generic_int_fail: 1 != 1 failed at tests/assertions.c:354
+[      ]  -> both = 1
+[ [1;31mFAIL[0m ] assertions.assert_ne_generic_int_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_int_expr_pass at tests/assertions.c:357
+[ [1;32mPASS[0m ] assertions.assert_ne_generic_int_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_int_expr_fail at tests/assertions.c:362
+[ [1;31mFAIL[0m ]  assertions.assert_ne_generic_int_expr_fail: a != b failed at tests/assertions.c:364
+[      ]  -> both = 7
+[ [1;31mFAIL[0m ] assertions.assert_ne_generic_int_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_float_pass at tests/assertions.c:367
+[ [1;32mPASS[0m ] assertions.assert_ne_generic_float_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_float_fail at tests/assertions.c:372
+[ [1;31mFAIL[0m ]  assertions.assert_ne_generic_float_fail: a != b failed at tests/assertions.c:374
+[      ]  -> a = 3.1415900000, b = 3.1415900000
+[      ]  -> delta = 0.0000000000
+[ [1;31mFAIL[0m ] assertions.assert_ne_generic_float_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_str_pass at tests/assertions.c:377
+[ [1;32mPASS[0m ] assertions.assert_ne_generic_str_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_str_fail at tests/assertions.c:381
+[ [1;31mFAIL[0m ]  assertions.assert_ne_generic_str_fail: "same" != "same" failed at tests/assertions.c:382
+[      ]  -> "same" = "same", "same" = "same"
+[ [1;31mFAIL[0m ] assertions.assert_ne_generic_str_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_str_expr_pass at tests/assertions.c:385
+[ [1;32mPASS[0m ] assertions.assert_ne_generic_str_expr_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_ne_generic_str_expr_fail at tests/assertions.c:390
+[ [1;31mFAIL[0m ]  assertions.assert_ne_generic_str_expr_fail: a != b failed at tests/assertions.c:392
+[      ]  -> a = "match", b = "match"
+[ [1;31mFAIL[0m ] assertions.assert_ne_generic_str_expr_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.assert_fail_fail at tests/assertions.c:396
+[ [1;31mFAIL[0m ]  assertions.assert_fail_fail: forced failure at tests/assertions.c:397
+[ [1;31mFAIL[0m ] assertions.assert_fail_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] assertions.simple_skip at tests/assertions.c:401
+[ SKIP ] Reason: Skip from assertions.skip test at tests/assertions.c:402 after 0.0ms
+[ [1;36mEXEC[0m ] assertions.dual_skip at tests/assertions.c:405
+[ SKIP ] Reason: This should be shown on stdout at tests/assertions.c:406 after 0.0ms
+[ [1;36mEXEC[0m ] assertions.pass_then_skip at tests/assertions.c:410
+[ SKIP ] Reason: Skipping after pass... at tests/assertions.c:412 after 0.0ms
+[ [1;36mEXEC[0m ] assertions.fail_then_skip at tests/assertions.c:415
+[ [1;31mFAIL[0m ]  assertions.fail_then_skip: assertion failed: 0 at tests/assertions.c:416
+[      ]  -> value = 0
+[ SKIP ] Reason: Skipping after fail... at tests/assertions.c:417 after 0.0ms
+[ [1;36mEXEC[0m ] assertions.pass_and_skip_fail at tests/assertions.c:420
+[ SKIP ] Reason: This test should never show fail at tests/assertions.c:422 after 0.0ms
+[ [1;36mEXEC[0m ] core.registration at tests/core.c:5
+[ [1;32mPASS[0m ] core.registration ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.direct_fail at tests/indirect.c:59
+[ [1;31mFAIL[0m ]  indirect.direct_fail: assertion failed: 0 at tests/indirect.c:3
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] indirect.direct_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.direct_pass at tests/indirect.c:63
+[ [1;32mPASS[0m ] indirect.direct_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.nested_fail at tests/indirect.c:68
+[ [1;31mFAIL[0m ]  indirect.nested_fail: assertion failed: 0 at tests/indirect.c:3
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] indirect.nested_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.nested_pass at tests/indirect.c:72
+[ [1;32mPASS[0m ] indirect.nested_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.multiple_fail at tests/indirect.c:77
+[ [1;31mFAIL[0m ]  indirect.multiple_fail: assertion failed: a > 0 at tests/indirect.c:14
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] indirect.multiple_fail ([1;31m1[0m/2) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.multiple_pass at tests/indirect.c:81
+[ [1;32mPASS[0m ] indirect.multiple_pass ([1;32m2[0m/2) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.recursion_fail at tests/indirect.c:86
+[ [1;31mFAIL[0m ]  indirect.recursion_fail: assertion failed: 0 at tests/indirect.c:21
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] indirect.recursion_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.recursion_pass at tests/indirect.c:90
+[ [1;32mPASS[0m ] indirect.recursion_pass ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.pointer_fail at tests/indirect.c:95
+[ [1;31mFAIL[0m ]  indirect.pointer_fail: assertion failed: 0 at tests/indirect.c:3
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] indirect.pointer_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.pointer_pass at tests/indirect.c:99
+[ [1;32mPASS[0m ] indirect.pointer_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.loop_helper_fail at tests/indirect.c:104
+[ [1;31mFAIL[0m ]  indirect.loop_helper_fail: assertion failed: 0 at tests/indirect.c:37
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ]  indirect.loop_helper_fail: assertion failed: 0 at tests/indirect.c:37
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] indirect.loop_helper_fail ([1;31m0[0m/2) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.loop_helper_pass at tests/indirect.c:109
+[ [1;32mPASS[0m ] indirect.loop_helper_pass ([1;32m2[0m/2) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.struct_fail at tests/indirect.c:115
+[ [1;31mFAIL[0m ]  indirect.struct_fail: assertion failed: 0 at tests/indirect.c:48
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] indirect.struct_fail ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] indirect.struct_pass at tests/indirect.c:120
+[ [1;32mPASS[0m ] indirect.struct_pass ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_redirect at tests/io.c:5
+[ [34mINFO[0m ] Redirection of stdout works!
+[ [1;32mPASS[0m ] io.stdout_redirect ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_newline at tests/io.c:9
+[ [34mINFO[0m ] This line should end with a newline
+[ [1;32mPASS[0m ] io.stdout_newline ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_multiline at tests/io.c:13
+[ [34mINFO[0m ] Hello
+[ [34mINFO[0m ] World
+[ [1;32mPASS[0m ] io.stdout_multiline ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_monoline at tests/io.c:19
+[ [34mINFO[0m ] Hello World
+[ [1;32mPASS[0m ] io.stdout_monoline ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_space_only at tests/io.c:25
+[ [34mINFO[0m ]  	 
+[ [1;32mPASS[0m ] io.stdout_space_only ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_flush at tests/io.c:30
+[ [34mINFO[0m ] This will be flushed... and this follows.
+[ [1;32mPASS[0m ] io.stdout_flush ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_exact_buffer at tests/io.c:37
+[ [34mINFO[0m ] AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ [ [1;32mPASS[0m ] io.stdout_exact_buffer ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_long_line at tests/io.c:47
+[ [34mINFO[0m ] ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMN PQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZA
+ [ [1;32mPASS[0m ] io.stdout_long_line ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_mixed_lines at tests/io.c:57
+[ [34mINFO[0m ] Line 1
+[ [34mINFO[0m ] Line 2 without newline
+[ [34mINFO[0m ] Line 3	with tab and [36mcyan ANSI escape[0m
+[ [1;32mPASS[0m ] io.stdout_mixed_lines ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] io.stdout_char_by_char at tests/io.c:64
+[ [34mINFO[0m ] Char-by-char
+[ [1;32mPASS[0m ] io.stdout_char_by_char ([1;32m0[0m/0) in 0.0ms
+[      ] Finished running 109 tests!
+[      ]
+[      ] Statistics:
+[      ]   Total  : 109
+[      ]   Passed : [32m62[0m
+[      ]   Failed : [31m47[0m
+[      ]   Rate   : [36m56.9%[0m
+[      ]   Time   : 0.0ms
+[      ]
+[ [1;31m!!!![0m ] Some tests failed!
