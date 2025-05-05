@@ -136,6 +136,7 @@ static: $(KRITIC_OBJ)
 selftest-check:
 	@printf " $(CYAN)$(BOLD)Verifying$(RESET) self-test output against $(EXPECTED_OUTP)...\n"
 	@make clean --no-print-directory
+	@chmod +x tools/sanitize.sh
 	@make selftest 2>&1 | ./tools/sanitize.sh > $(ACTUAL_OUTP)
 	@diff -u $(EXPECTED_OUTP) $(ACTUAL_OUTP) || \
 	(printf "\nOutput mismatch detected.\nUpdate $(EXPECTED_OUTP) if intentional.\n"; exit 1)
