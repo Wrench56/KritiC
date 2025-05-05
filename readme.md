@@ -1,7 +1,10 @@
 # KritiC
 
-[![Build](https://github.com/Wrench56/KritiC/actions/workflows/release.yml/badge.svg)](https://github.com/Wrench56/KritiC/actions)
+[![Unittest](https://github.com/Wrench56/KritiC/actions/workflows/unittest.yml/badge.svg)](https://github.com/Wrench56/KritiC/actions/workflows/unittest.yml)
+[![Tag Workflow Chain](https://github.com/Wrench56/KritiC/actions/workflows/tag-chain.yml/badge.svg)](https://github.com/Wrench56/KritiC/actions)
 [![Version](https://img.shields.io/github/v/tag/Wrench56/KritiC?label=version)](https://github.com/Wrench56/KritiC/releases)
+[![License](https://img.shields.io/github/license/Wrench56/KritiC)](https://github.com/Wrench56/KritiC/blob/main/LICENSE)
+[![Lines of Code](https://tokei.rs/b1/github/Wrench56/KritiC)](https://github.com/Wrench56/KritiC)
 
 A unit testing framework written in C.
 
