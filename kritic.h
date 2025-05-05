@@ -9,9 +9,9 @@
 #include "src/redirect.h"
 #include "src/timer.h"
 
-#define KRITIC_VERSION_MAJOR 0
-#define KRITIC_VERSION_MINOR 1
-#define KRITIC_VERSION_PATCH 0
+#define KRITIC_VERSION_MAJOR 1
+#define KRITIC_VERSION_MINOR 2
+#define KRITIC_VERSION_PATCH 3
 
 #define KRITIC_MAX_TESTS 1024
 #define KRITIC_FLOAT_DELTA_VALUE 1e-6
