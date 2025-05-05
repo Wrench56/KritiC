@@ -20,9 +20,15 @@ jobs:
     - name: Install Clang
       run: sudo apt update && sudo apt install -y clang mingw-w64 zip
     - name: Create compressed tarball for Linux
-      run: make release PLATFORM=linux
+      run: |
+        make release PLATFORM=linux
+        mv build/*.tar.gz .
     - name: Create zip for Windows
       run: make release PLATFORM=windows
+    - name: Restore Linux tarball
+      run: mv *.tar.gz build/
+    - name: Confirm release files exist
+      run: ls -lh build/*.tar.gz build/*.zip
     - name: Upload to GitHub Releases
       uses: softprops/action-gh-release@v2
       with:
