@@ -34,8 +34,14 @@ KRITIC_TEST(math, subtraction) {
 - Make assertions:
   - `KRITIC_ASSERT(expr)`: asserts that `expr` is true
   - `KRITIC_ASSERT_NOT(expr)`: asserts that `expr` is false
-  - `KRITIC_ASSERT_EQ(x, y)`: asserts that `x` equals `y`
-  - `KRITIC_ASSERT_NE(x, y)`: asserts that `x` does not equal `y`
+  - `KRITIC_ASSERT_EQ(x, y)`: asserts that `x` equals `y` (generic: supports `int`, `long long`, `float`, `double`, and `const char*`)
+  - `KRITIC_ASSERT_NE(x, y)`: asserts that `x` does not equal `y` (generic: supports `int`, `long long`, `float`, `double`, and `const char*`)
+  - `KRITIC_ASSERT_EQ_INT(x, y)`: asserts that `x` and `y` are equal using integer comparison  
+  - `KRITIC_ASSERT_NE_INT(x, y)`: asserts that `x` and `y` are not equal using integer comparison  
+  - `KRITIC_ASSERT_EQ_FLOAT(x, y)`: asserts that `x` and `y` are approximately equal using float/double comparison (with delta tolerance)  
+  - `KRITIC_ASSERT_NE_FLOAT(x, y)`: asserts that `x` and `y` are not approximately equal using float/double comparison  
+  - `KRITIC_ASSERT_EQ_STR(x, y)`: asserts that `x` and `y` are equal using string comparison  
+  - `KRITIC_ASSERT_NE_STR(x, y)`: asserts that `x` and `y` are not equal using string comparison
   - `KRITIC_FAIL()`: forces a test failure
 - Skip tests conditionally with `KRITIC_SKIP(reason)`
 - Tests are discovered automatically without manual registration
