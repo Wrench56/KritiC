@@ -1,9 +1,7 @@
 name: Bump Version
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_call:
 
 jobs:
   bump-version:

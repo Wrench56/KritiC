@@ -1,9 +1,7 @@
 name: Build & Release KritiC
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_call:
 
 jobs:
   release:
