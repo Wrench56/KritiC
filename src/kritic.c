@@ -69,7 +69,7 @@ void kritic_enable_ansi_(void) {
 void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
     kritic_runtime_t* kritic_state = kritic_get_runtime_state();
     if (kritic_state->test_count >= KRITIC_MAX_TESTS) {
-        fprintf(stderr, "[kritic] Too many registered tests.\n");
+        fprintf(stderr, "[      ] Error: Too many registered tests.\n");
         exit(1);
     }
 
@@ -238,7 +238,7 @@ void kritic_default_assert_printer(
         case KRITIC_ASSERT_EQ_INT:
             fprintf(stderr, "%s  %s.%s: %s == %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "          -> %s = %lld, %s = %lld\n",
+            fprintf(stderr, "[      ]  -> %s = %lld, %s = %lld\n",
                     actual_expr, actual, expected_expr, expected);
             break;
 
@@ -251,15 +251,15 @@ void kritic_default_assert_printer(
 
             fprintf(stderr, "%s  %s.%s: %s = %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "          -> %s = %.10f, %s = %.10f\n",
+            fprintf(stderr, "[      ]  -> %s = %.10f, %s = %.10f\n",
                     actual_expr, actual_f, expected_expr, expected_f);
-            fprintf(stderr, "          -> delta = %.10f\n", delta);
+            fprintf(stderr, "[      ]  -> delta = %.10f\n", delta);
             break;
 
         case KRITIC_ASSERT_NE_INT:
             fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "          -> both = %lld\n", actual);
+            fprintf(stderr, "[      ]  -> both = %lld\n", actual);
             break;
 
         case KRITIC_ASSERT_NE_FLOAT:
@@ -271,9 +271,9 @@ void kritic_default_assert_printer(
 
             fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "          -> %s = %.10f, %s = %.10f\n",
+            fprintf(stderr, "[      ]  -> %s = %.10f, %s = %.10f\n",
                     actual_expr, actual_f, expected_expr, expected_f);
-            fprintf(stderr, "          -> delta = %.10f\n", delta);
+            fprintf(stderr, "[      ]  -> delta = %.10f\n", delta);
             break;
 
         case KRITIC_ASSERT_EQ_STR:
@@ -285,7 +285,7 @@ void kritic_default_assert_printer(
 
             fprintf(stderr, "%s  %s.%s: %s %s %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, op, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "          -> %s = \"%s\", %s = \"%s\"\n",
+            fprintf(stderr, "[      ]  -> %s = \"%s\", %s = \"%s\"\n",
                     actual_expr, actual_s ? actual_s : "(null)",
                     expected_expr, expected_s ? expected_s : "(null)");
             break;
@@ -293,13 +293,13 @@ void kritic_default_assert_printer(
         case KRITIC_ASSERT:
             fprintf(stderr, "%s  %s.%s: assertion failed: %s at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
-            fprintf(stderr, "          -> value = %lld\n", actual);
+            fprintf(stderr, "[      ]  -> value = %lld\n", actual);
             break;
 
         case KRITIC_ASSERT_NOT:
             fprintf(stderr, "%s  %s.%s: assertion expected to fail: %s at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
-            fprintf(stderr, "          -> value = %lld (was truthy)\n", actual);
+            fprintf(stderr, "[      ]  -> value = %lld (was truthy)\n", actual);
             break;
 
         case KRITIC_ASSERT_FAIL:
@@ -394,10 +394,18 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
 }
 
 void kritic_default_init_printer(kritic_runtime_t* state) {
+    printf(
+        "[      ]\n"
+        "[      ] KritiC v%i.%i.%i\n"
+        "[      ]\n",
+        KRITIC_VERSION_MAJOR, 
+        KRITIC_VERSION_MINOR, 
+        KRITIC_VERSION_PATCH
+    );
     if (state->test_count == 0) {
-        printf("[kritic] No registered test found\n");
+        printf("[      ] No registered test found\n");
     } else {
-        printf("[kritic] Running %d tests:\n", state->test_count);
+        printf("[      ] Running %d tests:\n", state->test_count);
     }
 }
 
