@@ -26,6 +26,8 @@ RELEASE_LIB   := $(RELEASE_DIR)/libkritic.a
 RELEASE_HDR   := $(RELEASE_DIR)/kritic.h
 RELEASE_TAR   := build/kritic-$(shell git describe --tags --always)-linux.tar.gz
 RELEASE_ZIP   := build/kritic-$(shell git describe --tags --always)-windows.zip
+EXPECTED_OUTP := docs/expected_output.txt
+ACTUAL_OUTP   := actual_output.txt
 
 # === Platform-specific settings ===
 ifeq ($(PLATFORM),windows)
@@ -130,10 +132,19 @@ static: $(KRITIC_OBJ)
 	@printf " $(GREEN)$(BOLD)Archiving$(RESET) build/libkritic.a\n"
 	@ar rcs build/libkritic.a $(KRITIC_OBJ)
 
+# Compare test output to expected snapshot
+selftest-check:
+	@printf " $(CYAN)$(BOLD)Verifying$(RESET) self-test output against $(EXPECTED_OUTP)...\n"
+	@make clean --no-print-directory
+	@make selftest 2>&1 | ./tools/sanitize.sh > $(ACTUAL_OUTP)
+	@diff -u $(EXPECTED_OUTP) $(ACTUAL_OUTP) || \
+	(printf "\nOutput mismatch detected.\nUpdate $(EXPECTED_OUTP) if intentional.\n"; exit 1)
+	@printf " $(GREEN)$(BOLD)Verified$(RESET)  $(ACTUAL_OUTP) matches expected self-test results.\n"
+
 # Clean artifacts
 clean:
 	@if [ -d "build" ]; then \
 		rm -rf build; \
 	fi
 
-.PHONY: all clean announce_build_mode selftest release
+.PHONY: all clean announce_build_mode selftest release selftest-check
