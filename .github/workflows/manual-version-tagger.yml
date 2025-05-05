@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version tag (e.g., v1.2.3)"
+        description: "Version tag (e.g., 1.2.3)"
         required: true
         type: string
       description:
@@ -26,8 +26,8 @@ jobs:
     needs: bump
     uses: ./.github/workflows/create-git-tag.yml
     with:
-      version: ${{ inputs.version }}
-      description: ${{ inputs.description }}
+      version: v${{ inputs.version }}
+      description: "KritiC v${{ inputs.version }}: ${{ inputs.description }}"
 
   release:
     needs: tag
