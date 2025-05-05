@@ -2,6 +2,10 @@ name: Bump Version
 
 on:
   workflow_call:
+    inputs:
+      version:
+        required: false
+        type: string
 
 jobs:
   bump-version:
@@ -12,20 +16,25 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Extract version from tag
-        id: extract_version
-        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "${GITHUB_OUTPUT}"
+      - name: Determine version
+        id: version
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+          fi
       - name: Run version bumper script
         run: |
           chmod +x tools/bump_version.sh
-          ./tools/bump_version.sh "${{ steps.extract_version.outputs.version }}"
+          ./tools/bump_version.sh "${{ steps.version.outputs.version }}"
       - name: Commit and push updated version
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions@github.com"
           git add kritic.h
           if ! git diff --cached --quiet; then
-            git commit -m "chore: bump version to v${{ steps.extract_version.outputs.version }}"
+            git commit -m "chore: bump version to v${{ steps.version.outputs.version }}"
             git push
           else
             echo "No changes to commit."
