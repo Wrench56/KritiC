@@ -7,9 +7,13 @@ if [ -t 0 ] && [ -z "$1" ]; then
   exit 1
 fi
 
-
-strip_ms() {
-  sed -E 's/[0-9]+(\.[0-9]+)?ms/0.0ms/g'
+sanitize() {
+  sed -E '
+    s/less than [0-9]+(\.[0-9]+)?ms/0.0ms/g;
+    s/[0-9]+(\.[0-9]+)?ms/0.0ms/g;
+    /KritiC v[0-9]+\.[0-9]+\.[0-9]+/d;
+    /^make\[[0-9]+\]/d;
+  '
 }
 
 if [ -n "$1" ]; then
@@ -17,7 +21,7 @@ if [ -n "$1" ]; then
     echo "File not found: $1"
     exit 1
   fi
-  strip_ms < "$1"
+  sanitize < "$1"
 else
-  strip_ms
+  sanitize
 fi
