@@ -1,0 +1,34 @@
+name: Manual Version Tagger
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag (e.g., v1.2.3)"
+        required: true
+        type: string
+      description:
+        description: "Tag message (multi-line optional)"
+        required: false
+        type: string
+
+jobs:
+  unittest:
+    uses: ./.github/workflows/unittest.yml
+
+  bump:
+    needs: unittest
+    uses: ./.github/workflows/bump-version.yml
+    with:
+      version: ${{ inputs.version }}
+
+  tag:
+    needs: bump
+    uses: ./.github/workflows/create-git-tag.yml
+    with:
+      version: ${{ inputs.version }}
+      description: ${{ inputs.description }}
+
+  release:
+    needs: tag
+    uses: ./.github/workflows/release.yml
