@@ -89,8 +89,8 @@ typedef struct {
 
 // Globals struct
 struct kritic_runtime_t {
-    // Pointer to a struct of printer functions
-    kritic_printers_t* printers;
+    // Struct of printer functions
+    kritic_printers_t printers;
     // Number of registered tests
     int test_count;
     // Number of failed tests

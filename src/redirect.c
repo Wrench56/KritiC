@@ -22,7 +22,7 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
 
             if (line_len + chunk_len > KRITIC_REDIRECT_BUFFER_SIZE - 1) {
                 line_buffer[line_len] = '\0';
-                runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t) {
+                runtime->printers.stdout_printer(runtime, &(kritic_redirect_ctx_t) {
                     .stdout_copy      = state->stdout_copy,
                     .string           = line_buffer,
                     .length           = line_len,
@@ -38,7 +38,7 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
 
             if (nl) {
                 line_buffer[line_len] = '\0';
-                runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t) {
+                runtime->printers.stdout_printer(runtime, &(kritic_redirect_ctx_t) {
                     .stdout_copy      = state->stdout_copy,
                     .string           = line_buffer,
                     .length           = line_len,
@@ -54,7 +54,7 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
     if (line_len >= (KRITIC_REDIRECT_BUFFER_SIZE - 1)) {
         /* Send end fragment separately */
         line_buffer[line_len] = '\0';
-        runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
+        runtime->printers.stdout_printer(runtime, &(kritic_redirect_ctx_t) {
             .stdout_copy      = state->stdout_copy,
             .string           = line_buffer,
             .length           = line_len,
@@ -62,7 +62,7 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
         });
 
         char end[] = {'\n', '\0'};
-        runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
+        runtime->printers.stdout_printer(runtime, &(kritic_redirect_ctx_t) {
             .stdout_copy      = state->stdout_copy,
             .string           = end,
             .length           = 1,
@@ -72,7 +72,7 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
         line_buffer[line_len++] = '\n';
         line_buffer[line_len] = '\0';
 
-        runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
+        runtime->printers.stdout_printer(runtime, &(kritic_redirect_ctx_t) {
             .stdout_copy      = state->stdout_copy,
             .string           = line_buffer,
             .length           = line_len,

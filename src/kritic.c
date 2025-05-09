@@ -16,7 +16,7 @@ static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .timer          = { 0 },
     .fail_count     = 0,
     .test_count     = 0,
-    .printers       = &(kritic_printers_t) {
+    .printers       = (kritic_printers_t) {
         .assert_printer    = &kritic_default_assert_printer,
         .pre_test_printer  = &kritic_default_pre_test_printer,
         .post_test_printer = &kritic_default_post_test_printer,
@@ -35,15 +35,15 @@ kritic_runtime_t* kritic_get_runtime_state(void) {
 /* Override the default printers */
 void kritic_override_printers(const kritic_printers_t* overrides) {
     kritic_runtime_t* state = kritic_get_runtime_state();
-    if (!state || !state->printers || !overrides) return;
+    if (!state || !overrides) return;
 
-    if (overrides->assert_printer)    state->printers->assert_printer    = overrides->assert_printer;
-    if (overrides->pre_test_printer)  state->printers->pre_test_printer  = overrides->pre_test_printer;
-    if (overrides->post_test_printer) state->printers->post_test_printer = overrides->post_test_printer;
-    if (overrides->summary_printer)   state->printers->summary_printer   = overrides->summary_printer;
-    if (overrides->init_printer)      state->printers->init_printer      = overrides->init_printer;
-    if (overrides->stdout_printer)    state->printers->stdout_printer    = overrides->stdout_printer;
-    if (overrides->skip_printer)      state->printers->skip_printer      = overrides->skip_printer;
+    if (overrides->assert_printer)    state->printers.assert_printer    = overrides->assert_printer;
+    if (overrides->pre_test_printer)  state->printers.pre_test_printer  = overrides->pre_test_printer;
+    if (overrides->post_test_printer) state->printers.post_test_printer = overrides->post_test_printer;
+    if (overrides->summary_printer)   state->printers.summary_printer   = overrides->summary_printer;
+    if (overrides->init_printer)      state->printers.init_printer      = overrides->init_printer;
+    if (overrides->stdout_printer)    state->printers.stdout_printer    = overrides->stdout_printer;
+    if (overrides->skip_printer)      state->printers.skip_printer      = overrides->skip_printer;
 }
 
 void kritic_noop(void* dummy, ...) {
@@ -90,7 +90,7 @@ int kritic_run_all(void) {
     kritic_redirect_t* redir = &(kritic_redirect_t) { 0 };
     kritic_state->redirect = redir;
 
-    kritic_state->printers->init_printer(kritic_state);
+    kritic_state->printers.init_printer(kritic_state);
     kritic_redirect_init(kritic_state);
 
     for (int i = 0; i < kritic_state->test_count; ++i) {
@@ -106,7 +106,7 @@ int kritic_run_all(void) {
             .timer          = { 0 },
         };
 
-        kritic_state->printers->pre_test_printer(kritic_state);
+        kritic_state->printers.pre_test_printer(kritic_state);
         kritic_redirect_start(kritic_state);
         kritic_timer_start(&kritic_state->test_state->timer);
         t->fn();
@@ -118,12 +118,12 @@ int kritic_run_all(void) {
             if (kritic_state->test_state->asserts_failed > 0)
                 ++kritic_state->fail_count;
         }
-        kritic_state->printers->post_test_printer(kritic_state);
+        kritic_state->printers.post_test_printer(kritic_state);
     }
 
     fflush(stdout);
     kritic_state->duration_ns = kritic_timer_elapsed(&kritic_state->timer);
-    kritic_state->printers->summary_printer(kritic_state);
+    kritic_state->printers.summary_printer(kritic_state);
 
     kritic_redirect_teardown(kritic_state);
     kritic_state->redirect = NULL;
@@ -198,7 +198,7 @@ void kritic_assert_eq(
     kritic_runtime_t* kritic_state = kritic_get_runtime_state();
     ++kritic_state->test_state->assert_count;
     if (!passed) ++kritic_state->test_state->asserts_failed;
-    kritic_state->printers->assert_printer(ctx, passed, actual, expected, actual_expr, expected_expr, assert_type);
+    kritic_state->printers.assert_printer(ctx, passed, actual, expected, actual_expr, expected_expr, assert_type);
 }
 
 void kritic_skip_test(const kritic_context_t* ctx, const char* reason) {
@@ -207,7 +207,7 @@ void kritic_skip_test(const kritic_context_t* ctx, const char* reason) {
     kritic_state->test_state->skipped = true;
     kritic_state->test_state->skip_reason = reason;
 
-    kritic_state->printers->skip_printer(kritic_state, ctx);
+    kritic_state->printers.skip_printer(kritic_state, ctx);
 }
 
 /* =-=-=-=-=-=-=-=-=-=-=-= */
