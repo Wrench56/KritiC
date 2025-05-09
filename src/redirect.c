@@ -99,6 +99,9 @@ static DWORD WINAPI kritic_pipe_reader_thread(LPVOID arg) {
         SetEvent(state->event_done);
     }
 
+    _close(state->read_fd);
+    state->read_fd = -1;
+
     return 0;
 }
 
@@ -159,14 +162,14 @@ static void* kritic_pipe_reader_thread(void* arg) {
 
         kritic_read_pipe_lines(runtime, buffer, line_buffer);
 
-        close(state->read_fd);
-        state->read_fd = -1;
-
         pthread_mutex_lock(&state->lock);
         state->running = false;
         pthread_cond_signal(&state->cond_done);
         pthread_mutex_unlock(&state->lock);
     }
+
+    close(state->read_fd);
+    state->read_fd = -1;
 
     return NULL;
 }
@@ -254,5 +257,4 @@ void kritic_redirect_stop(kritic_runtime_t* runtime) {
     fflush(stdout);
 
     _close(state->stdout_copy);
-    _close(state->read_fd);
 }
