@@ -14,13 +14,13 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
     size_t bytes_read;
     bool is_part_of_split = false;
 
-    while ((bytes_read = _read(state->read_fd, buffer, KRITIC_REDIRECT_BUFFER_SIZE)) > 0) {
+    while ((bytes_read = _read(state->read_fd, buffer, KRITIC_REDIRECT_BUFFER_SIZE - 1)) > 0) {
         char* nl;
         for (size_t i = 0; i < bytes_read;) {
             nl = memchr(buffer + i, '\n', bytes_read - i);
             size_t chunk_len = nl ? (size_t) (nl - (buffer + i) + 1) : (bytes_read - i);
 
-            if (line_len + chunk_len > KRITIC_REDIRECT_BUFFER_SIZE) {
+            if (line_len + chunk_len > KRITIC_REDIRECT_BUFFER_SIZE - 1) {
                 line_buffer[line_len] = '\0';
                 runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t) {
                     .stdout_copy      = state->stdout_copy,
@@ -50,34 +50,34 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
         }
     }
 
-    if (line_len > 0) {
-        if (line_len >= (KRITIC_REDIRECT_BUFFER_SIZE - 2)) {
-            /* Send end fragment separately */
-            runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
-                .stdout_copy      = state->stdout_copy,
-                .string           = line_buffer,
-                .length           = line_len,
-                .is_part_of_split = is_part_of_split
-            });
+    if (line_len == 0) return;
+    if (line_len >= (KRITIC_REDIRECT_BUFFER_SIZE - 1)) {
+        /* Send end fragment separately */
+        line_buffer[line_len] = '\0';
+        runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
+            .stdout_copy      = state->stdout_copy,
+            .string           = line_buffer,
+            .length           = line_len,
+            .is_part_of_split = is_part_of_split
+        });
 
-            char end[] = {'\n', '\0'};
-            runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
-                .stdout_copy      = state->stdout_copy,
-                .string           = end,
-                .length           = 2,
-                .is_part_of_split = true
-            });
-        } else {
-            line_buffer[line_len++] = '\n';
-            line_buffer[line_len] = '\0';
-    
-            runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
-                .stdout_copy      = state->stdout_copy,
-                .string           = line_buffer,
-                .length           = line_len,
-                .is_part_of_split = is_part_of_split
-            });
-        }
+        char end[] = {'\n', '\0'};
+        runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
+            .stdout_copy      = state->stdout_copy,
+            .string           = end,
+            .length           = 2,
+            .is_part_of_split = true
+        });
+    } else {
+        line_buffer[line_len++] = '\n';
+        line_buffer[line_len] = '\0';
+
+        runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
+            .stdout_copy      = state->stdout_copy,
+            .string           = line_buffer,
+            .length           = line_len,
+            .is_part_of_split = is_part_of_split
+        });
     }
 }
 
