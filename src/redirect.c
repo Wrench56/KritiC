@@ -65,7 +65,7 @@ static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char
         runtime->printers->stdout_printer(runtime, &(kritic_redirect_ctx_t){
             .stdout_copy      = state->stdout_copy,
             .string           = end,
-            .length           = 2,
+            .length           = 1,
             .is_part_of_split = true
         });
     } else {
