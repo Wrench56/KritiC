@@ -27,6 +27,9 @@ rules:
       - core
       - defaults
       - tools
+      - redirect
+      - timer
+      - scheduler
   subject-empty:
     level: error
   type:
