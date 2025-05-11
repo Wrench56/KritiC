@@ -2,6 +2,7 @@
  [32m[1mCompiling[0m src/kritic.c
  [32m[1mCompiling[0m src/redirect.c
  [32m[1mCompiling[0m src/timer.c
+ [32m[1mCompiling[0m src/scheduler.c
  [32m[1mCompiling[0m tests/assertions.c
  [32m[1mCompiling[0m tests/core.c
  [32m[1mCompiling[0m tests/indirect.c
