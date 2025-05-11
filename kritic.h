@@ -8,6 +8,7 @@
 
 #include "src/redirect.h"
 #include "src/timer.h"
+#include "src/scheduler.h"
 
 #define KRITIC_VERSION_MAJOR 1
 #define KRITIC_VERSION_MINOR 2
@@ -34,14 +35,6 @@ typedef enum {
     KRITIC_ASSERT_FAIL
 } kritic_assert_type_t;
 
-typedef struct {
-    const char* file;
-    const char* suite;
-    const char* test;
-    const int line;
-} kritic_context_t;
-
-typedef void (*kritic_test_fn)(void);
 typedef void (*kritic_assert_printer_fn)(
     const kritic_context_t* ctx,
     bool passed,
@@ -58,14 +51,6 @@ typedef void (*kritic_pre_test_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_post_test_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_stdout_printer_fn)(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
 typedef void (*kritic_skip_printer_fn)(kritic_runtime_t* state, const kritic_context_t* ctx);
-
-typedef struct {
-    const char* file;
-    const char* suite;
-    const char* name;
-    int line;
-    kritic_test_fn fn;
-} kritic_test_t;
 
 typedef struct {
     const kritic_test_t* test;
@@ -99,8 +84,12 @@ struct kritic_runtime_t {
     int skip_count;
     // Current test state
     kritic_test_state_t* test_state;
-    // Array of registered tests
-    kritic_test_t tests[KRITIC_MAX_TESTS];
+    // Pointer to a null-terminated array of scheduled tests
+    kritic_test_t** queue;
+    // Pointer to the end of the node in the tests linked list
+    kritic_node_t* last_node;
+    // Pointer to the first node in the tests linked list
+    kritic_node_t* first_node;
     // Current redirection struct
     kritic_redirect_t* redirect;
     // Global runtime timer
@@ -112,7 +101,6 @@ struct kritic_runtime_t {
 /* API */
 void kritic_override_printers(const kritic_printers_t* overrides);
 void kritic_noop(void* _, ...);
-void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn);
 int kritic_run_all(void);
 void kritic_assert_eq(
     const kritic_context_t* ctx,

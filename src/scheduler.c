@@ -1,0 +1,195 @@
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+#include "../kritic.h"
+
+#define KRITIC_SORT_STACK_LIMIT 1024
+
+/* Register a test function to a specific suite with a specific name */
+void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
+    kritic_runtime_t* kritic_state = kritic_get_runtime_state();
+    kritic_test_t* test_metadata = malloc(sizeof(kritic_test_t));
+    kritic_node_t* test_node = malloc(sizeof(kritic_node_t));
+    if (test_metadata == NULL) {
+        fprintf(stderr, "[      ] Error: malloc() returned NULL");
+        exit(1);
+    }
+
+    *test_metadata = (kritic_test_t) {
+        .file  = ctx->file,
+        .suite = ctx->suite,
+        .name  = ctx->test,
+        .line  = ctx->line,
+        .fn    = fn,
+    };
+    *test_node = (kritic_node_t) {
+        .node = NULL,
+        .data = test_metadata
+    };
+
+    if (kritic_state->first_node == NULL) {
+        kritic_state->first_node = test_node;
+    } else {
+        kritic_state->last_node->node = test_node;
+    }
+    kritic_state->last_node = test_node;
+    kritic_state->test_count++;
+}
+
+typedef struct {
+    const char* name;
+    size_t index;
+} test_index_t;
+
+static size_t find_dep_index(const test_index_t* map, size_t count, const char* name) {
+    for (size_t i = 0; i < count; ++i) {
+        if (strcmp(map[i].name, name) == 0) return map[i].index;
+    }
+    return (size_t) -1;
+}
+
+static void kritic_sort_queue(kritic_runtime_t* runtime) {
+    size_t count = runtime->test_count;
+
+    int* indegree          = malloc(count * sizeof(int));
+    size_t* queue          = malloc(count * sizeof(size_t));
+    test_index_t* map      = malloc(count * sizeof(test_index_t));
+    kritic_test_t** sorted = malloc((count + 1) * sizeof(kritic_test_t*));
+
+    if (!indegree || !queue || !sorted || !map) {
+        fprintf(stderr, "[      ] Error: Memory allocation failed during queue sorting\n");
+        exit(1);
+    }
+
+    for (size_t i = 0; i < count; ++i) {
+        map[i].name = runtime->queue[i]->name;
+        map[i].index = i;
+        indegree[i] = 0;
+    }
+
+    for (size_t i = 0; i < count; ++i) {
+        const char* self_name = runtime->queue[i]->name;
+        for (size_t d = 0; runtime->queue[i]->dependencies[d]; ++d) {
+            const char* dep = runtime->queue[i]->dependencies[d];
+
+            if (strcmp(dep, self_name) == 0) {
+                fprintf(stderr, "[      ] Error: Test \"%s\" depends on itself\n", dep);
+                exit(1);
+            }
+
+            size_t dep_index = find_dep_index(map, count, dep);
+            if (dep_index == (size_t)-1) {
+                fprintf(stderr, "[      ] Error: Test \"%s\" depends on unknown \"%s\"\n", self_name, dep);
+                exit(1);
+            }
+
+            indegree[i]++;
+        }
+    }
+
+    /* Queue tests with no dependencies */
+    size_t front = 0, back = 0;
+    for (size_t i = 0; i < count; ++i) {
+        if (indegree[i] == 0) {
+            queue[back++] = i;
+        }
+    }
+
+    /* Kahn's algorithm */
+    size_t sorted_index = 0;
+    while (front < back) {
+        size_t idx = queue[front++];
+        sorted[sorted_index++] = runtime->queue[idx];
+
+        for (size_t j = 0; j < count; ++j) {
+            for (size_t d = 0; runtime->queue[j]->dependencies[d] != NULL; ++d) {
+                if (strcmp(runtime->queue[j]->dependencies[d], runtime->queue[idx]->name) == 0) {
+                    if (--indegree[j] == 0) {
+                        queue[back++] = j;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    /* Cycle detection */
+    if (sorted_index != count) {
+        fprintf(stderr, "[      ] Error: Cyclic dependency detected!\n");
+        for (size_t i = 0; i < count; ++i) {
+            if (indegree[i] > 0) {
+                kritic_test_t* t = runtime->queue[i];
+                fprintf(stderr, "[      ] Test \"%s\" in suite \"%s\" at %s:%d has unresolved dependencies:\n",
+                        t->name, t->suite, t->file, t->line);
+                for (size_t d = 0; t->dependencies[d] != NULL; ++d) {
+                    const char* dep = t->dependencies[d];
+                    size_t dep_index = find_dep_index(map, count, dep);
+                    if (dep_index == (size_t)-1) {
+                        fprintf(stderr, "[      ]   - (missing) %s\n", dep);
+                    } else {
+                        fprintf(stderr, "[      ]   - %s (possibly part of a cycle)\n", dep);
+                    }
+                }
+            }
+        }
+
+        if (count >= KRITIC_SORT_STACK_LIMIT) {
+            free(indegree);
+            free(queue);
+            free(map);
+        }
+        free(sorted);
+        exit(1);
+    }
+
+    /* Cleanup */
+    sorted[count] = NULL;
+    free(runtime->queue);
+    runtime->queue = sorted;
+
+    if (count >= KRITIC_SORT_STACK_LIMIT) {
+        free(indegree);
+        free(queue);
+        free(map);
+    }
+}
+
+
+size_t kritic_construct_queue(kritic_runtime_t* runtime) {
+    size_t count = runtime->test_count;
+    runtime->queue = malloc((count + 1) * sizeof(kritic_test_t*));
+    if (runtime->queue == NULL) {
+        fprintf(stderr, "[      ] Error: malloc() for queue returned NULL\n");
+        exit(1);
+    }
+
+    kritic_node_t* current = runtime->first_node;
+    kritic_node_t* next;
+    size_t i = 0;
+    while (current != NULL) {
+        runtime->queue[i++] = (kritic_test_t*) current->data;
+        next = current->node;
+        free(current);
+        current = next;
+    }
+
+    runtime->first_node = NULL;
+    runtime->last_node = NULL;
+    runtime->queue[i] = NULL;
+    kritic_sort_queue(runtime);
+
+    return count;
+}
+
+void kritic_free_queue(kritic_runtime_t *runtime) {
+    if (!runtime || !runtime->queue) return;
+    for (kritic_test_t** t = runtime->queue; *t != NULL; ++t) {
+        free((*t));
+    }
+
+    free(runtime->queue);
+    runtime->queue = NULL;
+}

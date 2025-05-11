@@ -4,15 +4,16 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "../kritic.h"
-#include "timer.h"
 
 static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .test_state     = NULL,
     .redirect       = NULL,
+    .first_node     = NULL,
+    .last_node      = NULL,
+    .queue          = NULL,
     .timer          = { 0 },
     .fail_count     = 0,
     .test_count     = 0,
@@ -65,39 +66,23 @@ void kritic_enable_ansi_(void) {
 }
 #endif
 
-/* Register a test function to a specific suite with a specific name */
-void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
-    kritic_runtime_t* kritic_state = kritic_get_runtime_state();
-    if (kritic_state->test_count >= KRITIC_MAX_TESTS) {
-        fprintf(stderr, "[      ] Error: Too many registered tests.\n");
-        exit(1);
-    }
-
-    kritic_state->tests[kritic_state->test_count++] = (kritic_test_t) {
-        .file  = ctx->file,
-        .suite = ctx->suite,
-        .name  = ctx->test,
-        .line  = ctx->line,
-        .fn    = fn
-    };
-}
-
 /* Run all of the test suites and tests */
 int kritic_run_all(void) {
     kritic_runtime_t* kritic_state = kritic_get_runtime_state();
+
     kritic_timer_start(&kritic_state->timer);
 
+    kritic_construct_queue(kritic_state);
+    
     kritic_redirect_t* redir = &(kritic_redirect_t) { 0 };
     kritic_state->redirect = redir;
 
     kritic_state->printers.init_printer(kritic_state);
     kritic_redirect_init(kritic_state);
 
-    for (int i = 0; i < kritic_state->test_count; ++i) {
-        const kritic_test_t* t = &kritic_state->tests[i];
-
+    for (kritic_test_t** t = kritic_state->queue; *t != NULL; ++t) {
         kritic_state->test_state = &(kritic_test_state_t) {
-            .test           = t,
+            .test           = *t,
             .assert_count   = 0,
             .asserts_failed = 0,
             .skipped        = false,
@@ -109,15 +94,16 @@ int kritic_run_all(void) {
         kritic_state->printers.pre_test_printer(kritic_state);
         kritic_redirect_start(kritic_state);
         kritic_timer_start(&kritic_state->test_state->timer);
-        t->fn();
+        (*t)->fn();
         kritic_state->test_state->duration_ns = kritic_timer_elapsed(&kritic_state->test_state->timer);
         kritic_redirect_stop(kritic_state);
+
         if (kritic_state->test_state->skipped) {
             ++kritic_state->skip_count;
-        } else {
-            if (kritic_state->test_state->asserts_failed > 0)
-                ++kritic_state->fail_count;
+        } else if (kritic_state->test_state->asserts_failed > 0) {
+            ++kritic_state->fail_count;
         }
+
         kritic_state->printers.post_test_printer(kritic_state);
     }
 
@@ -127,6 +113,7 @@ int kritic_run_all(void) {
 
     kritic_redirect_teardown(kritic_state);
     kritic_state->redirect = NULL;
+    kritic_free_queue(kritic_state);
 
     return kritic_state->fail_count > 0 ? 1 : 0;
 }
