@@ -7,6 +7,8 @@
 #include <string.h>
 
 #include "../kritic.h"
+#include "redirect.h"
+#include "timer.h"
 
 static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .test_state     = NULL,
@@ -17,15 +19,7 @@ static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .timer          = { 0 },
     .fail_count     = 0,
     .test_count     = 0,
-    .printers       = (kritic_printers_t) {
-        .assert_printer    = &kritic_default_assert_printer,
-        .pre_test_printer  = &kritic_default_pre_test_printer,
-        .post_test_printer = &kritic_default_post_test_printer,
-        .summary_printer   = &kritic_default_summary_printer,
-        .init_printer      = &kritic_default_init_printer,
-        .stdout_printer    = &kritic_default_stdout_printer,
-        .skip_printer      = &kritic_default_skip_printer
-    }
+    .printers       = { 0 }
 };
 
 /* Getter for kritic_runtime_state() */
@@ -45,6 +39,19 @@ void kritic_override_printers(const kritic_printers_t* overrides) {
     if (overrides->init_printer)      state->printers.init_printer      = overrides->init_printer;
     if (overrides->stdout_printer)    state->printers.stdout_printer    = overrides->stdout_printer;
     if (overrides->skip_printer)      state->printers.skip_printer      = overrides->skip_printer;
+}
+
+void kritic_set_default_printers(void) {
+    kritic_runtime_t* state = kritic_get_runtime_state();
+    state->printers = (kritic_printers_t) {
+        .assert_printer    = &kritic_default_assert_printer,
+        .pre_test_printer  = &kritic_default_pre_test_printer,
+        .post_test_printer = &kritic_default_post_test_printer,
+        .summary_printer   = &kritic_default_summary_printer,
+        .init_printer      = &kritic_default_init_printer,
+        .stdout_printer    = &kritic_default_stdout_printer,
+        .skip_printer      = &kritic_default_skip_printer
+    };
 }
 
 void kritic_noop(void* dummy, ...) {
@@ -434,5 +441,6 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
 /* Default KritiC main(void) code used to initialize the framework */
 int __attribute__((weak)) main(void) {
     kritic_enable_ansi();
+    kritic_set_default_printers();
     return kritic_run_all();
 }

@@ -100,6 +100,7 @@ struct kritic_runtime_t {
 
 /* API */
 void kritic_override_printers(const kritic_printers_t* overrides);
+void kritic_set_default_printers(void);
 void kritic_noop(void* _, ...);
 int kritic_run_all(void);
 void kritic_assert_eq(
