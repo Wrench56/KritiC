@@ -9,12 +9,13 @@
 #define KRITIC_SORT_STACK_LIMIT 1024
 
 /* Register a test function to a specific suite with a specific name */
-void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
+void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn, size_t attr_count, kritic_attribute_t** attrs) {
     kritic_runtime_t* kritic_state = kritic_get_runtime_state();
     kritic_test_t* test_metadata = malloc(sizeof(kritic_test_t));
     kritic_node_t* test_node = malloc(sizeof(kritic_node_t));
-    if (test_metadata == NULL) {
-        fprintf(stderr, "[      ] Error: malloc() returned NULL");
+
+    if (!test_metadata || !test_node) {
+        fprintf(stderr, "[      ] Error: malloc() returned NULL\n");
         exit(1);
     }
 
@@ -25,10 +26,9 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn) {
         .line  = ctx->line,
         .fn    = fn,
     };
-    *test_node = (kritic_node_t) {
-        .node = NULL,
-        .data = test_metadata
-    };
+
+    kritic_parse_attr_data(test_metadata, attr_count, attrs);
+    *test_node = (kritic_node_t) { .node = NULL, .data = test_metadata };
 
     if (kritic_state->first_node == NULL) {
         kritic_state->first_node = test_node;
@@ -44,7 +44,7 @@ typedef struct {
     size_t index;
 } test_index_t;
 
-static size_t find_dep_index(const test_index_t* map, size_t count, const char* name) {
+static inline size_t find_dep_index(const test_index_t* map, size_t count, const char* name) {
     for (size_t i = 0; i < count; ++i) {
         if (strcmp(map[i].name, name) == 0) return map[i].index;
     }
