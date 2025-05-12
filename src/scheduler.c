@@ -135,11 +135,9 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
             }
         }
 
-        if (count >= KRITIC_SORT_STACK_LIMIT) {
-            free(indegree);
-            free(queue);
-            free(map);
-        }
+        free(indegree);
+        free(queue);
+        free(map);
         free(sorted);
         exit(1);
     }
@@ -149,11 +147,9 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
     free(runtime->queue);
     runtime->queue = sorted;
 
-    if (count >= KRITIC_SORT_STACK_LIMIT) {
-        free(indegree);
-        free(queue);
-        free(map);
-    }
+    free(indegree);
+    free(queue);
+    free(map);
 }
 
 
@@ -186,6 +182,7 @@ size_t kritic_construct_queue(kritic_runtime_t* runtime) {
 void kritic_free_queue(kritic_runtime_t *runtime) {
     if (!runtime || !runtime->queue) return;
     for (kritic_test_t** t = runtime->queue; *t != NULL; ++t) {
+        kritic_free_attributes((*t));
         free((*t));
     }
 

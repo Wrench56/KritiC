@@ -28,6 +28,7 @@ typedef struct kritic_attribute_t {
 } kritic_attribute_t;
 
 void kritic_parse_attr_data(struct kritic_test_t* test, size_t attr_count, kritic_attribute_t** attrs);
+void kritic_free_attributes(struct kritic_test_t* test);
 
 #define KRITIC_DEPENDS_ON(_suite, _name) \
     &(kritic_attribute_t){ \

@@ -14,6 +14,10 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
 
                     if (!dep) {
                         kritic_test_index_t* new_dep = malloc(sizeof(kritic_test_index_t));
+                        if (!new_dep) {
+                            fprintf(stderr, "[      ] Error: malloc() failed in kritic_parse_attr_data()");
+                            exit(1);
+                        }
                         new_dep->suite = depends_on.suite;
                         new_dep->name = depends_on.test;
 
@@ -41,5 +45,12 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
                 fprintf(stderr, "[      ] Error: Unknown attribute type detected\n");
                 break;
         }
+    }
+}
+
+void kritic_free_attributes(struct kritic_test_t* test) {
+    for (size_t i = 0; i < KRITIC_MAX_DEPENDENCIES; i++) {
+        if (test->dependencies[i] == NULL) break;
+        free(test->dependencies[i]);
     }
 }
