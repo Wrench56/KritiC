@@ -30,6 +30,7 @@ rules:
       - redirect
       - timer
       - scheduler
+      - attributes
   subject-empty:
     level: error
   type:
