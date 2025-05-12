@@ -8,6 +8,7 @@
 
 #include "src/redirect.h"
 #include "src/timer.h"
+#include "src/attributes.h"
 #include "src/scheduler.h"
 
 #define KRITIC_VERSION_MAJOR 1
@@ -147,19 +148,56 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
 
 /* Macros */
 #define KRITIC_NOOP(type) ((type)(void*)(kritic_noop))
+#define KRITIC_GET_CURRENT_SUITE() kritic_get_runtime_state()->test_state->test->suite
+#define KRITIC_GET_CURRENT_TEST() kritic_get_runtime_state()->test_state->test->name
+
+#define PP_NARG(...) PP_NARG_(_,__VA_ARGS__,PP_RSEQ_N())
+#define PP_NARG_(_, ...) PP_ARG_N(__VA_ARGS__)
+
+#define PP_ARG_N( \
+     _1, _2, _3, _4, _5, _6, _7, _8, _9,_10, \
+    _11,_12,_13,_14,_15,_16,_17,_18,_19,_20, \
+    _21,_22,_23,_24,_25,_26,_27,_28,_29,_30, \
+    _31,_32,_33,_34,_35,_36,_37,_38,_39,_40, \
+    _41,_42,_43,_44,_45,_46,_47,_48,_49,_50, \
+    _51,_52,_53,_54,_55,_56,_57,_58,_59,_60, \
+    _61,_62,_63,  N, ...) N
+
+#define PP_RSEQ_N() \
+    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3, \
+    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3, \
+    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3, \
+    3,2,0,0,0
 
 #define KRITIC_TEST_NAME(suite, name) kritic_test_##suite##_##name
 #define KRITIC_REGISTER_NAME(suite, name) kritic_register_##suite##_##name
 
-#define KRITIC_GET_CURRENT_SUITE() kritic_get_runtime_state()->test_state->test->suite
-#define KRITIC_GET_CURRENT_TEST() kritic_get_runtime_state()->test_state->test->name
+#define CONCAT2(a, b) a##b
+#define EXPAND_CONCAT2(a, b) CONCAT2(a, b)
 
 /* Defines and registers a test case function in the given suite */
-#define KRITIC_TEST(suite, name)                                                                              \
+#define KRITIC_TEST(...) EXPAND_CONCAT2(KRITIC_TEST, PP_NARG(__VA_ARGS__))(__VA_ARGS__)
+#define KRITIC_TEST2 KRITIC_TEST_WITH_NO_ARGS
+#define KRITIC_TEST3 KRITIC_TEST_WITH_ARGS
+
+/* Defines a test with no arguments */
+#define KRITIC_TEST_WITH_NO_ARGS(suite, name)                                                                 \
+static void KRITIC_TEST_NAME(suite, name)(void);                                                              \
+    __attribute__((constructor)) static void KRITIC_REGISTER_NAME(suite, name)(void) {                        \
+        static const kritic_context_t ctx = { __FILE__, #suite, #name, __LINE__ };                            \
+        kritic_register(&ctx, KRITIC_TEST_NAME(suite, name), 0, NULL);                                        \
+    }                                                                                                         \
+    static void KRITIC_TEST_NAME(suite, name)(void)
+
+/* Defines a test with arguments */
+#define KRITIC_TEST_WITH_ARGS(suite, name, ...)                                                               \
     static void KRITIC_TEST_NAME(suite, name)(void);                                                          \
     __attribute__((constructor)) static void KRITIC_REGISTER_NAME(suite, name)(void) {                        \
-        static const kritic_context_t ctx = {__FILE__, #suite, #name, __LINE__};                              \
-        kritic_register(&ctx, KRITIC_TEST_NAME(suite, name));                                                 \
+        kritic_attribute_t* kritic_attrs[] = { __VA_ARGS__, NULL };                                           \
+        size_t count = 0;                                                                                     \
+        while (kritic_attrs[count]) ++count;                                                                  \
+        static const kritic_context_t ctx = { __FILE__, #suite, #name, __LINE__ };                            \
+        kritic_register(&ctx, KRITIC_TEST_NAME(suite, name), count, kritic_attrs);                            \
     }                                                                                                         \
     static void KRITIC_TEST_NAME(suite, name)(void)
 
