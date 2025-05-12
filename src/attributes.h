@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 struct kritic_test_t;
+struct kritic_test_index_t;
 
 typedef enum {
     KRITIC_ATTR_UNKNOWN = 0,

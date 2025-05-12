@@ -39,14 +39,10 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn, size_t attr
     kritic_state->test_count++;
 }
 
-typedef struct {
-    const char* name;
-    size_t index;
-} test_index_t;
-
-static inline size_t find_dep_index(const test_index_t* map, size_t count, const char* name) {
+static inline size_t find_dep_index(const kritic_test_index_t* map, size_t count, kritic_test_index_t* dep) {
     for (size_t i = 0; i < count; ++i) {
-        if (strcmp(map[i].name, name) == 0) return map[i].index;
+        if (strcmp(map[i].suite, dep->suite) == 0
+            && strcmp(map[i].name, dep->name) == 0) return map[i].index;
     }
     return (size_t) -1;
 }
@@ -54,10 +50,10 @@ static inline size_t find_dep_index(const test_index_t* map, size_t count, const
 static void kritic_sort_queue(kritic_runtime_t* runtime) {
     size_t count = runtime->test_count;
 
-    int* indegree          = malloc(count * sizeof(int));
-    size_t* queue          = malloc(count * sizeof(size_t));
-    test_index_t* map      = malloc(count * sizeof(test_index_t));
-    kritic_test_t** sorted = malloc((count + 1) * sizeof(kritic_test_t*));
+    int* indegree            = malloc(count * sizeof(int));
+    size_t* queue            = malloc(count * sizeof(size_t));
+    kritic_test_index_t* map = malloc(count * sizeof(kritic_test_index_t));
+    kritic_test_t** sorted   = malloc((count + 1) * sizeof(kritic_test_t*));
 
     if (!indegree || !queue || !sorted || !map) {
         fprintf(stderr, "[      ] Error: Memory allocation failed during queue sorting\n");
@@ -65,24 +61,26 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
     }
 
     for (size_t i = 0; i < count; ++i) {
+        map[i].suite = runtime->queue[i]->suite;
         map[i].name = runtime->queue[i]->name;
         map[i].index = i;
         indegree[i] = 0;
     }
 
     for (size_t i = 0; i < count; ++i) {
-        const char* self_name = runtime->queue[i]->name;
         for (size_t d = 0; runtime->queue[i]->dependencies[d]; ++d) {
-            const char* dep = runtime->queue[i]->dependencies[d];
-
-            if (strcmp(dep, self_name) == 0) {
-                fprintf(stderr, "[      ] Error: Test \"%s\" depends on itself\n", dep);
+            kritic_test_index_t* dep = runtime->queue[i]->dependencies[d];
+            if (strcmp(dep->suite, runtime->queue[i]->suite) == 0
+                && strcmp(dep->name, runtime->queue[i]->name) == 0) {
+                fprintf(stderr, "[      ] Error: Test \"%s.%s\" depends on itself\n",
+                    runtime->queue[i]->suite, runtime->queue[i]->name);
                 exit(1);
             }
 
             size_t dep_index = find_dep_index(map, count, dep);
             if (dep_index == (size_t)-1) {
-                fprintf(stderr, "[      ] Error: Test \"%s\" depends on unknown \"%s\"\n", self_name, dep);
+                fprintf(stderr, "[      ] Error: Test \"%s.%s\" depends on unknown \"%s.%s\"\n",
+                    runtime->queue[i]->suite, runtime->queue[i]->name, dep->suite, dep->name);
                 exit(1);
             }
 
@@ -106,7 +104,8 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
 
         for (size_t j = 0; j < count; ++j) {
             for (size_t d = 0; runtime->queue[j]->dependencies[d] != NULL; ++d) {
-                if (strcmp(runtime->queue[j]->dependencies[d], runtime->queue[idx]->name) == 0) {
+                if (strcmp(runtime->queue[j]->dependencies[d]->suite, runtime->queue[idx]->suite) == 0
+                    && strcmp(runtime->queue[j]->dependencies[d]->name, runtime->queue[idx]->name) == 0) {
                     if (--indegree[j] == 0) {
                         queue[back++] = j;
                     }
@@ -125,12 +124,12 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
                 fprintf(stderr, "[      ] Test \"%s\" in suite \"%s\" at %s:%d has unresolved dependencies:\n",
                         t->name, t->suite, t->file, t->line);
                 for (size_t d = 0; t->dependencies[d] != NULL; ++d) {
-                    const char* dep = t->dependencies[d];
+                    kritic_test_index_t* dep = t->dependencies[d];
                     size_t dep_index = find_dep_index(map, count, dep);
                     if (dep_index == (size_t)-1) {
-                        fprintf(stderr, "[      ]   - (missing) %s\n", dep);
+                        fprintf(stderr, "[      ]   - (missing) %s.%s\n", dep->suite, dep->name);
                     } else {
-                        fprintf(stderr, "[      ]   - %s (possibly part of a cycle)\n", dep);
+                        fprintf(stderr, "[      ]   - %s.%s (possibly part of a cycle)\n", dep->suite, dep->name);
                     }
                 }
             }
