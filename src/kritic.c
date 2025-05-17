@@ -352,9 +352,9 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
     const char* RED    = "\033[31m";
     const char* CYAN   = "\033[36m";
 
-    int passed = state->test_count - state->fail_count;
+    uint32_t passed = state->test_count - state->fail_count;
     float pass_rate = state->test_count > 0
-        ? 100.0f * passed / state->test_count
+        ? 100.0f * (float) passed / (float) state->test_count
         : 0.0f;
 
     double duration_ms = (double) state->duration_ns / 1000000.0;
@@ -375,7 +375,7 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
         state->test_count,
         GREEN, passed, RESET,
         RED, state->fail_count, RESET,
-        CYAN, pass_rate, RESET,
+        CYAN, (double) pass_rate, RESET,
         duration_ms,
         state->fail_count > 0
             ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
@@ -383,7 +383,7 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
     );
 
     if (len > 0 && len < (int) sizeof(buffer)) {
-        _write(1, buffer, (size_t) len);
+        _write(1, buffer, (uint32_t) len);
     }
 }
 
@@ -434,7 +434,7 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
     }
 
     if (len > 0 && len < (int) sizeof(buffer)) {
-        _write(state->redirect->stdout_copy, buffer, (size_t) len);
+        _write(state->redirect->stdout_copy, buffer, (uint32_t) len);
     }
 }
 

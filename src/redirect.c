@@ -5,20 +5,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _WIN32
+    #define READ_RET_T int
+#else
+    #include <unistd.h>
+    #define READ_RET_T ssize_t
+#endif
 
 #include "../kritic.h"
 
 static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char* line_buffer) {
     kritic_redirect_t* state = runtime->redirect;
-    size_t line_len = 0;
-    size_t bytes_read;
+    uint32_t line_len = 0;
+    READ_RET_T read_return;
+
+    uint32_t bytes_read;
     bool is_part_of_split = false;
 
-    while ((bytes_read = _read(state->read_fd, buffer, KRITIC_REDIRECT_BUFFER_SIZE - 1)) > 0) {
+    while ((read_return = _read(state->read_fd, buffer, KRITIC_REDIRECT_BUFFER_SIZE - 1)) > 0) {
+        bytes_read = (uint32_t) read_return;
         char* nl;
-        for (size_t i = 0; i < bytes_read;) {
+        for (uint32_t i = 0; i < bytes_read;) {
             nl = memchr(buffer + i, '\n', bytes_read - i);
-            size_t chunk_len = nl ? (size_t) (nl - (buffer + i) + 1) : (bytes_read - i);
+            uint32_t chunk_len = nl ? (uint32_t) (nl - (buffer + i) + 1) : (bytes_read - i);
 
             if (line_len + chunk_len > KRITIC_REDIRECT_BUFFER_SIZE - 1) {
                 line_buffer[line_len] = '\0';

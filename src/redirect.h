@@ -5,6 +5,7 @@
 #define KRITIC_REDIRECT_BUFFER_SIZE 4096
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,7 +16,7 @@ typedef struct kritic_runtime_t kritic_runtime_t;
 typedef struct {
     int stdout_copy;
     char* string;
-    int length;
+    uint32_t length;
     bool is_part_of_split;
 } kritic_redirect_ctx_t;
 

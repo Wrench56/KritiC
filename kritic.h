@@ -78,11 +78,11 @@ struct kritic_runtime_t {
     // Struct of printer functions
     kritic_printers_t printers;
     // Number of registered tests
-    int test_count;
+    uint32_t test_count;
     // Number of failed tests
-    int fail_count;
+    uint32_t fail_count;
     // Number of skipped tests
-    int skip_count;
+    uint32_t skip_count;
     // Current test state
     kritic_test_state_t* test_state;
     // Pointer to a null-terminated array of scheduled tests
