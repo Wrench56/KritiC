@@ -3,7 +3,9 @@
  [32m[1mCompiling[0m src/redirect.c
  [32m[1mCompiling[0m src/timer.c
  [32m[1mCompiling[0m src/scheduler.c
+ [32m[1mCompiling[0m src/attributes.c
  [32m[1mCompiling[0m tests/assertions.c
+ [32m[1mCompiling[0m tests/attributes.c
  [32m[1mCompiling[0m tests/core.c
  [32m[1mCompiling[0m tests/indirect.c
  [32m[1mCompiling[0m tests/io.c
@@ -13,7 +15,7 @@
 Running from custom main()...
 [      ]
 [      ]
-[      ] Running 109 tests:
+[      ] Running 121 tests:
 [ [1;36mEXEC[0m ] assertions.assert_pass at tests/assertions.c:6
 [ [1;32mPASS[0m ] assertions.assert_pass ([1;32m1[0m/1) in 0.0ms
 [ [1;36mEXEC[0m ] assertions.assert_fail at tests/assertions.c:10
@@ -276,6 +278,14 @@ Running from custom main()...
 [ SKIP ] Reason: Skipping after fail... at tests/assertions.c:417 after 0.0ms
 [ [1;36mEXEC[0m ] assertions.pass_and_skip_fail at tests/assertions.c:420
 [ SKIP ] Reason: This test should never show fail at tests/assertions.c:422 after 0.0ms
+[ [1;36mEXEC[0m ] attributes.target_simple at tests/attributes.c:3
+[ [1;32mPASS[0m ] attributes.target_simple ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] dependency_suite.target_cross_suite at tests/attributes.c:20
+[ [1;32mPASS[0m ] dependency_suite.target_cross_suite ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.dep_c at tests/attributes.c:30
+[ [1;32mPASS[0m ] attributes.dep_c ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.diamond_a at tests/attributes.c:45
+[ [1;32mPASS[0m ] attributes.diamond_a ([1;32m1[0m/1) in 0.0ms
 [ [1;36mEXEC[0m ] core.registration at tests/core.c:5
 [ [1;32mPASS[0m ] core.registration ([1;32m0[0m/0) in 0.0ms
 [ [1;36mEXEC[0m ] indirect.direct_fail at tests/indirect.c:59
@@ -355,13 +365,29 @@ Running from custom main()...
 [ [1;36mEXEC[0m ] io.stdout_char_by_char at tests/io.c:64
 [ [34mINFO[0m ] Char-by-char
 [ [1;32mPASS[0m ] io.stdout_char_by_char ([1;32m0[0m/0) in 0.0ms
-[      ] Finished running 109 tests!
+[ [1;36mEXEC[0m ] attributes.depends_on_simple at tests/attributes.c:8
+[ [1;32mPASS[0m ] attributes.depends_on_simple ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.depends_on_duplicate at tests/attributes.c:15
+[ [1;32mPASS[0m ] attributes.depends_on_duplicate ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.depends_on_cross_suite at tests/attributes.c:25
+[ [1;32mPASS[0m ] attributes.depends_on_cross_suite ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.dep_b at tests/attributes.c:35
+[ [1;32mPASS[0m ] attributes.dep_b ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.diamond_b at tests/attributes.c:50
+[ [1;32mPASS[0m ] attributes.diamond_b ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.diamond_c at tests/attributes.c:55
+[ [1;32mPASS[0m ] attributes.diamond_c ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.dep_a at tests/attributes.c:40
+[ [1;32mPASS[0m ] attributes.dep_a ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.diamond_d at tests/attributes.c:61
+[ [1;32mPASS[0m ] attributes.diamond_d ([1;32m1[0m/1) in 0.0ms
+[      ] Finished running 121 tests!
 [      ]
 [      ] Statistics:
-[      ]   Total  : 109
-[      ]   Passed : [32m62[0m
+[      ]   Total  : 121
+[      ]   Passed : [32m74[0m
 [      ]   Failed : [31m47[0m
-[      ]   Rate   : [36m56.9%[0m
+[      ]   Rate   : [36m61.2%[0m
 [      ]   Time   : 0.0ms
 [      ]
 [ [1;31m!!!![0m ] Some tests failed!
