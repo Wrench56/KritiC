@@ -6,7 +6,9 @@ MODE ?= release
 PLATFORM ?= linux
 
 # === Compiler flags ===
-DIAG_FLAGS    := -std=c99 -Wall -Wextra -Wpedantic -Werror
+DIAG_FLAGS    := -std=c99 -Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion \
+                 -Wsign-conversion -Wcast-align -Wpointer-arith -Wformat=2 \
+				 -Wstrict-prototypes -Wundef -Wdouble-promotion
 OPT_FLAGS     := -O2 -fomit-frame-pointer -march=native
 DEBUG_FLAGS   := -g -fsanitize=address,undefined -fno-omit-frame-pointer -O0
 
