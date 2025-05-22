@@ -61,3 +61,33 @@ KRITIC_TEST(attributes, diamond_d,
     KRITIC_DEPENDS_ON(attributes, diamond_c)) {
     KRITIC_ASSERT(1);
 }
+
+KRITIC_TEST(attributes, fail_leaf) {
+    KRITIC_ASSERT(0);
+}
+
+KRITIC_TEST(attributes, fail_mid,
+    KRITIC_DEPENDS_ON(attributes, fail_leaf)) {
+    KRITIC_ASSERT(1);
+}
+
+KRITIC_TEST(attributes, fail_top,
+    KRITIC_DEPENDS_ON(attributes, fail_mid)) {
+    KRITIC_ASSERT(1);
+}
+
+KRITIC_TEST(attributes, diamond_fail_b,
+    KRITIC_DEPENDS_ON(attributes, diamond_a)) {
+    KRITIC_ASSERT(0);
+}
+
+KRITIC_TEST(attributes, diamond_fail_c,
+    KRITIC_DEPENDS_ON(attributes, diamond_a)) {
+    KRITIC_ASSERT(1);
+}
+
+KRITIC_TEST(attributes, diamond_fail_d,
+    KRITIC_DEPENDS_ON(attributes, diamond_fail_b),
+    KRITIC_DEPENDS_ON(attributes, diamond_fail_c)) {
+    KRITIC_ASSERT(1);
+}

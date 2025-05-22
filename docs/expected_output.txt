@@ -17,7 +17,7 @@
 Running from custom main()...
 [      ]
 [      ]
-[      ] Running 121 tests:
+[      ] Running 127 tests:
 [ [1;36mEXEC[0m ] assertions.assert_pass at tests/assertions.c:6
 [ [1;32mPASS[0m ] assertions.assert_pass ([1;32m1[0m/1) in 0.0ms
 [ [1;36mEXEC[0m ] assertions.assert_fail at tests/assertions.c:10
@@ -288,6 +288,10 @@ Running from custom main()...
 [ [1;32mPASS[0m ] attributes.dep_c ([1;32m1[0m/1) in 0.0ms
 [ [1;36mEXEC[0m ] attributes.diamond_a at tests/attributes.c:45
 [ [1;32mPASS[0m ] attributes.diamond_a ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.fail_leaf at tests/attributes.c:65
+[ [1;31mFAIL[0m ]  attributes.fail_leaf: assertion failed: 0 at tests/attributes.c:66
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] attributes.fail_leaf ([1;31m0[0m/1) in 0.0ms
 [ [1;36mEXEC[0m ] core.registration at tests/core.c:5
 [ [1;32mPASS[0m ] core.registration ([1;32m0[0m/0) in 0.0ms
 [ [1;36mEXEC[0m ] indirect.direct_fail at tests/indirect.c:59
@@ -379,17 +383,29 @@ Running from custom main()...
 [ [1;32mPASS[0m ] attributes.diamond_b ([1;32m1[0m/1) in 0.0ms
 [ [1;36mEXEC[0m ] attributes.diamond_c at tests/attributes.c:55
 [ [1;32mPASS[0m ] attributes.diamond_c ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.diamond_fail_b at tests/attributes.c:80
+[ [1;31mFAIL[0m ]  attributes.diamond_fail_b: assertion failed: 0 at tests/attributes.c:81
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] attributes.diamond_fail_b ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.diamond_fail_c at tests/attributes.c:85
+[ [1;32mPASS[0m ] attributes.diamond_fail_c ([1;32m1[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.fail_mid at tests/attributes.c:70
+[ SKIP ] Test "attributes.fail_mid" at tests/attributes.c:70 is being skipped because underlying dependency "attributes.fail_leaf" failed
 [ [1;36mEXEC[0m ] attributes.dep_a at tests/attributes.c:40
 [ [1;32mPASS[0m ] attributes.dep_a ([1;32m1[0m/1) in 0.0ms
 [ [1;36mEXEC[0m ] attributes.diamond_d at tests/attributes.c:61
 [ [1;32mPASS[0m ] attributes.diamond_d ([1;32m1[0m/1) in 0.0ms
-[      ] Finished running 121 tests!
+[ [1;36mEXEC[0m ] attributes.diamond_fail_d at tests/attributes.c:91
+[ SKIP ] Test "attributes.diamond_fail_d" at tests/attributes.c:91 is being skipped because underlying dependency "attributes.diamond_fail_b" failed
+[ [1;36mEXEC[0m ] attributes.fail_top at tests/attributes.c:75
+[ SKIP ] Test "attributes.fail_top" at tests/attributes.c:75 is being skipped because underlying dependency "attributes.fail_mid" failed
+[      ] Finished running 127 tests!
 [      ]
 [      ] Statistics:
-[      ]   Total  : 121
-[      ]   Passed : [32m74[0m
-[      ]   Failed : [31m47[0m
-[      ]   Rate   : [36m61.2%[0m
+[      ]   Total  : 127
+[      ]   Passed : [32m78[0m
+[      ]   Failed : [31m49[0m
+[      ]   Rate   : [36m61.4%[0m
 [      ]   Time   : 0.0ms
 [      ]
 [ [1;31m!!!![0m ] Some tests failed!
