@@ -370,6 +370,17 @@ void kritic_default_post_test_printer(kritic_runtime_t* state) {
             passed_asserts,
             total_asserts
         );
+    } else if (state->test_state->duration_ns == UINT64_MAX) {
+        /* Timer is disabled (or the test ran for 584.5 years) */
+        printf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d)\n",
+            color,
+            label,
+            KRITIC_GET_CURRENT_SUITE(),
+            KRITIC_GET_CURRENT_TEST(),
+            color,
+            passed_asserts,
+            total_asserts
+        );
     } else {
         printf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %.3fms\n",
             color,
