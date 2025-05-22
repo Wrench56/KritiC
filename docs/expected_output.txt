@@ -12,6 +12,8 @@
  [32m[1mLinking[0m   self-test executable
  [32m[1mBuilt[0m     build/selftest
  [36m[1mTesting[0m   KritiC...
+[      ] Warning: duplicate dependency "attributes.target_simple" for test "attributes.depends_on_duplicate" in tests/attributes.c:15
+[      ] Skipping duplicate
 Running from custom main()...
 [      ]
 [      ]

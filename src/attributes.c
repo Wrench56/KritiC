@@ -12,9 +12,9 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
                 for (size_t j = 0; j < KRITIC_MAX_DEPENDENCIES; ++j) {
                     kritic_test_index_t* dep = test->dependencies[j];
 
-                    if (!dep) {
+                    if (dep == NULL) {
                         kritic_test_index_t* new_dep = malloc(sizeof(kritic_test_index_t));
-                        if (!new_dep) {
+                        if (new_dep == NULL) {
                             fprintf(stderr, "[      ] Error: malloc() failed in kritic_parse_attr_data()");
                             exit(1);
                         }
@@ -22,7 +22,7 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
                         new_dep->name = depends_on.test;
 
                         test->dependencies[j] = new_dep;
-                        return;
+                        goto next_attr;
                     }
 
                     if (strcmp(dep->suite, depends_on.suite) == 0 &&
@@ -31,7 +31,7 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
                             "[      ] Warning: duplicate dependency \"%s.%s\" for test \"%s.%s\" in %s:%d\n"
                             "[      ] Skipping duplicate\n",
                             depends_on.suite, depends_on.test, test->suite, test->name, test->file, test->line);
-                        return;
+                        goto next_attr;
                     }
                 }
 
@@ -39,6 +39,10 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
                     "[      ] Error: Too many dependencies for test \"%s.%s\" in %s:%d\n",
                     test->suite, test->name, test->file, test->line);
                 exit(1);
+
+                /* Skip to the next attribute */
+                next_attr:
+                    continue;
             }
             case KRITIC_ATTR_UNKNOWN:
             default:
