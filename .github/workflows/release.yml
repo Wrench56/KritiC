@@ -11,14 +11,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Cache APT packages
-      uses: actions/cache@v4
+      uses: awalsh128/cache-apt-pkgs-action@latest
       with:
-        path: /var/cache/apt
-        key: ${{ runner.os }}-apt-${{ hashFiles('**/Makefile') }}
-        restore-keys: |
-          ${{ runner.os }}-apt-
-    - name: Install Clang
-      run: sudo apt update && sudo apt install -y clang mingw-w64 zip
+        packages: clang mingw-w64 zip
+        version: 1.0
     - name: Create compressed tarball for Linux
       run: |
         make release PLATFORM=linux
