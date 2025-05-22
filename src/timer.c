@@ -1,7 +1,20 @@
 /* clock_gettime() and co. is not ISO C */
 #define _POSIX_C_SOURCE 199309L
 
-#include "timer.h"
+#include "../kritic.h"
+
+#ifdef KRITIC_DISABLE_TIMER
+
+void kritic_timer_start(kritic_timer_t* timer) {
+    (void) timer;
+}
+
+uint64_t kritic_timer_elapsed(const kritic_timer_t* timer) {
+    (void) timer;
+    return UINT64_MAX;
+}
+
+#else // !KRITIC_DISABLE_TIMER
 
 #ifdef _WIN32
 #include <windows.h>
@@ -45,4 +58,7 @@ uint64_t kritic_timer_elapsed(const kritic_timer_t* timer) {
 
     return (uint64_t) (sec_diff * 1000000000L + nsec_diff);
 }
+
 #endif // POSIX
+
+#endif // !KRITIC_DISABLE_TIMER
