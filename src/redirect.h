@@ -20,6 +20,17 @@ typedef struct {
     bool is_part_of_split;
 } kritic_redirect_ctx_t;
 
+#ifdef KRITIC_DISABLE_REDIRECT
+
+typedef struct {
+    int running;
+    int read_fd;
+    int stdout_copy;
+    int pipe_write_end;
+} kritic_redirect_t;
+
+#else // !KRITIC_DISABLE_REDIRECT
+
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
@@ -62,6 +73,8 @@ typedef struct {
 } kritic_redirect_t;
 
 #endif // POSIX
+
+#endif // !KRITIC_DISABLE_REDIRECT
 
 void kritic_redirect_init(kritic_runtime_t* runtime);
 void kritic_redirect_teardown(kritic_runtime_t* runtime);

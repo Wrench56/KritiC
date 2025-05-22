@@ -1,6 +1,17 @@
 /* fileno() is not ISO C */
 #define _POSIX_C_SOURCE 200112L
 
+#ifdef KRITIC_DISABLE_REDIRECT
+
+#include "../kritic.h"
+
+void kritic_redirect_init(kritic_runtime_t* runtime) { (void) runtime; }
+void kritic_redirect_teardown(kritic_runtime_t* runtime) { (void) runtime; }
+void kritic_redirect_start(kritic_runtime_t* runtime) { (void) runtime; }
+void kritic_redirect_stop(kritic_runtime_t* runtime) { (void) runtime; }
+
+#else // KRITIC_DISABLE_REDIRECT
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -267,3 +278,5 @@ void kritic_redirect_stop(kritic_runtime_t* runtime) {
 
     _close(state->stdout_copy);
 }
+
+#endif // !KRITIC_DISABLE_REDIRECT

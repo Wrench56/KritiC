@@ -134,6 +134,8 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
 void kritic_default_dep_fail_printer(kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test);
 
 #ifdef _WIN32
+    #include <io.h>
+
     void kritic_enable_ansi_(void);
 
     /* Wrapper for Windows-specific kritic_enable_ansi_() */
