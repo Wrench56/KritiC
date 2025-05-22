@@ -52,6 +52,7 @@ typedef void (*kritic_pre_test_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_post_test_printer_fn)(kritic_runtime_t* state);
 typedef void (*kritic_stdout_printer_fn)(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
 typedef void (*kritic_skip_printer_fn)(kritic_runtime_t* state, const kritic_context_t* ctx);
+typedef void (*kritic_dep_fail_printer_fn)(kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test);
 
 typedef struct {
     const kritic_test_t* test;
@@ -71,6 +72,7 @@ typedef struct {
     kritic_init_printer_fn init_printer;
     kritic_stdout_printer_fn stdout_printer;
     kritic_skip_printer_fn skip_printer;
+    kritic_dep_fail_printer_fn dep_fail_printer;
 } kritic_printers_t;
 
 // Globals struct
@@ -129,6 +131,7 @@ void kritic_default_summary_printer(kritic_runtime_t* state);
 void kritic_default_init_printer(kritic_runtime_t* state);
 void kritic_default_stdout_printer(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
 void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t* ctx);
+void kritic_default_dep_fail_printer(kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test);
 
 #ifdef _WIN32
     void kritic_enable_ansi_(void);

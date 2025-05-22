@@ -1,8 +1,8 @@
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "../kritic.h"
 
@@ -20,11 +20,13 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn, size_t attr
     }
 
     *test_metadata = (kritic_test_t) {
-        .file  = ctx->file,
-        .suite = ctx->suite,
-        .name  = ctx->test,
-        .line  = ctx->line,
-        .fn    = fn,
+        .file         = ctx->file,
+        .suite        = ctx->suite,
+        .name         = ctx->test,
+        .line         = ctx->line,
+        .fn           = fn,
+        .dependencies = { 0 },
+        .status       = KRITIC_REGISTERED
     };
 
     kritic_parse_attr_data(test_metadata, attr_count, attrs);
@@ -39,17 +41,21 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn, size_t attr
     kritic_state->test_count++;
 }
 
-static inline size_t find_dep_index(const kritic_test_index_t* map, size_t count, kritic_test_index_t* dep) {
+static inline size_t find_dep_index(const kritic_test_index_t* map, size_t count, kritic_test_index_t* dep, bool* invalid) {
+    (*invalid) = false;
     for (size_t i = 0; i < count; ++i) {
         if (strcmp(map[i].suite, dep->suite) == 0
             && strcmp(map[i].name, dep->name) == 0) return map[i].index;
     }
-    return (size_t) -1;
+
+    (*invalid) = true;
+    return 0;
 }
 
 static void kritic_sort_queue(kritic_runtime_t* runtime) {
     size_t count = runtime->test_count;
 
+    bool invalid;
     int* indegree            = malloc(count * sizeof(int));
     size_t* queue            = malloc(count * sizeof(size_t));
     kritic_test_index_t* map = malloc(count * sizeof(kritic_test_index_t));
@@ -67,6 +73,7 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
         indegree[i] = 0;
     }
 
+    /* Perform basic checks */
     for (size_t i = 0; i < count; ++i) {
         for (size_t d = 0; runtime->queue[i]->dependencies[d]; ++d) {
             kritic_test_index_t* dep = runtime->queue[i]->dependencies[d];
@@ -77,12 +84,15 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
                 exit(1);
             }
 
-            size_t dep_index = find_dep_index(map, count, dep);
-            if (dep_index == (size_t)-1) {
+            size_t dep_index = find_dep_index(map, count, dep, &invalid);
+            if (invalid == true) {
                 fprintf(stderr, "[      ] Error: Test \"%s.%s\" depends on unknown \"%s.%s\"\n",
                     runtime->queue[i]->suite, runtime->queue[i]->name, dep->suite, dep->name);
                 exit(1);
             }
+
+            /* Set test_ptr of kritic_test_index_t */
+            dep->test_ptr = runtime->queue[dep_index];
 
             indegree[i]++;
         }
@@ -125,7 +135,7 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
                         t->name, t->suite, t->file, t->line);
                 for (size_t d = 0; t->dependencies[d] != NULL; ++d) {
                     kritic_test_index_t* dep = t->dependencies[d];
-                    size_t dep_index = find_dep_index(map, count, dep);
+                    size_t dep_index = find_dep_index(map, count, dep, &invalid);
                     if (dep_index == (size_t)-1) {
                         fprintf(stderr, "[      ]   - (missing) %s.%s\n", dep->suite, dep->name);
                     } else {
@@ -166,6 +176,7 @@ size_t kritic_construct_queue(kritic_runtime_t* runtime) {
     size_t i = 0;
     while (current != NULL) {
         runtime->queue[i++] = (kritic_test_t*) current->data;
+        ((kritic_test_t*) current->data)->status = KRITIC_QUEUED;
         next = current->node;
         free(current);
         current = next;

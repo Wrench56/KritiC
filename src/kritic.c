@@ -1,5 +1,4 @@
 #include <inttypes.h>
-#include <inttypes.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -7,8 +6,6 @@
 #include <string.h>
 
 #include "../kritic.h"
-#include "redirect.h"
-#include "timer.h"
 
 static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .test_state     = NULL,
@@ -50,7 +47,8 @@ void kritic_set_default_printers(void) {
         .summary_printer   = &kritic_default_summary_printer,
         .init_printer      = &kritic_default_init_printer,
         .stdout_printer    = &kritic_default_stdout_printer,
-        .skip_printer      = &kritic_default_skip_printer
+        .skip_printer      = &kritic_default_skip_printer,
+        .dep_fail_printer  = &kritic_default_dep_fail_printer
     };
 }
 
@@ -99,6 +97,42 @@ int kritic_run_all(void) {
         };
 
         kritic_state->printers.pre_test_printer(kritic_state);
+        if ((*t)->status != KRITIC_QUEUED) {
+            fprintf(stderr, "[      ] Error: Test found in queue that has not yet been queued!\n");
+            continue;
+        }
+
+        /* Check if dependencies succeeded */
+        for (kritic_test_index_t** ptr = (*t)->dependencies; *ptr != NULL; ++ptr) {
+            switch ((*ptr)->test_ptr->status) {
+                case KRITIC_REGISTERED:
+                case KRITIC_QUEUED:
+                case KRITIC_RUNNING:
+                    fprintf(stderr, "[      ] Error: Dependency \"%s.%s\" for test \"%s.%s\" did not run yet!\n",
+                        (*ptr)->suite, (*ptr)->name, (*t)->suite, (*t)->name);
+                    return 2;
+                case KRITIC_FAILED:
+                case KRITIC_DEP_FAILED:
+                    kritic_state->printers.dep_fail_printer(kritic_state, (*t), (*ptr)->test_ptr);
+                    (*t)->status = KRITIC_DEP_FAILED;
+                    goto skip_test;
+                case KRITIC_PASSED:
+                    continue;
+                case KRITIC_UNKNOWN:
+                default:
+                    fprintf(stderr, "[      ] Error: Test with unknown state found: \"%s.%s\"\n",
+                        (*t)->suite, (*t)->name);
+                    return 3;
+            }
+        }
+
+        /* Labels for skipping or running the test */
+        goto run_test;
+        skip_test:
+            continue;
+        run_test:
+
+        (*t)->status = KRITIC_RUNNING;
         kritic_redirect_start(kritic_state);
         kritic_timer_start(&kritic_state->test_state->timer);
         (*t)->fn();
@@ -107,8 +141,12 @@ int kritic_run_all(void) {
 
         if (kritic_state->test_state->skipped) {
             ++kritic_state->skip_count;
+            (*t)->status = KRITIC_SKIPPED;
         } else if (kritic_state->test_state->asserts_failed > 0) {
             ++kritic_state->fail_count;
+            (*t)->status = KRITIC_FAILED;
+        } else {
+            (*t)->status = KRITIC_PASSED;
         }
 
         kritic_state->printers.post_test_printer(kritic_state);
@@ -436,6 +474,12 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
     if (len > 0 && len < (int) sizeof(buffer)) {
         _write(state->redirect->stdout_copy, buffer, (uint32_t) len);
     }
+}
+
+void kritic_default_dep_fail_printer(kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test) {
+    (void) state;
+    printf("[ SKIP ] Test \"%s.%s\" at %s:%d is being skipped because underlying dependency \"%s.%s\" failed\n",
+        test->suite, test->name, test->file, test->line, dep_test->suite, dep_test->name);
 }
 
 /* Default KritiC main(void) code used to initialize the framework */
