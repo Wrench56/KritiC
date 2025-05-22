@@ -46,13 +46,13 @@ typedef void (*kritic_assert_printer_fn)(
     kritic_assert_type_t assert_type
 );
 
-typedef void (*kritic_init_printer_fn)(kritic_runtime_t* state);
-typedef void (*kritic_summary_printer_fn)(kritic_runtime_t* state);
-typedef void (*kritic_pre_test_printer_fn)(kritic_runtime_t* state);
-typedef void (*kritic_post_test_printer_fn)(kritic_runtime_t* state);
-typedef void (*kritic_stdout_printer_fn)(kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
-typedef void (*kritic_skip_printer_fn)(kritic_runtime_t* state, const kritic_context_t* ctx);
-typedef void (*kritic_dep_fail_printer_fn)(kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test);
+typedef void (*kritic_init_printer_fn)(struct kritic_runtime_t* state);
+typedef void (*kritic_summary_printer_fn)(struct kritic_runtime_t* state);
+typedef void (*kritic_pre_test_printer_fn)(struct kritic_runtime_t* state);
+typedef void (*kritic_post_test_printer_fn)(struct kritic_runtime_t* state);
+typedef void (*kritic_stdout_printer_fn)(struct kritic_runtime_t* _, kritic_redirect_ctx_t* redir_ctx);
+typedef void (*kritic_skip_printer_fn)(struct kritic_runtime_t* state, const kritic_context_t* ctx);
+typedef void (*kritic_dep_fail_printer_fn)(struct kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test);
 
 typedef struct {
     const kritic_test_t* test;
@@ -76,7 +76,7 @@ typedef struct {
 } kritic_printers_t;
 
 // Globals struct
-struct kritic_runtime_t {
+typedef struct kritic_runtime_t {
     // Struct of printer functions
     kritic_printers_t printers;
     // Number of registered tests
@@ -99,7 +99,7 @@ struct kritic_runtime_t {
     kritic_timer_t timer;
     // Duration of KritiC run
     uint64_t duration_ns;
-};
+} kritic_runtime_t;
 
 /* API */
 void kritic_override_printers(const kritic_printers_t* overrides);

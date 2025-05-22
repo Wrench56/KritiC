@@ -7,6 +7,8 @@
 extern "C" {
 #endif
 
+struct kritic_runtime_t;
+
 typedef enum {
     KRITIC_UNKNOWN = 0,
     KRITIC_REGISTERED,
@@ -54,8 +56,8 @@ typedef struct kritic_linkedlist_node {
 } kritic_node_t;
 
 void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn, size_t attr_count, kritic_attribute_t** attrs);
-size_t kritic_construct_queue(kritic_runtime_t* runtime);
-void kritic_free_queue(kritic_runtime_t* runtime);
+size_t kritic_construct_queue(struct kritic_runtime_t* runtime);
+void kritic_free_queue(struct kritic_runtime_t* runtime);
 
 #ifdef __cplusplus
 } // extern "C"

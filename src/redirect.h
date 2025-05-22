@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-typedef struct kritic_runtime_t kritic_runtime_t;
+struct kritic_runtime_t;
 
 typedef struct {
     int stdout_copy;
@@ -76,10 +76,10 @@ typedef struct {
 
 #endif // !KRITIC_DISABLE_REDIRECT
 
-void kritic_redirect_init(kritic_runtime_t* runtime);
-void kritic_redirect_teardown(kritic_runtime_t* runtime);
-void kritic_redirect_start(kritic_runtime_t* runtime);
-void kritic_redirect_stop(kritic_runtime_t* runtime);
+void kritic_redirect_init(struct kritic_runtime_t* runtime);
+void kritic_redirect_teardown(struct kritic_runtime_t* runtime);
+void kritic_redirect_start(struct kritic_runtime_t* runtime);
+void kritic_redirect_stop(struct kritic_runtime_t* runtime);
 
 #ifdef __cplusplus
 } // extern "C"
