@@ -2,9 +2,12 @@
 
 [![Unittest](https://github.com/Wrench56/KritiC/actions/workflows/unittest.yml/badge.svg)](https://github.com/Wrench56/KritiC/actions/workflows/unittest.yml)
 [![Tag Workflow Chain](https://github.com/Wrench56/KritiC/actions/workflows/tag-chain.yml/badge.svg)](https://github.com/Wrench56/KritiC/actions)
+[![Last Commit](https://img.shields.io/github/last-commit/Wrench56/KritiC)](https://github.com/Wrench56/KritiC/commits/main)
+[![Issues](https://img.shields.io/github/issues/Wrench56/KritiC)](https://github.com/Wrench56/KritiC/issues)
 [![Version](https://img.shields.io/github/v/tag/Wrench56/KritiC?label=version)](https://github.com/Wrench56/KritiC/releases)
-[![License](https://img.shields.io/github/license/Wrench56/KritiC)](https://github.com/Wrench56/KritiC/blob/main/LICENSE)
 [![Lines of Code](https://tokei.rs/b1/github/Wrench56/KritiC)](https://github.com/Wrench56/KritiC)
+[![Language](https://img.shields.io/badge/language-C-blue)](https://www.c-language.org/)
+[![License](https://img.shields.io/github/license/Wrench56/KritiC)](https://github.com/Wrench56/KritiC/blob/main/LICENSE)
 
 A unit testing framework written in C.
 
@@ -24,6 +27,16 @@ KRITIC_TEST(math, addition) {
 KRITIC_TEST(math, subtraction) {
     KRITIC_ASSERT_EQ(5 - 3, 2);
 }
+
+KRITIC_TEST(attributes, dependency) {
+    KRITIC_ASSERT(1);
+}
+
+KRITIC_TEST(attributes, dependent,
+    KRITIC_DEPENDS_ON(attributes, dependency))
+{
+    KRITIC_ASSERT(1);
+}
 ```
 
 ---
@@ -31,6 +44,8 @@ KRITIC_TEST(math, subtraction) {
 ## Core Concepts
 
 - Define tests with `KRITIC_TEST(suite, name)`
+- Use attributes in tests:
+  - `KRITIC_DEPENDS_ON(suite, name)`: marks a test as dependent on another test's success; if the dependency fails or is skipped, the current test is skipped automatically
 - Make assertions:
   - `KRITIC_ASSERT(expr)`: asserts that `expr` is true
   - `KRITIC_ASSERT_NOT(expr)`: asserts that `expr` is false
@@ -48,6 +63,7 @@ KRITIC_TEST(math, subtraction) {
 - All printers (assertions, summaries, pre/post test messages) can be overridden
 - Standard output can be automatically formatted/redirected during test execution
 - Measure the precise runtime (nanosecond precision) of individual tests
+- Timers and stdout redirection can be fully disabled at compile time by defining the `KRITIC_DISABLE_TIMER` and `KRITIC_DISABLE_REDIRECT` macros/flags
 
 ## Compilation and Usage
 
