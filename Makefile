@@ -134,6 +134,11 @@ static: $(KRITIC_OBJ)
 	@printf " $(GREEN)$(BOLD)Archiving$(RESET) build/libkritic.a\n"
 	@ar rcs build/libkritic.a $(KRITIC_OBJ)
 
+# Build dynamic library
+dynamic: $(KRITIC_OBJ)
+	@printf " $(GREEN)$(BOLD)Creating$(RESET)  dynamic library build/libkritic.so\n"
+	@$(CC) $(LDFLAGS) $(KRITIC_OBJ) -o build/libkritc.so
+
 # Compare test output to expected snapshot
 selftest-check:
 	@printf " $(CYAN)$(BOLD)Verifying$(RESET) self-test output against $(EXPECTED_OUTP)...\n"
