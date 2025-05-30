@@ -11,13 +11,13 @@ DIAG_FLAGS    := -std=c99 -Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion
 				 -Wstrict-prototypes -Wundef -Wdouble-promotion
 OPT_FLAGS     := -O2 -fomit-frame-pointer -march=native
 DEBUG_FLAGS   := -g -fsanitize=address,undefined -fno-omit-frame-pointer -O0
+LDFLAGS       := -lpthread
 
 ifeq ($(MODE),debug)
   CFLAGS      := $(DIAG_FLAGS) $(DEBUG_FLAGS)
-  LDFLAGS     := -fsanitize=address,undefined -lc
+  LDFLAGS     := -fsanitize=address,undefined 
 else
   CFLAGS      := $(DIAG_FLAGS) $(OPT_FLAGS)
-  LDFLAGS     := -lc
 endif
 
 # === Paths ===
@@ -82,7 +82,7 @@ build/tests/%.o: tests/%.c
 # Build self-test executable
 $(SELFTEST_EXE): $(KRITIC_OBJ) $(TEST_OBJS)
 	@printf " $(GREEN)$(BOLD)Linking$(RESET)   self-test executable\n"
-	@$(CC) $(CFLAGS) -I. $^ -o $@
+	@$(CC) $(CFLAGS) $(LDFLAGS) -I. $^ -o $@
 	@printf " $(GREEN)$(BOLD)Built$(RESET)     $@\n"
 
 # Run self-test suite
