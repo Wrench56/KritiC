@@ -51,11 +51,11 @@ KRITIC_TEST(attributes, dependent,
   - `KRITIC_ASSERT_NOT(expr)`: asserts that `expr` is false
   - `KRITIC_ASSERT_EQ(x, y)`: asserts that `x` equals `y` (generic: supports `int`, `long long`, `float`, `double`, and `const char*`)
   - `KRITIC_ASSERT_NE(x, y)`: asserts that `x` does not equal `y` (generic: supports `int`, `long long`, `float`, `double`, and `const char*`)
-  - `KRITIC_ASSERT_EQ_INT(x, y)`: asserts that `x` and `y` are equal using integer comparison  
-  - `KRITIC_ASSERT_NE_INT(x, y)`: asserts that `x` and `y` are not equal using integer comparison  
-  - `KRITIC_ASSERT_EQ_FLOAT(x, y)`: asserts that `x` and `y` are approximately equal using float/double comparison (with delta tolerance)  
-  - `KRITIC_ASSERT_NE_FLOAT(x, y)`: asserts that `x` and `y` are not approximately equal using float/double comparison  
-  - `KRITIC_ASSERT_EQ_STR(x, y)`: asserts that `x` and `y` are equal using string comparison  
+  - `KRITIC_ASSERT_EQ_INT(x, y)`: asserts that `x` and `y` are equal using integer comparison
+  - `KRITIC_ASSERT_NE_INT(x, y)`: asserts that `x` and `y` are not equal using integer comparison
+  - `KRITIC_ASSERT_EQ_FLOAT(x, y)`: asserts that `x` and `y` are approximately equal using float/double comparison (with delta tolerance)
+  - `KRITIC_ASSERT_NE_FLOAT(x, y)`: asserts that `x` and `y` are not approximately equal using float/double comparison
+  - `KRITIC_ASSERT_EQ_STR(x, y)`: asserts that `x` and `y` are equal using string comparison
   - `KRITIC_ASSERT_NE_STR(x, y)`: asserts that `x` and `y` are not equal using string comparison
   - `KRITIC_FAIL()`: forces a test failure
 - Skip tests conditionally with `KRITIC_SKIP(reason)`
@@ -64,6 +64,11 @@ KRITIC_TEST(attributes, dependent,
 - Standard output can be automatically formatted/redirected during test execution
 - Measure the precise runtime (nanosecond precision) of individual tests
 - Timers and stdout redirection can be fully disabled at compile time by defining the `KRITIC_DISABLE_TIMER` and `KRITIC_DISABLE_REDIRECT` macros/flags
+
+## Use in freestanding environments
+To use kritic in freestanding cases you can start by defining `KRITIC_DISABLE_TIMER` and `KRITIC_DISABLE_REDIRECT` and providing
+custom print functions by overriding the macros in [src/defaults.h](src/defaults.h) namely: kritic_error_printer, kritic_error_printerf, kritic_printer, kritic_printerf and kritic_snprintf with your own implementations, or override the members in the `kritic_override_pointers` struct, for which you can
+find the implementations in [src/kritc.c](src/kritic.c) to work from.
 
 ## Compilation and Usage
 
