@@ -4,6 +4,7 @@
  [32m[1mCompiling[0m src/timer.c
  [32m[1mCompiling[0m src/scheduler.c
  [32m[1mCompiling[0m src/attributes.c
+ [32m[1mCompiling[0m src/defaults.c
  [32m[1mCompiling[0m tests/assertions.c
  [32m[1mCompiling[0m tests/attributes.c
  [32m[1mCompiling[0m tests/core.c
