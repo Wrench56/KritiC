@@ -78,7 +78,7 @@ int kritic_run_all(void) {
     kritic_timer_start(&kritic_state->timer);
 
     kritic_construct_queue(kritic_state);
-    
+
     kritic_redirect_t* redir = &(kritic_redirect_t) { 0 };
     kritic_state->redirect = redir;
 
@@ -126,12 +126,6 @@ int kritic_run_all(void) {
             }
         }
 
-        /* Labels for skipping or running the test */
-        goto run_test;
-        skip_test:
-            continue;
-        run_test:
-
         (*t)->status = KRITIC_RUNNING;
         kritic_redirect_start(kritic_state);
         kritic_timer_start(&kritic_state->test_state->timer);
@@ -150,6 +144,10 @@ int kritic_run_all(void) {
         }
 
         kritic_state->printers.post_test_printer(kritic_state);
+
+        // Label for test skip
+        skip_test:
+            continue;
     }
 
     fflush(stdout);
@@ -441,8 +439,8 @@ void kritic_default_init_printer(kritic_runtime_t* state) {
         "[      ]\n"
         "[      ] KritiC v%i.%i.%i\n"
         "[      ]\n",
-        KRITIC_VERSION_MAJOR, 
-        KRITIC_VERSION_MINOR, 
+        KRITIC_VERSION_MAJOR,
+        KRITIC_VERSION_MINOR,
         KRITIC_VERSION_PATCH
     );
     if (state->test_count == 0) {
