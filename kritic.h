@@ -54,6 +54,23 @@ typedef void (*kritic_stdout_printer_fn)(struct kritic_runtime_t* _, kritic_redi
 typedef void (*kritic_skip_printer_fn)(struct kritic_runtime_t* state, const kritic_context_t* ctx);
 typedef void (*kritic_dep_fail_printer_fn)(struct kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test);
 
+/** These macros are used to print by default, to override them  */
+#ifndef kritic_error_printer
+#define kritic_error_printer(f) fprintf(stderr, f)
+#endif
+
+#ifndef kritic_error_printerf
+#define kritic_error_printerf(f, ...) fprintf(stderr, f __VA_OPT__(,) __VA_ARGS__)
+#endif
+
+#ifndef kritic_printer
+#define kritic_printer(f) printf(f)
+#endif
+
+#ifndef kritic_printerf
+#define kritic_printerf(f, ...) printf(f __VA_OPT__(,) __VA_ARGS__)
+#endif
+
 typedef struct {
     const kritic_test_t* test;
     int asserts_failed;

@@ -98,7 +98,7 @@ int kritic_run_all(void) {
 
         kritic_state->printers.pre_test_printer(kritic_state);
         if ((*t)->status != KRITIC_QUEUED) {
-            fprintf(stderr, "[      ] Error: Test found in queue that has not yet been queued!\n");
+            kritic_error_printer("[      ] Error: Test found in queue that has not yet been queued!\n");
             continue;
         }
 
@@ -108,7 +108,7 @@ int kritic_run_all(void) {
                 case KRITIC_REGISTERED:
                 case KRITIC_QUEUED:
                 case KRITIC_RUNNING:
-                    fprintf(stderr, "[      ] Error: Dependency \"%s.%s\" for test \"%s.%s\" did not run yet!\n",
+                    kritic_error_printerf("[      ] Error: Dependency \"%s.%s\" for test \"%s.%s\" did not run yet!\n",
                         (*ptr)->suite, (*ptr)->name, (*t)->suite, (*t)->name);
                     return 2;
                 case KRITIC_FAILED:
@@ -120,7 +120,7 @@ int kritic_run_all(void) {
                     continue;
                 case KRITIC_UNKNOWN:
                 default:
-                    fprintf(stderr, "[      ] Error: Test with unknown state found: \"%s.%s\"\n",
+                    kritic_error_printerf("[      ] Error: Test with unknown state found: \"%s.%s\"\n",
                         (*t)->suite, (*t)->name);
                     return 3;
             }
@@ -266,9 +266,9 @@ void kritic_default_assert_printer(
 
     switch (assert_type) {
         case KRITIC_ASSERT_EQ_INT:
-            fprintf(stderr, "%s  %s.%s: %s == %s failed at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: %s == %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "[      ]  -> %s = %lld, %s = %lld\n",
+            kritic_error_printerf("[      ]  -> %s = %lld, %s = %lld\n",
                     actual_expr, actual, expected_expr, expected);
             break;
 
@@ -279,17 +279,17 @@ void kritic_default_assert_printer(
             expected_f = u_expected.f;
             delta = fabs(actual_f - expected_f);
 
-            fprintf(stderr, "%s  %s.%s: %s = %s failed at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: %s = %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "[      ]  -> %s = %.10f, %s = %.10f\n",
+            kritic_error_printerf("[      ]  -> %s = %.10f, %s = %.10f\n",
                     actual_expr, actual_f, expected_expr, expected_f);
-            fprintf(stderr, "[      ]  -> delta = %.10f\n", delta);
+            kritic_error_printerf("[      ]  -> delta = %.10f\n", delta);
             break;
 
         case KRITIC_ASSERT_NE_INT:
-            fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: %s != %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "[      ]  -> both = %lld\n", actual);
+            kritic_error_printerf("[      ]  -> both = %lld\n", actual);
             break;
 
         case KRITIC_ASSERT_NE_FLOAT:
@@ -299,11 +299,11 @@ void kritic_default_assert_printer(
             expected_f = u_expected.f;
             delta = fabs(actual_f - expected_f);
 
-            fprintf(stderr, "%s  %s.%s: %s != %s failed at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: %s != %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "[      ]  -> %s = %.10f, %s = %.10f\n",
+            kritic_error_printerf("[      ]  -> %s = %.10f, %s = %.10f\n",
                     actual_expr, actual_f, expected_expr, expected_f);
-            fprintf(stderr, "[      ]  -> delta = %.10f\n", delta);
+            kritic_error_printerf("[      ]  -> delta = %.10f\n", delta);
             break;
 
         case KRITIC_ASSERT_EQ_STR:
@@ -313,39 +313,39 @@ void kritic_default_assert_printer(
 
             const char* op = (assert_type == KRITIC_ASSERT_EQ_STR) ? "==" : "!=";
 
-            fprintf(stderr, "%s  %s.%s: %s %s %s failed at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: %s %s %s failed at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, op, expected_expr, ctx->file, ctx->line);
-            fprintf(stderr, "[      ]  -> %s = \"%s\", %s = \"%s\"\n",
+            kritic_error_printerf("[      ]  -> %s = \"%s\", %s = \"%s\"\n",
                     actual_expr, actual_s ? actual_s : "(null)",
                     expected_expr, expected_s ? expected_s : "(null)");
             break;
 
         case KRITIC_ASSERT:
-            fprintf(stderr, "%s  %s.%s: assertion failed: %s at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: assertion failed: %s at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
-            fprintf(stderr, "[      ]  -> value = %lld\n", actual);
+            kritic_error_printerf("[      ]  -> value = %lld\n", actual);
             break;
 
         case KRITIC_ASSERT_NOT:
-            fprintf(stderr, "%s  %s.%s: assertion expected to fail: %s at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: assertion expected to fail: %s at %s:%d\n",
                     label, ctx->suite, ctx->test, actual_expr, ctx->file, ctx->line);
-            fprintf(stderr, "[      ]  -> value = %lld (was truthy)\n", actual);
+            kritic_error_printerf("[      ]  -> value = %lld (was truthy)\n", actual);
             break;
 
         case KRITIC_ASSERT_FAIL:
-            fprintf(stderr, "%s  %s.%s: forced failure at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: forced failure at %s:%d\n",
                     label, ctx->suite, ctx->test, ctx->file, ctx->line);
             break;
 
         default:
-            fprintf(stderr, "%s  %s.%s: unknown assertion type at %s:%d\n",
+            kritic_error_printerf("%s  %s.%s: unknown assertion type at %s:%d\n",
                     label, ctx->suite, ctx->test, ctx->file, ctx->line);
             break;
     }
 }
 
 void kritic_default_pre_test_printer(kritic_runtime_t* state) {
-    printf("[ \033[1;36mEXEC\033[0m ] %s.%s at %s:%i\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(),
+    kritic_printerf("[ \033[1;36mEXEC\033[0m ] %s.%s at %s:%i\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(),
             state->test_state->test->file, state->test_state->test->line);
 }
 
@@ -359,7 +359,7 @@ void kritic_default_post_test_printer(kritic_runtime_t* state) {
     const char* label = (failed_asserts > 0) ? "FAIL" : "PASS";
 
     if (duration_ms < 0.001) {
-        printf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in less than 0.001ms\n",
+        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in less than 0.001ms\n",
             color,
             label,
             KRITIC_GET_CURRENT_SUITE(),
@@ -370,7 +370,7 @@ void kritic_default_post_test_printer(kritic_runtime_t* state) {
         );
     } else if (state->test_state->duration_ns == UINT64_MAX) {
         /* Timer is disabled (or the test ran for 584.5 years) */
-        printf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d)\n",
+        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d)\n",
             color,
             label,
             KRITIC_GET_CURRENT_SUITE(),
@@ -380,7 +380,7 @@ void kritic_default_post_test_printer(kritic_runtime_t* state) {
             total_asserts
         );
     } else {
-        printf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %.3fms\n",
+        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %.3fms\n",
             color,
             label,
             KRITIC_GET_CURRENT_SUITE(),
@@ -435,7 +435,7 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
 }
 
 void kritic_default_init_printer(kritic_runtime_t* state) {
-    printf(
+    kritic_printerf(
         "[      ]\n"
         "[      ] KritiC v%i.%i.%i\n"
         "[      ]\n",
@@ -444,9 +444,9 @@ void kritic_default_init_printer(kritic_runtime_t* state) {
         KRITIC_VERSION_PATCH
     );
     if (state->test_count == 0) {
-        printf("[      ] No registered test found\n");
+        kritic_printer("[      ] No registered test found\n");
     } else {
-        printf("[      ] Running %d tests:\n", state->test_count);
+        kritic_printerf("[      ] Running %d tests:\n", state->test_count);
     }
 }
 
@@ -487,7 +487,7 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
 
 void kritic_default_dep_fail_printer(kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test) {
     (void) state;
-    printf("[ SKIP ] Test \"%s.%s\" at %s:%d is being skipped because underlying dependency \"%s.%s\" failed\n",
+    kritic_printerf("[ SKIP ] Test \"%s.%s\" at %s:%d is being skipped because underlying dependency \"%s.%s\" failed\n",
         test->suite, test->name, test->file, test->line, dep_test->suite, dep_test->name);
 }
 
