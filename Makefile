@@ -14,7 +14,7 @@ DEBUG_FLAGS   := -g -fsanitize=address,undefined -fno-omit-frame-pointer -O0
 
 ifeq ($(MODE),debug)
   CFLAGS      := $(DIAG_FLAGS) $(DEBUG_FLAGS)
-  LDFLAGS     := -fsanitize=address,undefined 
+  LDFLAGS     := -fsanitize=address,undefined
 else
   CFLAGS      := $(DIAG_FLAGS) $(OPT_FLAGS)
 endif
@@ -137,9 +137,9 @@ static: $(KRITIC_OBJ)
 # Compare test output to expected snapshot
 selftest-check:
 	@printf " $(CYAN)$(BOLD)Verifying$(RESET) self-test output against $(EXPECTED_OUTP)...\n"
-	@make clean --no-print-directory
+	@$(MAKE) clean --no-print-directory
 	@chmod +x tools/sanitize.sh
-	@make selftest 2>&1 | ./tools/sanitize.sh > $(ACTUAL_OUTP)
+	@$(MAKE) selftest 2>&1 | ./tools/sanitize.sh > $(ACTUAL_OUTP)
 	@diff -u $(EXPECTED_OUTP) $(ACTUAL_OUTP) || \
 	(printf "\nOutput mismatch detected.\nUpdate $(EXPECTED_OUTP) if intentional.\n"; exit 1)
 	@printf " $(GREEN)$(BOLD)Verified$(RESET)  $(ACTUAL_OUTP) matches expected self-test results.\n"
