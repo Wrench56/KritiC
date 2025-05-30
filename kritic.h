@@ -71,6 +71,10 @@ typedef void (*kritic_dep_fail_printer_fn)(struct kritic_runtime_t* state, kriti
 #define kritic_printerf(f, ...) printf(f __VA_OPT__(,) __VA_ARGS__)
 #endif
 
+#ifndef kritic_snprintf
+#define kritic_snprintf(buf, size, fmt, ...) snprintf(buf, size, fmt, __VA_ARGS__)
+#endif
+
 typedef struct {
     const kritic_test_t* test;
     int asserts_failed;

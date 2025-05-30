@@ -407,7 +407,7 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
     double duration_ms = (double) state->duration_ns / 1000000.0;
 
     char buffer[512];
-    int len = snprintf(buffer, sizeof(buffer),
+    int len = kritic_snprintf(buffer, sizeof(buffer),
         "[      ] Finished running %d tests!\n"
         "[      ]\n"
         "[      ] Statistics:\n"
@@ -464,14 +464,14 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
     double duration_ms = (double) state->test_state->duration_ns / 1000000.0;
 
     if (duration_ms < 0.001) {
-        len = snprintf(buffer, sizeof(buffer),
+        len = kritic_snprintf(buffer, sizeof(buffer),
             "[ SKIP ] Reason: %s at %s:%d after less than 0.001ms\n",
             state->test_state->skip_reason,
             ctx->file,
             ctx->line
         );
     } else {
-        len = snprintf(buffer, sizeof(buffer),
+        len = kritic_snprintf(buffer, sizeof(buffer),
             "[ SKIP ] Reason: %s at %s:%d after %.3fms\n",
             state->test_state->skip_reason,
             ctx->file,
