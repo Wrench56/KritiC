@@ -158,7 +158,7 @@ int kritic_run_all(void) {
     kritic_state->redirect = NULL;
     kritic_free_queue(kritic_state);
 
-    return kritic_state->fail_count > 0 ? 1 : 0;
+    return kritic_state->fail_count > 0;
 }
 
 void kritic_assert_eq(
