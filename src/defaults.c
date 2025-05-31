@@ -1,9 +1,38 @@
+#include <inttypes.h>
 #include <math.h>
 #include <stdio.h>
 
 #include "../kritic.h"
 
-/* Default assert print implementation */
+void kritic_default_init_printer(kritic_runtime_t* state) {
+    kritic_printerf(
+        "[      ]\n"
+        "[      ] KritiC v%i.%i.%i\n"
+        "[      ]\n",
+        KRITIC_VERSION_MAJOR,
+        KRITIC_VERSION_MINOR,
+        KRITIC_VERSION_PATCH
+    );
+    if (state->test_count == 0) {
+        kritic_printer("[      ] No registered test found\n");
+    } else {
+        kritic_printerf("[      ] Running %d tests:\n", state->test_count);
+    }
+}
+
+void kritic_default_pre_test_printer(kritic_runtime_t* state) {
+    kritic_printerf("[ \033[1;36mEXEC\033[0m ] %s.%s at %s:%i\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(),
+            state->test_state->test->file, state->test_state->test->line);
+}
+
+void kritic_default_stdout_printer(kritic_runtime_t* state, kritic_redirect_ctx_t* redir_ctx) {
+    (void) state;
+    if (!redir_ctx->is_part_of_split) {
+        _write(redir_ctx->stdout_copy, "[ \033[34mINFO\033[0m ] ", 18);
+    }
+    _write(redir_ctx->stdout_copy, redir_ctx->string, redir_ctx->length);
+}
+
 void kritic_default_assert_printer(
     const kritic_context_t* ctx,
     bool passed,
@@ -89,9 +118,33 @@ void kritic_default_assert_printer(
     }
 }
 
-void kritic_default_pre_test_printer(kritic_runtime_t* state) {
-    kritic_printerf("[ \033[1;36mEXEC\033[0m ] %s.%s at %s:%i\n", KRITIC_GET_CURRENT_SUITE(), KRITIC_GET_CURRENT_TEST(),
-            state->test_state->test->file, state->test_state->test->line);
+/* Floating point enabled for default printers */
+#ifndef KRITIC_DEFAULT_PRINTERS_NO_FLOAT
+void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t* ctx) {
+    char buffer[4096];
+    int len;
+    double duration_ms = (double) state->test_state->duration_ns / 1000000.0;
+
+    if (duration_ms < 0.001) {
+        len = kritic_snprintf(buffer, sizeof(buffer),
+            "[ SKIP ] Reason: %s at %s:%d after less than 0.001ms\n",
+            state->test_state->skip_reason,
+            ctx->file,
+            ctx->line
+        );
+    } else {
+        len = kritic_snprintf(buffer, sizeof(buffer),
+            "[ SKIP ] Reason: %s at %s:%d after %.3fms\n",
+            state->test_state->skip_reason,
+            ctx->file,
+            ctx->line,
+            duration_ms
+        );
+    }
+
+    if (len > 0 && len < (int) sizeof(buffer)) {
+        _write(state->redirect->stdout_copy, buffer, (uint32_t) len);
+    }
 }
 
 void kritic_default_post_test_printer(kritic_runtime_t* state) {
@@ -179,49 +232,36 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
     }
 }
 
-void kritic_default_init_printer(kritic_runtime_t* state) {
-    kritic_printerf(
-        "[      ]\n"
-        "[      ] KritiC v%i.%i.%i\n"
-        "[      ]\n",
-        KRITIC_VERSION_MAJOR,
-        KRITIC_VERSION_MINOR,
-        KRITIC_VERSION_PATCH
-    );
-    if (state->test_count == 0) {
-        kritic_printer("[      ] No registered test found\n");
-    } else {
-        kritic_printerf("[      ] Running %d tests:\n", state->test_count);
-    }
-}
 
-void kritic_default_stdout_printer(kritic_runtime_t* state, kritic_redirect_ctx_t* redir_ctx) {
-    (void) state;
-    if (!redir_ctx->is_part_of_split) {
-        _write(redir_ctx->stdout_copy, "[ \033[34mINFO\033[0m ] ", 18);
-    }
-    _write(redir_ctx->stdout_copy, redir_ctx->string, redir_ctx->length);
-}
-
+/* Floating point disabled for defaults */
+#else // KRITIC_DEFAULT_PRINTERS_NO_FLOAT
 void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t* ctx) {
     char buffer[4096];
     int len;
-    double duration_ms = (double) state->test_state->duration_ns / 1000000.0;
+    uint64_t duration_ns = state->test_state->duration_ns;
 
-    if (duration_ms < 0.001) {
+    if (duration_ns < 1000) {
         len = kritic_snprintf(buffer, sizeof(buffer),
-            "[ SKIP ] Reason: %s at %s:%d after less than 0.001ms\n",
+            "[ SKIP ] Reason: %s at %s:%d after less than 1us\n",
             state->test_state->skip_reason,
             ctx->file,
             ctx->line
         );
-    } else {
+    } else if (duration_ns < 1000000) {
         len = kritic_snprintf(buffer, sizeof(buffer),
-            "[ SKIP ] Reason: %s at %s:%d after %.3fms\n",
+            "[ SKIP ] Reason: %s at %s:%d after %" PRIu64 "us\n",
             state->test_state->skip_reason,
             ctx->file,
             ctx->line,
-            duration_ms
+            duration_ns / 1000
+        );
+    } else {
+        len = kritic_snprintf(buffer, sizeof(buffer),
+            "[ SKIP ] Reason: %s at %s:%d after %" PRIu64 "ms\n",
+            state->test_state->skip_reason,
+            ctx->file,
+            ctx->line,
+            duration_ns / 1000000
         );
     }
 
@@ -229,6 +269,105 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
         _write(state->redirect->stdout_copy, buffer, (uint32_t) len);
     }
 }
+
+void kritic_default_post_test_printer(kritic_runtime_t* state) {
+    if (state->test_state->skipped) return;
+
+    uint64_t duration_ns = state->test_state->duration_ns;
+    int total_asserts = state->test_state->assert_count;
+    int failed_asserts = state->test_state->asserts_failed;
+    int passed_asserts = total_asserts - failed_asserts;
+    const char* color = (failed_asserts > 0) ? "\033[1;31m" : "\033[1;32m";
+    const char* label = (failed_asserts > 0) ? "FAIL" : "PASS";
+
+    if (duration_ns < 1000) {
+        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in less than 1us\n",
+            color,
+            label,
+            KRITIC_GET_CURRENT_SUITE(),
+            KRITIC_GET_CURRENT_TEST(),
+            color,
+            passed_asserts,
+            total_asserts
+        );
+    } else if (duration_ns < 1000000) {
+        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %" PRIu64 "us\n",
+            color,
+            label,
+            KRITIC_GET_CURRENT_SUITE(),
+            KRITIC_GET_CURRENT_TEST(),
+            color,
+            passed_asserts,
+            total_asserts,
+            duration_ns / 1000
+        );
+    } else if (duration_ns == UINT64_MAX) {
+        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d)\n",
+            color,
+            label,
+            KRITIC_GET_CURRENT_SUITE(),
+            KRITIC_GET_CURRENT_TEST(),
+            color,
+            passed_asserts,
+            total_asserts
+        );
+    } else {
+        kritic_printerf(("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %" PRIu64 "ms\n"),
+            color,
+            label,
+            KRITIC_GET_CURRENT_SUITE(),
+            KRITIC_GET_CURRENT_TEST(),
+            color,
+            passed_asserts,
+            total_asserts,
+            duration_ns / 1000000
+        );
+    }
+}
+
+void kritic_default_summary_printer(kritic_runtime_t* state) {
+    const char* RESET  = "\033[0m";
+    const char* GREEN  = "\033[32m";
+    const char* RED    = "\033[31m";
+    const char* CYAN   = "\033[36m";
+
+    uint32_t passed = state->test_count - state->fail_count;
+    uint32_t pass_rate_x10 = (state->test_count > 0)
+        ? (1000 * passed) / state->test_count
+        : 0;
+
+    uint64_t duration_ns = state->duration_ns;
+    uint64_t duration_ms = duration_ns / 1000000;
+
+    char buffer[512];
+    int len = kritic_snprintf(buffer, sizeof(buffer),
+        "[      ] Finished running %d tests!\n"
+        "[      ]\n"
+        "[      ] Statistics:\n"
+        "[      ]   Total  : %d\n"
+        "[      ]   Passed : %s%d%s\n"
+        "[      ]   Failed : %s%d%s\n"
+        "[      ]   Rate   : %s%d.%d%%%s\n"
+        "[      ]   Time   : %" PRIu64 "ms\n"
+        "[      ]\n"
+        "%s\n",
+        state->test_count,
+        state->test_count,
+        GREEN, passed, RESET,
+        RED, state->fail_count, RESET,
+        CYAN, pass_rate_x10 / 10, pass_rate_x10 % 10, RESET,
+        duration_ms,
+        state->fail_count > 0
+            ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
+            : "[ \033[1;32m****\033[0m ] All tests passed!"
+    );
+
+    if (len > 0 && len < (int) sizeof(buffer)) {
+        _write(1, buffer, (uint32_t) len);
+    }
+}
+
+#endif // KRITIC_DEFAULT_PRINTERS_NO_FLOAT
 
 void kritic_default_dep_fail_printer(kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test) {
     (void) state;

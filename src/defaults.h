@@ -54,7 +54,7 @@ void kritic_default_stdout_printer(struct kritic_runtime_t* _, kritic_redirect_c
 void kritic_default_skip_printer(struct kritic_runtime_t* state, const kritic_context_t* ctx);
 void kritic_default_dep_fail_printer(struct kritic_runtime_t* state, kritic_test_t* test, kritic_test_t* dep_test);
 
-/* These macros are used to print by default, to override them */
+/* These macros are used to print by default, can be overridden */
 #ifndef kritic_error_printer
 #define kritic_error_printer(f) fprintf(stderr, f)
 #endif
