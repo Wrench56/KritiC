@@ -123,23 +123,34 @@ void kritic_default_assert_printer(
 void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t* ctx) {
     char buffer[4096];
     int len;
-    double duration_ms = (double) state->test_state->duration_ns / 1000000.0;
+    uint64_t duration_ns = state->test_state->duration_ns;
 
-    if (duration_ms < 0.001) {
+    if (duration_ns == UINT64_MAX) {
         len = kritic_snprintf(buffer, sizeof(buffer),
-            "[ SKIP ] Reason: %s at %s:%d after less than 0.001ms\n",
+            "[ SKIP ] Reason: %s at %s:%d\n",
             state->test_state->skip_reason,
             ctx->file,
             ctx->line
         );
     } else {
-        len = kritic_snprintf(buffer, sizeof(buffer),
-            "[ SKIP ] Reason: %s at %s:%d after %.3fms\n",
-            state->test_state->skip_reason,
-            ctx->file,
-            ctx->line,
-            duration_ms
-        );
+        double duration_ms = (double) duration_ns / 1000000.0;
+
+        if (duration_ms < 0.001) {
+            len = kritic_snprintf(buffer, sizeof(buffer),
+                "[ SKIP ] Reason: %s at %s:%d after less than 0.001ms\n",
+                state->test_state->skip_reason,
+                ctx->file,
+                ctx->line
+            );
+        } else {
+            len = kritic_snprintf(buffer, sizeof(buffer),
+                "[ SKIP ] Reason: %s at %s:%d after %.3fms\n",
+                state->test_state->skip_reason,
+                ctx->file,
+                ctx->line,
+                duration_ms
+            );
+        }
     }
 
     if (len > 0 && len < (int) sizeof(buffer)) {
@@ -149,24 +160,14 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
 
 void kritic_default_post_test_printer(kritic_runtime_t* state) {
     if (state->test_state->skipped) return;
-    double duration_ms = (double) state->test_state->duration_ns / 1000000.0;
+    uint64_t duration_ns = state->test_state->duration_ns;
     int total_asserts = state->test_state->assert_count;
     int failed_asserts = state->test_state->asserts_failed;
     int passed_asserts = total_asserts - failed_asserts;
     const char* color = (failed_asserts > 0) ? "\033[1;31m" : "\033[1;32m";
     const char* label = (failed_asserts > 0) ? "FAIL" : "PASS";
 
-    if (duration_ms < 0.001) {
-        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in less than 0.001ms\n",
-            color,
-            label,
-            KRITIC_GET_CURRENT_SUITE(),
-            KRITIC_GET_CURRENT_TEST(),
-            color,
-            passed_asserts,
-            total_asserts
-        );
-    } else if (state->test_state->duration_ns == UINT64_MAX) {
+    if (duration_ns == UINT64_MAX) {
         /* Timer is disabled (or the test ran for 584.5 years) */
         kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d)\n",
             color,
@@ -178,16 +179,30 @@ void kritic_default_post_test_printer(kritic_runtime_t* state) {
             total_asserts
         );
     } else {
-        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %.3fms\n",
-            color,
-            label,
-            KRITIC_GET_CURRENT_SUITE(),
-            KRITIC_GET_CURRENT_TEST(),
-            color,
-            passed_asserts,
-            total_asserts,
-            duration_ms
-        );
+        double duration_ms = (double) duration_ns / 1000000.0;
+
+        if (duration_ms < 0.001) {
+            kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in less than 0.001ms\n",
+                color,
+                label,
+                KRITIC_GET_CURRENT_SUITE(),
+                KRITIC_GET_CURRENT_TEST(),
+                color,
+                passed_asserts,
+                total_asserts
+            );
+        } else {
+            kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %.3fms\n",
+                color,
+                label,
+                KRITIC_GET_CURRENT_SUITE(),
+                KRITIC_GET_CURRENT_TEST(),
+                color,
+                passed_asserts,
+                total_asserts,
+                duration_ms
+            );
+        }
     }
 }
 
@@ -202,30 +217,54 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
         ? 100.0f * (float) passed / (float) state->test_count
         : 0.0f;
 
-    double duration_ms = (double) state->duration_ns / 1000000.0;
-
     char buffer[512];
-    int len = kritic_snprintf(buffer, sizeof(buffer),
-        "[      ] Finished running %d tests!\n"
-        "[      ]\n"
-        "[      ] Statistics:\n"
-        "[      ]   Total  : %d\n"
-        "[      ]   Passed : %s%d%s\n"
-        "[      ]   Failed : %s%d%s\n"
-        "[      ]   Rate   : %s%.1f%%%s\n"
-        "[      ]   Time   : %.3fms\n"
-        "[      ]\n"
-        "%s\n",
-        state->test_count,
-        state->test_count,
-        GREEN, passed, RESET,
-        RED, state->fail_count, RESET,
-        CYAN, (double) pass_rate, RESET,
-        duration_ms,
-        state->fail_count > 0
-            ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
-            : "[ \033[1;32m****\033[0m ] All tests passed!"
-    );
+    int len;
+
+    if (state->duration_ns == UINT64_MAX) {
+        len = kritic_snprintf(buffer, sizeof(buffer),
+            "[      ] Finished running %d tests!\n"
+            "[      ]\n"
+            "[      ] Statistics:\n"
+            "[      ]   Total  : %d\n"
+            "[      ]   Passed : %s%d%s\n"
+            "[      ]   Failed : %s%d%s\n"
+            "[      ]   Rate   : %s%.1f%%%s\n"
+            "[      ]\n"
+            "%s\n",
+            state->test_count,
+            state->test_count,
+            GREEN, passed, RESET,
+            RED, state->fail_count, RESET,
+            CYAN, (double) pass_rate, RESET,
+            state->fail_count > 0
+                ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
+                : "[ \033[1;32m****\033[0m ] All tests passed!"
+        );
+    } else {
+        double duration_ms = (double) state->duration_ns / 1000000.0;
+
+        len = kritic_snprintf(buffer, sizeof(buffer),
+            "[      ] Finished running %d tests!\n"
+            "[      ]\n"
+            "[      ] Statistics:\n"
+            "[      ]   Total  : %d\n"
+            "[      ]   Passed : %s%d%s\n"
+            "[      ]   Failed : %s%d%s\n"
+            "[      ]   Rate   : %s%.1f%%%s\n"
+            "[      ]   Time   : %.3fms\n"
+            "[      ]\n"
+            "%s\n",
+            state->test_count,
+            state->test_count,
+            GREEN, passed, RESET,
+            RED, state->fail_count, RESET,
+            CYAN, (double) pass_rate, RESET,
+            duration_ms,
+            state->fail_count > 0
+                ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
+                : "[ \033[1;32m****\033[0m ] All tests passed!"
+        );
+    }
 
     if (len > 0 && len < (int) sizeof(buffer)) {
         _write(1, buffer, (uint32_t) len);
@@ -240,7 +279,14 @@ void kritic_default_skip_printer(kritic_runtime_t* state, const kritic_context_t
     int len;
     uint64_t duration_ns = state->test_state->duration_ns;
 
-    if (duration_ns < 1000) {
+    if (duration_ns == UINT64_MAX) {
+        len = kritic_snprintf(buffer, sizeof(buffer),
+            "[ SKIP ] Reason: %s at %s:%d\n",
+            state->test_state->skip_reason,
+            ctx->file,
+            ctx->line
+        );
+    } else if (duration_ns < 1000) {
         len = kritic_snprintf(buffer, sizeof(buffer),
             "[ SKIP ] Reason: %s at %s:%d after less than 1us\n",
             state->test_state->skip_reason,
@@ -280,7 +326,17 @@ void kritic_default_post_test_printer(kritic_runtime_t* state) {
     const char* color = (failed_asserts > 0) ? "\033[1;31m" : "\033[1;32m";
     const char* label = (failed_asserts > 0) ? "FAIL" : "PASS";
 
-    if (duration_ns < 1000) {
+    if (duration_ns == UINT64_MAX) {
+        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d)\n",
+            color,
+            label,
+            KRITIC_GET_CURRENT_SUITE(),
+            KRITIC_GET_CURRENT_TEST(),
+            color,
+            passed_asserts,
+            total_asserts
+        );
+    } else if (duration_ns < 1000) {
         kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in less than 1us\n",
             color,
             label,
@@ -301,18 +357,8 @@ void kritic_default_post_test_printer(kritic_runtime_t* state) {
             total_asserts,
             duration_ns / 1000
         );
-    } else if (duration_ns == UINT64_MAX) {
-        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d)\n",
-            color,
-            label,
-            KRITIC_GET_CURRENT_SUITE(),
-            KRITIC_GET_CURRENT_TEST(),
-            color,
-            passed_asserts,
-            total_asserts
-        );
     } else {
-        kritic_printerf(("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %" PRIu64 "ms\n"),
+        kritic_printerf("[ %s%s\033[0m ] %s.%s (%s%d\033[0m/%d) in %" PRIu64 "ms\n",
             color,
             label,
             KRITIC_GET_CURRENT_SUITE(),
@@ -337,30 +383,55 @@ void kritic_default_summary_printer(kritic_runtime_t* state) {
         : 0;
 
     uint64_t duration_ns = state->duration_ns;
-    uint64_t duration_ms = duration_ns / 1000000;
 
     char buffer[512];
-    int len = kritic_snprintf(buffer, sizeof(buffer),
-        "[      ] Finished running %d tests!\n"
-        "[      ]\n"
-        "[      ] Statistics:\n"
-        "[      ]   Total  : %d\n"
-        "[      ]   Passed : %s%d%s\n"
-        "[      ]   Failed : %s%d%s\n"
-        "[      ]   Rate   : %s%d.%d%%%s\n"
-        "[      ]   Time   : %" PRIu64 "ms\n"
-        "[      ]\n"
-        "%s\n",
-        state->test_count,
-        state->test_count,
-        GREEN, passed, RESET,
-        RED, state->fail_count, RESET,
-        CYAN, pass_rate_x10 / 10, pass_rate_x10 % 10, RESET,
-        duration_ms,
-        state->fail_count > 0
-            ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
-            : "[ \033[1;32m****\033[0m ] All tests passed!"
-    );
+    int len;
+
+    if (duration_ns == UINT64_MAX) {
+        len = kritic_snprintf(buffer, sizeof(buffer),
+            "[      ] Finished running %d tests!\n"
+            "[      ]\n"
+            "[      ] Statistics:\n"
+            "[      ]   Total  : %d\n"
+            "[      ]   Passed : %s%d%s\n"
+            "[      ]   Failed : %s%d%s\n"
+            "[      ]   Rate   : %s%d.%d%%%s\n"
+            "[      ]\n"
+            "%s\n",
+            state->test_count,
+            state->test_count,
+            GREEN, passed, RESET,
+            RED, state->fail_count, RESET,
+            CYAN, pass_rate_x10 / 10, pass_rate_x10 % 10, RESET,
+            state->fail_count > 0
+                ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
+                : "[ \033[1;32m****\033[0m ] All tests passed!"
+        );
+    } else {
+        uint64_t duration_ms = duration_ns / 1000000;
+
+        len = kritic_snprintf(buffer, sizeof(buffer),
+            "[      ] Finished running %d tests!\n"
+            "[      ]\n"
+            "[      ] Statistics:\n"
+            "[      ]   Total  : %d\n"
+            "[      ]   Passed : %s%d%s\n"
+            "[      ]   Failed : %s%d%s\n"
+            "[      ]   Rate   : %s%d.%d%%%s\n"
+            "[      ]   Time   : %" PRIu64 "ms\n"
+            "[      ]\n"
+            "%s\n",
+            state->test_count,
+            state->test_count,
+            GREEN, passed, RESET,
+            RED, state->fail_count, RESET,
+            CYAN, pass_rate_x10 / 10, pass_rate_x10 % 10, RESET,
+            duration_ms,
+            state->fail_count > 0
+                ? "[ \033[1;31m!!!!\033[0m ] Some tests failed!"
+                : "[ \033[1;32m****\033[0m ] All tests passed!"
+        );
+    }
 
     if (len > 0 && len < (int) sizeof(buffer)) {
         _write(1, buffer, (uint32_t) len);
