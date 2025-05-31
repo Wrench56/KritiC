@@ -64,11 +64,13 @@ KRITIC_TEST(attributes, dependent,
 - Standard output can be automatically formatted/redirected during test execution
 - Measure the precise runtime (nanosecond precision) of individual tests
 - Timers and stdout redirection can be fully disabled at compile time by defining the `KRITIC_DISABLE_TIMER` and `KRITIC_DISABLE_REDIRECT` macros/flags
+- Floating-point usage in default printers (primarily for the timer output) can be disabled by defining the `KRITIC_DEFAULT_PRINTERS_NO_FLOAT` macro/flag
 
 ## Use in freestanding environments
-To use kritic in freestanding cases you can start by defining `KRITIC_DISABLE_TIMER` and `KRITIC_DISABLE_REDIRECT` and providing
-custom print functions by overriding the macros in [src/defaults.h](src/defaults.h) namely: kritic_error_printer, kritic_error_printerf, kritic_printer, kritic_printerf and kritic_snprintf with your own implementations, or override the members in the `kritic_override_pointers` struct, for which you can
-find the implementations in [src/kritc.c](src/kritic.c) to work from.
+
+To use KritiC in freestanding cases, start by defining `KRITIC_DISABLE_TIMER` and `KRITIC_DISABLE_REDIRECT`, and by providing custom print functions by overriding the macros in [src/defaults.h](src/defaults.h), namely: `kritic_error_printer`, `kritic_error_printerf`, `kritic_printer`, `kritic_printerf`, and `kritic_snprintf` with your own implementations. Alternatively, you can override the members in the `kritic_override_pointers` struct, for which you can find the implementations in [src/kritc.c](src/kritic.c).
+
+Furthermore, systems that do not support floating-point have the option to disable its usage in default printers (primarily used for timer outputs) with `KRITIC_DEFAULT_PRINTERS_NO_FLOAT` flag. Note that this does not disable printing floats in case of an assertion, nor does it disable `KRITIC_ASSERT_EQ_FLOAT`/`KRITIC_ASSERT_NE_FLOAT` assertions.
 
 ## Compilation and Usage
 
