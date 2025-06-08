@@ -1,0 +1,11 @@
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: KritiC
+Description: A pure C99 testing library
+URL: https://github.com/Wrench56/KritiC
+Version: ${version}
+Requires:
+Libs: -L${libdir} -lkritic
+Cflags: -I${includedir}
+

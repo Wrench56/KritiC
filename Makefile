@@ -5,6 +5,12 @@ CC := clang
 MODE ?= release
 PLATFORM ?= linux
 
+# === Install Path ===
+PREFIX ?= /usr/local
+
+# === Version ===
+VERSION = $(shell git describe --tags --abbrev=0)
+
 # === Compiler flags ===
 DIAG_FLAGS    := -std=c99 -Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion \
                  -Wsign-conversion -Wcast-align -Wpointer-arith -Wformat=2 \
@@ -155,4 +161,27 @@ clean:
 		rm -rf build; \
 	fi
 
-.PHONY: all clean announce_build_mode selftest release selftest-check
+install: static
+	@printf "$(GREEN)$(BOLD)Installing$(RESET) in $(PREFIX)\n"
+	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.a\n"
+	@mkdir -p $(PREFIX)/lib
+	@cp build/libkritic.* $(PREFIX)/lib
+	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.h\n"
+	@mkdir -p $(PREFIX)/include
+	@cp kritic.h $(PREFIX)/include
+	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.pc\n"
+	@mkdir -p $(PREFIX)/lib/pkgconfig
+	@echo "prefix=$(PREFIX)" > $(PREFIX)/lib/pkgconfig/kritic.pc
+	@echo "version=$(VERSION)" >> $(PREFIX)/lib/pkgconfig/kritic.pc
+	@cat kritic.pc >>  $(PREFIX)/lib/pkgconfig/kritic.pc
+
+uninstall:
+	@printf "$(GREEN)$(BOLD)Uninstalling$(RESET) in $(PREFIX)\n"
+	@printf "$(GREEN)$(BOLD)Uninstalling$(RESET) kritic.a\n"
+	@rm -f $(PREFIX)/lib/libkritic.*
+	@printf "$(GREEN)$(BOLD)Uninstalling$(RESET) kritic.h\n"
+	@rm -f $(PREFIX)/include/kritic.h
+	@printf "$(GREEN)$(BOLD)Uninstalling$(RESET) kritic.pc\n"
+	@rm -f $(PREFIX)/lib/pkgconfig/kritic.pc
+
+.PHONY: all clean announce_build_mode selftest release selftest-check install
