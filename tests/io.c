@@ -47,7 +47,7 @@ KRITIC_TEST(io, stdout_exact_buffer) {
 KRITIC_TEST(io, stdout_long_line) {
     static char bigbuf[2 * KRITIC_REDIRECT_BUFFER_SIZE];
     for (int i = 0; i < 2 * KRITIC_REDIRECT_BUFFER_SIZE - 1; ++i) {
-        bigbuf[i] = 'A' + (i % 26);
+        bigbuf[i] = 'A' + (char)(i % 26);
     }
     bigbuf[2 * KRITIC_REDIRECT_BUFFER_SIZE - 1] = '\0';
     printf("%s", bigbuf);
