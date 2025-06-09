@@ -3,13 +3,13 @@ CC := clang
 
 # === Build Mode ===
 MODE ?= release
-PLATFORM ?= linux
+PLATFORM ?= $(shell uname -o | tr '[:upper:]' '[:lower:]')
 
 # === Install Path ===
 PREFIX ?= /usr/local
 
 # === Version ===
-VERSION = $(shell git describe --tags --abbrev=0)
+VERSION = $(shell git describe --tags --always)
 
 # === Compiler flags ===
 DIAG_FLAGS    := -std=c99 -Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion \
@@ -31,8 +31,8 @@ KRITIC_OBJ    := $(patsubst src/%.c, build/%.o, $(KRITIC_SRC))
 RELEASE_DIR   := build/release
 RELEASE_LIB   := $(RELEASE_DIR)/libkritic.a
 RELEASE_HDR   := $(RELEASE_DIR)/kritic.h
-RELEASE_TAR   := build/kritic-$(shell git describe --tags --always)-linux.tar.gz
-RELEASE_ZIP   := build/kritic-$(shell git describe --tags --always)-windows.zip
+RELEASE_TAR   := build/kritic-$(VERSION)-$(PLATFORM).tar.gz
+RELEASE_ZIP   := build/kritic-$(VERSION)-windows.zip
 EXPECTED_OUTP := docs/expected_output.txt
 ACTUAL_OUTP   := actual_output.txt
 
