@@ -100,26 +100,10 @@ else
 	@ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=print_stacktrace=1 $(SELFTEST_EXE)
 endif
 
-# Create static library
-$(RELEASE_LIB): $(KRITIC_OBJ)
-	@printf " $(GREEN)$(BOLD)Archiving$(RESET) libkritic.a\n"
-	@if [ ! -e "build" ]; then \
-		mkdir build; \
-	fi
-	@if [ ! -e "$(RELEASE_DIR)" ]; then \
-		mkdir $(RELEASE_DIR); \
-	fi
-	@ar rcs $@ $^
-
-# Copy public headers
-$(RELEASE_HDR): kritic.h
-	@printf " $(GREEN)$(BOLD)Copying$(RESET)   kritic.h\n"
-	@if [ -d "$(RELEASE_DIR)" ]; then \
-		cp "$<" "$@"; \
-	fi
-
 # Bundle release directory
-release: clean all $(RELEASE_LIB) $(RELEASE_HDR)
+release: clean
+	@mkdir -p $(RELEASE_DIR)
+	@$(MAKE) install PLATEFORM=$(PLATEFORM) PREFIX=$(RELEASE_DIR) --no-print-directory
 ifeq ($(PLATFORM),windows)
 	@printf " $(GREEN)$(BOLD)Packing$(RESET)   $(RELEASE_ZIP)\n"
 	@if [ ! -e "build" ]; then \
