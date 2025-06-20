@@ -34,6 +34,7 @@ typedef struct {
     const char* skip_reason;
     uint64_t duration_ns;
     kritic_timer_t timer;
+    size_t iteration;
 } kritic_test_state_t;
 
 // Globals struct

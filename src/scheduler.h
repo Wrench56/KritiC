@@ -1,7 +1,10 @@
 #ifndef KRITIC_SCHEDULER_H
 #define KRITIC_SCHEDULER_H
 
-#define KRITIC_MAX_DEPENDENCIES 4
+#include "attributes.h"
+
+#define KRITIC_MAX_DEPENDENCIES  4
+#define KRITIC_MAX_PARAMETERIZED 8
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +43,7 @@ typedef struct kritic_test_t {
     int line;
     kritic_test_fn fn;
     kritic_test_index_t* dependencies[KRITIC_MAX_DEPENDENCIES];
+    kritic_attr_parameterized_t* parameterized[KRITIC_MAX_PARAMETERIZED];
     kritic_test_status_t status;
 } kritic_test_t;
 

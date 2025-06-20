@@ -102,6 +102,11 @@ int kritic_run_all(void) {
             continue;
         }
 
+        size_t iterations = 1;
+        if ((*t)->parameterized[0] != NULL) {
+            iterations = (*t)->parameterized[0]->size;
+        }
+
         /* Check if dependencies succeeded */
         for (kritic_test_index_t** ptr = (*t)->dependencies; *ptr != NULL; ++ptr) {
             switch ((*ptr)->test_ptr->status) {
@@ -129,7 +134,10 @@ int kritic_run_all(void) {
         (*t)->status = KRITIC_RUNNING;
         kritic_redirect_start(kritic_state);
         kritic_timer_start(&kritic_state->test_state->timer);
-        (*t)->fn();
+        for (size_t i = 0; i < iterations; i++) {
+            (*t)->fn();
+            ++kritic_state->test_state->iteration;
+        }
         kritic_state->test_state->duration_ns = kritic_timer_elapsed(&kritic_state->test_state->timer);
         kritic_redirect_stop(kritic_state);
 
