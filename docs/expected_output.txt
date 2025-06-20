@@ -13,12 +13,12 @@
  [32m[1mLinking[0m   self-test executable
  [32m[1mBuilt[0m     build/selftest
  [36m[1mTesting[0m   KritiC...
-[      ] Warning: duplicate dependency "attributes.target_simple" for test "attributes.depends_on_duplicate" in tests/attributes.c:15
+[      ] Warning: duplicate dependency "attributes.target_simple" for test "attributes.depends_on_duplicate" in tests/attributes.c:18
 [      ] Skipping duplicate
 Running from custom main()...
 [      ]
 [      ]
-[      ] Running 127 tests:
+[      ] Running 134 tests:
 [ [1;36mEXEC[0m ] assertions.assert_pass at tests/assertions.c:6
 [ [1;32mPASS[0m ] assertions.assert_pass ([1;32m1[0m/1) in 0.0ms
 [ [1;36mEXEC[0m ] assertions.assert_fail at tests/assertions.c:10
@@ -281,18 +281,36 @@ Running from custom main()...
 [ SKIP ] Reason: Skipping after fail... at tests/assertions.c:417 after 0.0ms
 [ [1;36mEXEC[0m ] assertions.pass_and_skip_fail at tests/assertions.c:420
 [ SKIP ] Reason: This test should never show fail at tests/assertions.c:422 after 0.0ms
-[ [1;36mEXEC[0m ] attributes.target_simple at tests/attributes.c:3
+[ [1;36mEXEC[0m ] attributes.target_simple at tests/attributes.c:6
 [ [1;32mPASS[0m ] attributes.target_simple ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] dependency_suite.target_cross_suite at tests/attributes.c:20
+[ [1;36mEXEC[0m ] dependency_suite.target_cross_suite at tests/attributes.c:23
 [ [1;32mPASS[0m ] dependency_suite.target_cross_suite ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.dep_c at tests/attributes.c:30
+[ [1;36mEXEC[0m ] attributes.dep_c at tests/attributes.c:33
 [ [1;32mPASS[0m ] attributes.dep_c ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.diamond_a at tests/attributes.c:45
+[ [1;36mEXEC[0m ] attributes.diamond_a at tests/attributes.c:48
 [ [1;32mPASS[0m ] attributes.diamond_a ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.fail_leaf at tests/attributes.c:65
-[ [1;31mFAIL[0m ]  attributes.fail_leaf: assertion failed: 0 at tests/attributes.c:66
+[ [1;36mEXEC[0m ] attributes.fail_leaf at tests/attributes.c:68
+[ [1;31mFAIL[0m ]  attributes.fail_leaf: assertion failed: 0 at tests/attributes.c:69
 [      ]  -> value = 0
 [ [1;31mFAIL[0m ] attributes.fail_leaf ([1;31m0[0m/1) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.param_primitives_pass at tests/attributes.c:104
+[ [1;32mPASS[0m ] attributes.param_primitives_pass ([1;32m7[0m/7) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.param_primitives_fail at tests/attributes.c:111
+[ [1;31mFAIL[0m ]  attributes.param_primitives_fail: assertion failed: v >= 0 at tests/attributes.c:113
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] attributes.param_primitives_fail ([1;31m7[0m/8) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.param_struct_pass at tests/attributes.c:118
+[ [1;32mPASS[0m ] attributes.param_struct_pass ([1;32m3[0m/3) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.param_struct_fail at tests/attributes.c:125
+[ [1;31mFAIL[0m ]  attributes.param_struct_fail: assertion failed: val.x < 10 at tests/attributes.c:127
+[      ]  -> value = 0
+[ [1;31mFAIL[0m ] attributes.param_struct_fail ([1;31m1[0m/2) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.param_null at tests/attributes.c:131
+[ [1;32mPASS[0m ] attributes.param_null ([1;32m0[0m/0) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.param_double at tests/attributes.c:142
+[ [1;32mPASS[0m ] attributes.param_double ([1;32m3[0m/3) in 0.0ms
+[ [1;36mEXEC[0m ] attributes.param_diff at tests/attributes.c:153
+[ [1;32mPASS[0m ] attributes.param_diff ([1;32m4[0m/4) in 0.0ms
 [ [1;36mEXEC[0m ] core.registration at tests/core.c:5
 [ [1;32mPASS[0m ] core.registration ([1;32m0[0m/0) in 0.0ms
 [ [1;36mEXEC[0m ] indirect.direct_fail at tests/indirect.c:59
@@ -372,41 +390,41 @@ Running from custom main()...
 [ [1;36mEXEC[0m ] io.stdout_char_by_char at tests/io.c:64
 [ [34mINFO[0m ] Char-by-char
 [ [1;32mPASS[0m ] io.stdout_char_by_char ([1;32m0[0m/0) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.depends_on_simple at tests/attributes.c:8
+[ [1;36mEXEC[0m ] attributes.depends_on_simple at tests/attributes.c:11
 [ [1;32mPASS[0m ] attributes.depends_on_simple ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.depends_on_duplicate at tests/attributes.c:15
+[ [1;36mEXEC[0m ] attributes.depends_on_duplicate at tests/attributes.c:18
 [ [1;32mPASS[0m ] attributes.depends_on_duplicate ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.depends_on_cross_suite at tests/attributes.c:25
+[ [1;36mEXEC[0m ] attributes.depends_on_cross_suite at tests/attributes.c:28
 [ [1;32mPASS[0m ] attributes.depends_on_cross_suite ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.dep_b at tests/attributes.c:35
+[ [1;36mEXEC[0m ] attributes.dep_b at tests/attributes.c:38
 [ [1;32mPASS[0m ] attributes.dep_b ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.diamond_b at tests/attributes.c:50
+[ [1;36mEXEC[0m ] attributes.diamond_b at tests/attributes.c:53
 [ [1;32mPASS[0m ] attributes.diamond_b ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.diamond_c at tests/attributes.c:55
+[ [1;36mEXEC[0m ] attributes.diamond_c at tests/attributes.c:58
 [ [1;32mPASS[0m ] attributes.diamond_c ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.diamond_fail_b at tests/attributes.c:80
-[ [1;31mFAIL[0m ]  attributes.diamond_fail_b: assertion failed: 0 at tests/attributes.c:81
+[ [1;36mEXEC[0m ] attributes.diamond_fail_b at tests/attributes.c:83
+[ [1;31mFAIL[0m ]  attributes.diamond_fail_b: assertion failed: 0 at tests/attributes.c:84
 [      ]  -> value = 0
 [ [1;31mFAIL[0m ] attributes.diamond_fail_b ([1;31m0[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.diamond_fail_c at tests/attributes.c:85
+[ [1;36mEXEC[0m ] attributes.diamond_fail_c at tests/attributes.c:88
 [ [1;32mPASS[0m ] attributes.diamond_fail_c ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.fail_mid at tests/attributes.c:70
-[ SKIP ] Test "attributes.fail_mid" at tests/attributes.c:70 is being skipped because underlying dependency "attributes.fail_leaf" failed
-[ [1;36mEXEC[0m ] attributes.dep_a at tests/attributes.c:40
+[ [1;36mEXEC[0m ] attributes.fail_mid at tests/attributes.c:73
+[ SKIP ] Test "attributes.fail_mid" at tests/attributes.c:73 is being skipped because underlying dependency "attributes.fail_leaf" failed
+[ [1;36mEXEC[0m ] attributes.dep_a at tests/attributes.c:43
 [ [1;32mPASS[0m ] attributes.dep_a ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.diamond_d at tests/attributes.c:61
+[ [1;36mEXEC[0m ] attributes.diamond_d at tests/attributes.c:64
 [ [1;32mPASS[0m ] attributes.diamond_d ([1;32m1[0m/1) in 0.0ms
-[ [1;36mEXEC[0m ] attributes.diamond_fail_d at tests/attributes.c:91
-[ SKIP ] Test "attributes.diamond_fail_d" at tests/attributes.c:91 is being skipped because underlying dependency "attributes.diamond_fail_b" failed
-[ [1;36mEXEC[0m ] attributes.fail_top at tests/attributes.c:75
-[ SKIP ] Test "attributes.fail_top" at tests/attributes.c:75 is being skipped because underlying dependency "attributes.fail_mid" failed
-[      ] Finished running 127 tests!
+[ [1;36mEXEC[0m ] attributes.diamond_fail_d at tests/attributes.c:94
+[ SKIP ] Test "attributes.diamond_fail_d" at tests/attributes.c:94 is being skipped because underlying dependency "attributes.diamond_fail_b" failed
+[ [1;36mEXEC[0m ] attributes.fail_top at tests/attributes.c:78
+[ SKIP ] Test "attributes.fail_top" at tests/attributes.c:78 is being skipped because underlying dependency "attributes.fail_mid" failed
+[      ] Finished running 134 tests!
 [      ]
 [      ] Statistics:
-[      ]   Total  : 127
-[      ]   Passed : [32m78[0m
-[      ]   Failed : [31m49[0m
-[      ]   Rate   : [36m61.4%[0m
+[      ]   Total  : 134
+[      ]   Passed : [32m83[0m
+[      ]   Failed : [31m51[0m
+[      ]   Rate   : [36m61.9%[0m
 [      ]   Time   : 0.0ms
 [      ]
 [ [1;31m!!!![0m ] Some tests failed!
