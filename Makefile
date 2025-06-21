@@ -3,13 +3,13 @@ CC := clang
 
 # === Build Mode ===
 MODE ?= release
-PLATFORM ?= linux
+PLATFORM ?= $(shell uname -o | tr '[:upper:]' '[:lower:]')
 
 # === Install Path ===
 PREFIX ?= /usr/local
 
 # === Version ===
-VERSION = $(shell git describe --tags --abbrev=0)
+VERSION = $(shell git describe --tags --always)
 
 # === Compiler flags ===
 DIAG_FLAGS    := -std=c99 -Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion \
@@ -31,8 +31,8 @@ KRITIC_OBJ    := $(patsubst src/%.c, build/%.o, $(KRITIC_SRC))
 RELEASE_DIR   := build/release
 RELEASE_LIB   := $(RELEASE_DIR)/libkritic.a
 RELEASE_HDR   := $(RELEASE_DIR)/kritic.h
-RELEASE_TAR   := build/kritic-$(shell git describe --tags --always)-linux.tar.gz
-RELEASE_ZIP   := build/kritic-$(shell git describe --tags --always)-windows.zip
+RELEASE_TAR   := build/kritic-$(VERSION)-$(PLATFORM).tar.gz
+RELEASE_ZIP   := build/kritic-$(VERSION)-windows.zip
 EXPECTED_OUTP := docs/expected_output.txt
 ACTUAL_OUTP   := actual_output.txt
 
@@ -100,26 +100,12 @@ else
 	@ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=print_stacktrace=1 $(SELFTEST_EXE)
 endif
 
-# Create static library
-$(RELEASE_LIB): $(KRITIC_OBJ)
-	@printf " $(GREEN)$(BOLD)Archiving$(RESET) libkritic.a\n"
-	@if [ ! -e "build" ]; then \
-		mkdir build; \
-	fi
-	@if [ ! -e "$(RELEASE_DIR)" ]; then \
-		mkdir $(RELEASE_DIR); \
-	fi
-	@ar rcs $@ $^
-
-# Copy public headers
-$(RELEASE_HDR): kritic.h
-	@printf " $(GREEN)$(BOLD)Copying$(RESET)   kritic.h\n"
-	@if [ -d "$(RELEASE_DIR)" ]; then \
-		cp "$<" "$@"; \
-	fi
-
 # Bundle release directory
-release: clean all $(RELEASE_LIB) $(RELEASE_HDR)
+release: clean
+	@if [ ! -e "$(RELEASE_DIR)" ]; then \
+		mkdir -p $(RELEASE_DIR); \
+	fi
+	@$(MAKE) install PLATEFORM=$(PLATEFORM) PREFIX=$(RELEASE_DIR) --no-print-directory
 ifeq ($(PLATFORM),windows)
 	@printf " $(GREEN)$(BOLD)Packing$(RESET)   $(RELEASE_ZIP)\n"
 	@if [ ! -e "build" ]; then \
@@ -164,13 +150,19 @@ clean:
 install: static
 	@printf "$(GREEN)$(BOLD)Installing$(RESET) in $(PREFIX)\n"
 	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.a\n"
-	@mkdir -p $(PREFIX)/lib
+	@if [ ! -e "$(PREFIX)/lib" ]; then \
+		mkdir -p $(PREFIX)/lib; \
+	fi
 	@cp build/libkritic.* $(PREFIX)/lib
 	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.h\n"
-	@mkdir -p $(PREFIX)/include
+	@if [ ! -e "$(PREFIX)/include" ]; then \
+		mkdir -p $(PREFIX)/include; \
+	fi
 	@cp kritic.h $(PREFIX)/include
 	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.pc\n"
-	@mkdir -p $(PREFIX)/lib/pkgconfig
+	@if [ ! -e "$(PREFIX)/lib/pkgconfig" ]; then \
+		mkdir -p $(PREFIX)/lib/pkgconfig; \
+	fi
 	@echo "prefix=$(PREFIX)" > $(PREFIX)/lib/pkgconfig/kritic.pc
 	@echo "version=$(VERSION)" >> $(PREFIX)/lib/pkgconfig/kritic.pc
 	@cat kritic.pc >>  $(PREFIX)/lib/pkgconfig/kritic.pc
