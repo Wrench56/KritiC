@@ -102,7 +102,9 @@ endif
 
 # Bundle release directory
 release: clean
-	@mkdir -p $(RELEASE_DIR)
+	@if [ ! -e "$(RELEASE_DIR)" ]; then \
+		mkdir -p $(RELEASE_DIR); \
+	fi
 	@$(MAKE) install PLATEFORM=$(PLATEFORM) PREFIX=$(RELEASE_DIR) --no-print-directory
 ifeq ($(PLATFORM),windows)
 	@printf " $(GREEN)$(BOLD)Packing$(RESET)   $(RELEASE_ZIP)\n"
@@ -148,13 +150,19 @@ clean:
 install: static
 	@printf "$(GREEN)$(BOLD)Installing$(RESET) in $(PREFIX)\n"
 	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.a\n"
-	@mkdir -p $(PREFIX)/lib
+	@if [ ! -e "$(PREFIX)/lib" ]; then \
+		mkdir -p $(PREFIX)/lib; \
+	fi
 	@cp build/libkritic.* $(PREFIX)/lib
 	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.h\n"
-	@mkdir -p $(PREFIX)/include
+	@if [ ! -e "$(PREFIX)/include" ]; then \
+		mkdir -p $(PREFIX)/include; \
+	fi
 	@cp kritic.h $(PREFIX)/include
 	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.pc\n"
-	@mkdir -p $(PREFIX)/lib/pkgconfig
+	@if [ ! -e "$(PREFIX)/lib/pkgconfig" ]; then \
+		mkdir -p $(PREFIX)/lib/pkgconfig; \
+	fi
 	@echo "prefix=$(PREFIX)" > $(PREFIX)/lib/pkgconfig/kritic.pc
 	@echo "version=$(VERSION)" >> $(PREFIX)/lib/pkgconfig/kritic.pc
 	@cat kritic.pc >>  $(PREFIX)/lib/pkgconfig/kritic.pc
