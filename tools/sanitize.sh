@@ -13,6 +13,7 @@ sanitize() {
     s/[0-9]+(\.[0-9]+)?ms/0.0ms/g;
     /KritiC v[0-9]+\.[0-9]+\.[0-9]+/d;
     /^make\[[0-9]+\]/d;
+    s|build/selftest\.exe|build/selftest|g;
   '
 }
 
