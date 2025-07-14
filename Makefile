@@ -135,7 +135,9 @@ dynamic: $(KRITIC_OBJ)
 selftest-check:
 	@printf " $(CYAN)$(BOLD)Verifying$(RESET) self-test output against $(EXPECTED_OUTP)...\n"
 	@$(MAKE) clean --no-print-directory
-	@chmod +x tools/sanitize.sh
+	@if [ ! -x "tools/sanitize.sh" ]; then \
+        chmod +x tools/sanitize.sh; \
+	fi
 	@$(MAKE) selftest 2>&1 | ./tools/sanitize.sh > $(ACTUAL_OUTP)
 	@diff -u $(EXPECTED_OUTP) $(ACTUAL_OUTP) || \
 	(printf "\nOutput mismatch detected.\nUpdate $(EXPECTED_OUTP) if intentional.\n"; exit 1)
