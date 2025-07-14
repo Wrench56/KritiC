@@ -147,19 +147,27 @@ clean:
 		rm -rf build; \
 	fi
 
+ifeq ($(OS),Windows_NT)
+install:
+	@printf " $(BOLD)$(GREEN)Skipping$(RESET)  install on Windows\n"
+
+uninstall:
+	@printf " $(BOLD)$(GREEN)Skipping$(RESET)  uninstall on Windows\n"
+else
+
 install: static
-	@printf "$(GREEN)$(BOLD)Installing$(RESET) in $(PREFIX)\n"
-	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.a\n"
+	@printf " $(GREEN)$(BOLD)Installing$(RESET) in $(PREFIX)\n"
+	@printf " $(GREEN)$(BOLD)Installing$(RESET) kritic.a\n"
 	@if [ ! -e "$(PREFIX)/lib" ]; then \
 		mkdir -p $(PREFIX)/lib; \
 	fi
 	@cp build/libkritic.* $(PREFIX)/lib
-	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.h\n"
+	@printf " $(GREEN)$(BOLD)Installing$(RESET) kritic.h\n"
 	@if [ ! -e "$(PREFIX)/include" ]; then \
 		mkdir -p $(PREFIX)/include; \
 	fi
 	@cp kritic.h $(PREFIX)/include
-	@printf "$(GREEN)$(BOLD)Installing$(RESET) kritic.pc\n"
+	@printf " $(GREEN)$(BOLD)Installing$(RESET) kritic.pc\n"
 	@if [ ! -e "$(PREFIX)/lib/pkgconfig" ]; then \
 		mkdir -p $(PREFIX)/lib/pkgconfig; \
 	fi
@@ -168,12 +176,13 @@ install: static
 	@cat kritic.pc >>  $(PREFIX)/lib/pkgconfig/kritic.pc
 
 uninstall:
-	@printf "$(GREEN)$(BOLD)Uninstalling$(RESET) in $(PREFIX)\n"
-	@printf "$(GREEN)$(BOLD)Uninstalling$(RESET) kritic.a\n"
+	@printf " $(GREEN)$(BOLD)Uninstalling$(RESET) in $(PREFIX)\n"
+	@printf " $(GREEN)$(BOLD)Uninstalling$(RESET) kritic.a\n"
 	@rm -f $(PREFIX)/lib/libkritic.*
-	@printf "$(GREEN)$(BOLD)Uninstalling$(RESET) kritic.h\n"
+	@printf " $(GREEN)$(BOLD)Uninstalling$(RESET) kritic.h\n"
 	@rm -f $(PREFIX)/include/kritic.h
-	@printf "$(GREEN)$(BOLD)Uninstalling$(RESET) kritic.pc\n"
+	@printf " $(GREEN)$(BOLD)Uninstalling$(RESET) kritic.pc\n"
 	@rm -f $(PREFIX)/lib/pkgconfig/kritic.pc
+endif
 
 .PHONY: all clean announce_build_mode selftest release selftest-check install
