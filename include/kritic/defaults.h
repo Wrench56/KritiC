@@ -1,10 +1,10 @@
 #ifndef KRITIC_DEFAULTS_H
 #define KRITIC_DEFAULTS_H
 
-#include "assert_types.h"
+#include <kritic/assert_types.h>
 
-#include "scheduler.h"
-#include "redirect.h"
+#include <kritic/scheduler.h>
+#include <kritic/redirect.h>
 
 struct kritic_runtime_t;
 struct kritic_test_t;

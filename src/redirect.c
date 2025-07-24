@@ -3,7 +3,7 @@
 
 #ifdef KRITIC_DISABLE_REDIRECT
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 void kritic_redirect_init(kritic_runtime_t* runtime) { (void) runtime; }
 void kritic_redirect_teardown(kritic_runtime_t* runtime) { (void) runtime; }
@@ -23,7 +23,7 @@ void kritic_redirect_stop(kritic_runtime_t* runtime) { (void) runtime; }
     #define READ_RET_T ssize_t
 #endif
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 static void kritic_read_pipe_lines(kritic_runtime_t* runtime, char* buffer, char* line_buffer) {
     kritic_redirect_t* state = runtime->redirect;

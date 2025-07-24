@@ -1,6 +1,6 @@
 #include <limits.h>
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 /* KRITIC_ASSERT */
 KRITIC_TEST(assertions, assert_pass) {

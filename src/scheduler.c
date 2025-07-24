@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 #define KRITIC_SORT_STACK_LIMIT 1024
 

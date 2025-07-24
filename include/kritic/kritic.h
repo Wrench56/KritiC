@@ -6,13 +6,13 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "src/assert_types.h"
+#include <kritic/assert_types.h>
 
-#include "src/defaults.h"
-#include "src/redirect.h"
-#include "src/timer.h"
-#include "src/attributes.h"
-#include "src/scheduler.h"
+#include <kritic/defaults.h>
+#include <kritic/redirect.h>
+#include <kritic/timer.h>
+#include <kritic/attributes.h>
+#include <kritic/scheduler.h>
 
 #define KRITIC_VERSION_MAJOR 1
 #define KRITIC_VERSION_MINOR 4
