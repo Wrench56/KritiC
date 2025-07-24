@@ -1,18 +1,3 @@
- [36m[1mBuilding[0m  in release mode...
- [32m[1mCompiling[0m src/kritic.c
- [32m[1mCompiling[0m src/redirect.c
- [32m[1mCompiling[0m src/timer.c
- [32m[1mCompiling[0m src/scheduler.c
- [32m[1mCompiling[0m src/attributes.c
- [32m[1mCompiling[0m src/defaults.c
- [32m[1mCompiling[0m tests/assertions.c
- [32m[1mCompiling[0m tests/attributes.c
- [32m[1mCompiling[0m tests/core.c
- [32m[1mCompiling[0m tests/indirect.c
- [32m[1mCompiling[0m tests/io.c
- [32m[1mLinking[0m   self-test executable
- [32m[1mBuilt[0m     build/selftest
- [36m[1mTesting[0m   KritiC...
 [      ] Warning: duplicate dependency "attributes.target_simple" for test "attributes.depends_on_duplicate" in tests/attributes.c:18
 [      ] Skipping duplicate
 Running from custom main()...

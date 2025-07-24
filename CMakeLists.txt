@@ -31,7 +31,7 @@ target_include_directories(kritic PRIVATE include)
 
 ## Warnings
 target_compile_options(kritic PRIVATE
-	-std=c99 -Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion
+	-std=c99 -Wall -Wextra -Werror -Wshadow -Wconversion
 	-Wsign-conversion -Wcast-align -Wpointer-arith -Wformat=2 
 	-Wstrict-prototypes -Wundef -Wdouble-promotion
 )
