@@ -1,7 +1,7 @@
 /* clock_gettime() and co. is not ISO C */
 #define _POSIX_C_SOURCE 199309L
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 #ifdef KRITIC_DISABLE_TIMER
 

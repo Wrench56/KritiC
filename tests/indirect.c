@@ -1,4 +1,4 @@
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 static void assert_zero(void) { KRITIC_ASSERT(0); }
 static void assert_one(void)  { KRITIC_ASSERT(1); }

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 KRITIC_TEST(io, stdout_redirect) {
     printf("Redirection of stdout works!\n");

@@ -1,7 +1,7 @@
 #ifndef KRITIC_SCHEDULER_H
 #define KRITIC_SCHEDULER_H
 
-#include "attributes.h"
+#include <kritic/attributes.h>
 
 #define KRITIC_MAX_DEPENDENCIES  4
 #define KRITIC_MAX_PARAMETERIZED 8

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attribute_t** attrs) {
     for (size_t i = 0; i < attr_count; ++i) {

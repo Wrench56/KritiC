@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 static kritic_runtime_t* kritic_runtime_state = &(kritic_runtime_t) {
     .test_state     = NULL,

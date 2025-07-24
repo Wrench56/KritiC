@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 KRITIC_TEST(attributes, target_simple) {
     KRITIC_ASSERT(1);

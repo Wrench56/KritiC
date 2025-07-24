@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "../kritic.h"
+#include <kritic/kritic.h>
 
 void kritic_default_init_printer(kritic_runtime_t* state) {
     kritic_printerf(

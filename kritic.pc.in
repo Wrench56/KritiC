@@ -1,10 +1,11 @@
-includedir=${prefix}/include
-libdir=${prefix}/lib
+prefix=@CMAKE_INSTALL_PREFIX@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
 
 Name: KritiC
 Description: A pure C99 testing library
 URL: https://github.com/Wrench56/KritiC
-Version: ${version}
+Version: @PROJECT_VERSION@
 Requires:
 Libs: -L${libdir} -lkritic
 Cflags: -I${includedir}
