@@ -82,7 +82,7 @@ echo "$TOOLS_LIST" | grep -vE '^\s*#|^\s*$' | while read -r tool; do
     fi
 
     chmod +x "$TOOLS_DIR/$TOOL_SCRIPT"
-    printf "%b Installing %s...\n" "$INFO_NODE" "$tool"
+    printf "%b Executing %s...\n" "$INFO_NODE" "$tool"
     format_tool_output "$TOOLS_DIR/$TOOL_SCRIPT"
     rm -f "$TOOLS_DIR/$TOOL_SCRIPT"
     printf "%b Removed %s.\n" "$INFO_NODE" "$TOOL_SCRIPT"
