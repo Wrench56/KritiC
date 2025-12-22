@@ -15,7 +15,7 @@ void kritic_register(const kritic_context_t* ctx, kritic_test_fn fn, size_t attr
     kritic_node_t* test_node = malloc(sizeof(kritic_node_t));
 
     if (!test_metadata || !test_node) {
-        fprintf(stderr, "[      ] Error: malloc() returned NULL\n");
+        kritic_error_printer("[      ] Error: malloc() returned NULL\n");
         exit(1);
     }
 
@@ -62,7 +62,7 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
     kritic_test_t** sorted   = malloc((count + 1) * sizeof(kritic_test_t*));
 
     if (!indegree || !queue || !sorted || !map) {
-        fprintf(stderr, "[      ] Error: Memory allocation failed during queue sorting\n");
+        kritic_error_printer("[      ] Error: Memory allocation failed during queue sorting\n");
         exit(1);
     }
 
@@ -79,14 +79,14 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
             kritic_test_index_t* dep = runtime->queue[i]->dependencies[d];
             if (strcmp(dep->suite, runtime->queue[i]->suite) == 0
                 && strcmp(dep->name, runtime->queue[i]->name) == 0) {
-                fprintf(stderr, "[      ] Error: Test \"%s.%s\" depends on itself\n",
+                kritic_error_printerf("[      ] Error: Test \"%s.%s\" depends on itself\n",
                     runtime->queue[i]->suite, runtime->queue[i]->name);
                 exit(1);
             }
 
             size_t dep_index = find_dep_index(map, count, dep, &invalid);
             if (invalid == true) {
-                fprintf(stderr, "[      ] Error: Test \"%s.%s\" depends on unknown \"%s.%s\"\n",
+                kritic_error_printerf("[      ] Error: Test \"%s.%s\" depends on unknown \"%s.%s\"\n",
                     runtime->queue[i]->suite, runtime->queue[i]->name, dep->suite, dep->name);
                 exit(1);
             }
@@ -127,19 +127,19 @@ static void kritic_sort_queue(kritic_runtime_t* runtime) {
 
     /* Cycle detection */
     if (sorted_index != count) {
-        fprintf(stderr, "[      ] Error: Cyclic dependency detected!\n");
+        kritic_error_printer("[      ] Error: Cyclic dependency detected!\n");
         for (size_t i = 0; i < count; ++i) {
             if (indegree[i] > 0) {
                 kritic_test_t* t = runtime->queue[i];
-                fprintf(stderr, "[      ] Test \"%s\" in suite \"%s\" at %s:%d has unresolved dependencies:\n",
+                kritic_error_printerf("[      ] Test \"%s\" in suite \"%s\" at %s:%d has unresolved dependencies:\n",
                         t->name, t->suite, t->file, t->line);
                 for (size_t d = 0; t->dependencies[d] != NULL; ++d) {
                     kritic_test_index_t* dep = t->dependencies[d];
                     size_t dep_index = find_dep_index(map, count, dep, &invalid);
                     if (dep_index == (size_t)-1) {
-                        fprintf(stderr, "[      ]   - (missing) %s.%s\n", dep->suite, dep->name);
+                        kritic_error_printerf("[      ]   - (missing) %s.%s\n", dep->suite, dep->name);
                     } else {
-                        fprintf(stderr, "[      ]   - %s.%s (possibly part of a cycle)\n", dep->suite, dep->name);
+                        kritic_error_printerf("[      ]   - %s.%s (possibly part of a cycle)\n", dep->suite, dep->name);
                     }
                 }
             }
@@ -167,7 +167,7 @@ size_t kritic_construct_queue(kritic_runtime_t* runtime) {
     size_t count = runtime->test_count;
     runtime->queue = malloc((count + 1) * sizeof(kritic_test_t*));
     if (runtime->queue == NULL) {
-        fprintf(stderr, "[      ] Error: malloc() for queue returned NULL\n");
+        kritic_error_printer("[      ] Error: malloc() for queue returned NULL\n");
         exit(1);
     }
 

@@ -17,7 +17,7 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
                     if (dep == NULL) {
                         kritic_test_index_t* new_dep = malloc(sizeof(kritic_test_index_t));
                         if (new_dep == NULL) {
-                            fprintf(stderr, "[      ] Error: malloc() failed in kritic_parse_attr_data()");
+                            kritic_error_printer("[      ] Error: malloc() failed in kritic_parse_attr_data()");
                             exit(1);
                         }
                         new_dep->suite = depends_on.suite;
@@ -29,7 +29,7 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
 
                     if (strcmp(dep->suite, depends_on.suite) == 0 &&
                         strcmp(dep->name, depends_on.test) == 0) {
-                        fprintf(stderr,
+                        kritic_error_printerf(
                             "[      ] Warning: duplicate dependency \"%s.%s\" for test \"%s.%s\" in %s:%d\n"
                             "[      ] Skipping duplicate\n",
                             depends_on.suite, depends_on.test, test->suite, test->name, test->file, test->line);
@@ -37,7 +37,7 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
                     }
                 }
 
-                fprintf(stderr,
+                kritic_error_printerf(
                     "[      ] Error: Too many dependencies for test \"%s.%s\" in %s:%d\n",
                     test->suite, test->name, test->file, test->line);
                 exit(1);
@@ -49,7 +49,7 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
                     if (test->parameterized[j] == NULL) {
                         kritic_attr_parameterized_t* new_param = malloc(sizeof(kritic_attr_parameterized_t));
                         if (new_param == NULL) {
-                            fprintf(stderr, "[      ] Error: malloc() failed in kritic_parse_attr_data()");
+                            kritic_error_printer("[      ] Error: malloc() failed in kritic_parse_attr_data()");
                             exit(2);
                         }
                         memcpy(new_param, &param, sizeof(kritic_attr_parameterized_t));
@@ -60,20 +60,20 @@ void kritic_parse_attr_data(kritic_test_t* test, size_t attr_count, kritic_attri
 
                     /* Duplicate varname found */
                     if (strcmp(test->parameterized[j]->varname, param.varname) == 0) {
-                        fprintf(stderr, "[      ] Error: Parameterized attribute defined with same variable name \"%s\"",
+                        kritic_error_printerf("[      ] Error: Parameterized attribute defined with same variable name \"%s\"",
                             param.varname);
                         exit(2);
                     }
                 }
 
-                fprintf(stderr,
+                kritic_error_printerf(
                     "[      ] Error: Too many parameterized attributes for test \"%s.%s\" in %s:%d\n",
                     test->suite, test->name, test->file, test->line);
                 exit(2);
             }
             case KRITIC_ATTR_UNKNOWN:
             default:
-                fprintf(stderr, "[      ] Error: Unknown attribute type detected\n");
+                kritic_error_printer("[      ] Error: Unknown attribute type detected\n");
                 break;
         }
 
@@ -96,7 +96,7 @@ void* kritic_get_param_value(const char* varname) {
     }
 
     if (param_count == 0) {
-        fprintf(stderr, "[      ] Error: No parameterized attributes defined\n");
+        kritic_error_printer("[      ] Error: No parameterized attributes defined\n");
         exit(1);
     }
 
@@ -108,7 +108,7 @@ void* kritic_get_param_value(const char* varname) {
         }
     }
 
-    fprintf(stderr, "[      ] Error: Parameter \"%s\" not found\n", varname);
+    kritic_error_printerf("[      ] Error: Parameter \"%s\" not found\n", varname);
     exit(1);
 }
 
