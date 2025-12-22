@@ -5,7 +5,7 @@
 [![Last Commit](https://img.shields.io/github/last-commit/Wrench56/KritiC)](https://github.com/Wrench56/KritiC/commits/main)
 [![Issues](https://img.shields.io/github/issues/Wrench56/KritiC)](https://github.com/Wrench56/KritiC/issues)
 [![Version](https://img.shields.io/github/v/tag/Wrench56/KritiC?label=version)](https://github.com/Wrench56/KritiC/releases)
-[![Lines of Code](https://tokei.rs/b1/github/Wrench56/KritiC)](https://github.com/Wrench56/KritiC)
+[![Lines of Code](https://aschey.tech/tokei/github/Wrench56/KritiC?category=code)](https://github.com/Wrench56/KritiC)
 [![Language](https://img.shields.io/badge/language-C-blue)](https://www.c-language.org/)
 [![License](https://img.shields.io/github/license/Wrench56/KritiC)](https://github.com/Wrench56/KritiC/blob/main/LICENSE)
 
