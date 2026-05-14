@@ -60,7 +60,7 @@ void kritic_default_dep_fail_printer(struct kritic_runtime_t* state, kritic_test
 #endif
 
 #ifndef kritic_error_printerf
-#define kritic_error_printerf(f, ...) fprintf(stderr, f __VA_OPT__(,) __VA_ARGS__)
+#define kritic_error_printerf(f, ...) fprintf(stderr, f, __VA_ARGS__)
 #endif
 
 #ifndef kritic_printer
@@ -68,7 +68,7 @@ void kritic_default_dep_fail_printer(struct kritic_runtime_t* state, kritic_test
 #endif
 
 #ifndef kritic_printerf
-#define kritic_printerf(f, ...) printf(f __VA_OPT__(,) __VA_ARGS__)
+#define kritic_printerf(f, ...) printf(f, __VA_ARGS__)
 #endif
 
 #ifndef kritic_snprintf
